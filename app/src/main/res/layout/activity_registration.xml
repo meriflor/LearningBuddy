@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/registerbckg"
-    tools:context=".RegistrationActivity"
+    tools:context=".ui.auth.RegistrationActivity"
     tools:layout_editor_absoluteX="-15dp"
     tools:layout_editor_absoluteY="-1dp">
 
@@ -34,8 +34,9 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:backgroundTint="@color/white"
+        android:autofillHints="emailAddressEmail"
         android:hint="Email"
-        android:inputType="textPersonName"
+        android:inputType="textEmailAddress"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:textSize="20sp"
@@ -58,10 +59,10 @@
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/email_register"
+        app:layout_constraintEnd_toEndOf="@id/email_register"
         app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="@+id/email_register"
-        app:layout_constraintTop_toBottomOf="@+id/email_register" />
+        app:layout_constraintStart_toStartOf="@id/email_register"
+        app:layout_constraintTop_toBottomOf="@id/email_register" />
 
     <EditText
         android:id="@+id/password_register"
@@ -73,36 +74,16 @@
         android:ems="10"
         android:backgroundTint="@color/white"
         android:hint="Password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/fullname_register"
-        app:layout_constraintStart_toStartOf="@+id/fullname_register"
-        app:layout_constraintTop_toBottomOf="@+id/fullname_register" />
-
-
-    <EditText
-        android:id="@+id/retypasword_creat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/white"
-        android:ems="10"
-        android:hint="School ID"
-        android:inputType="textPersonName"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/School_id"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="@+id/School_id"
-        app:layout_constraintTop_toBottomOf="@+id/School_id" />
+        app:layout_constraintEnd_toEndOf="@id/fullname_register"
+        app:layout_constraintStart_toStartOf="@id/fullname_register"
+        app:layout_constraintTop_toBottomOf="@id/fullname_register" />
 
     <EditText
-        android:id="@+id/School_id"
+        android:id="@+id/retype_password_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -111,17 +92,17 @@
         android:backgroundTint="@color/white"
         android:ems="10"
         android:hint="Re-type Password"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/password_register"
+        app:layout_constraintEnd_toEndOf="@id/password_register"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/password_register"
-        app:layout_constraintTop_toBottomOf="@+id/password_register" />
+        app:layout_constraintStart_toStartOf="@id/password_register"
+        app:layout_constraintTop_toBottomOf="@id/password_register" />
 
     <Spinner
-        android:id="@+id/spinner_options"
+        android:id="@+id/user_type_register"
         style="@style/Widget.AppCompat.DropDownItem.Spinner"
         android:layout_width="244dp"
         android:layout_height="40dp"
@@ -134,7 +115,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/retypasword_creat"
+        app:layout_constraintTop_toBottomOf="@id/retype_password_register"
         tools:ignore="SpeakableTextPresentCheck"
         tools:visibility="visible" />
 
@@ -152,7 +133,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_options"
+        app:layout_constraintTop_toBottomOf="@+id/user_type_register"
         app:rippleColor="#FFFFFF" />
 
     <TextView
@@ -163,13 +144,13 @@
         android:text="Already have an account?"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/sign"
+        app:layout_constraintEnd_toStartOf="@id/signin_btn"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_btn" />
+        app:layout_constraintTop_toBottomOf="@id/register_btn" />
 
     <TextView
-        android:id="@+id/sign"
+        android:id="@+id/signin_btn"
         android:layout_width="89dp"
         android:layout_height="31dp"
         android:layout_marginEnd="36dp"
