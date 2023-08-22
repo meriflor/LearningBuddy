@@ -1,4 +1,4 @@
-package com.project.learningbuddy;
+package com.project.learningbuddy.firebase;
 
 import android.app.Application;
 

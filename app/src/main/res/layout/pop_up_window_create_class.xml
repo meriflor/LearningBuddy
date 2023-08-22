@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#0f0f0f"
+    android:elevation="5dp"
+    android:padding="20dp"
+    android:orientation="vertical"
+    android:layout_gravity="center">
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/classes_image"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:src="@drawable/book_icon"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/et_create_quiz"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_chainStyle="packed" />-->
+
+    <EditText
+        android:id="@+id/class_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/white"
+        android:hint="Class Name"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/class_subject_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/white"
+        android:hint="Subject"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/class_name"
+        app:layout_constraintEnd_toEndOf="@id/class_name"
+        app:layout_constraintStart_toStartOf="@id/class_name"/>
+
+    <EditText
+        android:id="@+id/class_year_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/white"
+        android:hint="Year Level"
+        android:textColor="@color/white"
+        android:singleLine="true"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/class_subject_name"
+        app:layout_constraintLeft_toLeftOf="@id/class_subject_name"
+        app:layout_constraintLeft_toRightOf="@id/class_subject_name"/>
+
+    <EditText
+        android:id="@+id/class_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/white"
+        android:hint="Section"
+        android:textColor="@color/white"
+        android:singleLine="true"
+        android:textColorHint="#808080"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/class_year_level"
+        app:layout_constraintLeft_toLeftOf="@id/class_year_level"
+        app:layout_constraintRight_toRightOf="@id/class_year_level"/>
+
+    <Button
+        android:id="@+id/class_btn_create"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/loginbtn"
+        android:text="Create"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/white"
+        android:textColor="#0f0f0f"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/class_section"
+        app:layout_constraintLeft_toLeftOf="@id/class_section"
+        app:layout_constraintRight_toLeftOf="@id/class_btn_cancel"
+        />
+
+    <Button
+        android:id="@+id/class_btn_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Cancel"
+        android:background="@drawable/loginbtn"
+        android:backgroundTint="@color/white"
+        android:textColor="#0f0f0f"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/class_section"
+        app:layout_constraintLeft_toRightOf="@id/class_btn_create"
+        app:layout_constraintRight_toRightOf="@id/class_section"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,9 @@
         <item>Select User Type</item>
         <item>Teacher</item>
         <item>Student</item>
-
-
     </string-array>
+    <string name="nav_open_drawer">Open Navigation drawer</string>
+    <string name="nav_close_drawer">Close Navigation drawer</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="already_have_an_account">Already have an Account?</string>
 </resources>

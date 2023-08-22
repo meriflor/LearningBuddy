@@ -23,6 +23,7 @@ import com.project.learningbuddy.MainActivity;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.firebase.UserController;
 import com.project.learningbuddy.listener.MyCompleteListener;
+import com.project.learningbuddy.useractivity.Homepage;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -96,10 +97,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 UserController.createUser(email, fullName, userType, new MyCompleteListener() {
                                     @Override
                                     public void onSuccess() {
-//                                        if(userType.equals("Student")){
-//                                            intentPutExtra(fullName, email);
-//                                        }
-                                        startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
+                                        startActivity(new Intent(RegistrationActivity.this, Homepage.class));
                                         finish();
                                     }
                                     @Override
@@ -121,13 +119,5 @@ public class RegistrationActivity extends AppCompatActivity {
         Toast.makeText(this, text,
                 Toast.LENGTH_SHORT)
                 .show();
-    }
-
-    private void intentPutExtra(String name, String email) {
-        Intent intent = new Intent(this, MainActivity.class);
-//        intent.putExtra(MainActivity.FULLNAME, name);
-//        intent.putExtra(MainActivity.EMAIL, email);
-        startActivity(intent);
-        finish();
     }
 }

@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.learningbuddy.MainActivity;
 import com.project.learningbuddy.R;
+import com.project.learningbuddy.useractivity.Homepage;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -80,8 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 showToast("Logged In");
-//                getUserData(email, firebaseAuth.getCurrentUser().getUid());
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(LoginActivity.this, Homepage.class));
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -91,16 +91,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void getUserData(String email, String uid) {
-//        DocumentReference userDoc = firebaseFirestore.collection("users").document(uid);
-//        userDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(Task<DocumentSnapshot> task) {
-//                if(task.isSuccessful()){
-//                    DocumentSnapshot
-//                }
-//            }
-//        })
-//    }
 }

@@ -3,7 +3,7 @@
     package="com.project.learningbuddy">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:name="com.project.learningbuddy.LearningBuddy"
+        android:name="com.project.learningbuddy.firebase.LearningBuddy"
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +20,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".useractivity.Homepage"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Splashcreen"
             android:exported="true">

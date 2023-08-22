@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".useractivity.FragmentHome">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Content not yet available"
+            android:layout_marginHorizontal="100dp"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textAlignment="center"
+            android:textColor="#808080"/>
+    </LinearLayout>
+</FrameLayout>
