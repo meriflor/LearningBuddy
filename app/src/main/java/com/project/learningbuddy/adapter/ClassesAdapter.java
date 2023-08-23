@@ -3,7 +3,6 @@ package com.project.learningbuddy.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,11 +11,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.model.Class;
+import com.project.learningbuddy.model.Classes;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class ClassAdapter extends FirestoreRecyclerAdapter<Class, ClassAdapter.ClassesHolder> {
+public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAdapter.ClassesHolder> {
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -24,17 +23,23 @@ public class ClassAdapter extends FirestoreRecyclerAdapter<Class, ClassAdapter.C
      *
      * @param options
      */
-    public ClassAdapter(FirestoreRecyclerOptions<Class> options) {
+    public ClassesAdapter(FirestoreRecyclerOptions<Classes> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(ClassAdapter.ClassesHolder holder, int position, Class classes) {
+    protected void onBindViewHolder(ClassesAdapter.ClassesHolder holder, int position, Classes classes) {
         holder.className.setText(classes.getClassName());
         holder.classYearLevel.setText(classes.getClassYearLevel());
         holder.classSection.setText(classes.getClassSection());
     }
 
+    @NonNull
+    @Override
+    public ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_class, parent, false);
+        return new ClassesHolder(view, mListener);
+    }
 
     private OnItemClickListener mListener;
     public interface OnItemClickListener{
@@ -42,12 +47,6 @@ public class ClassAdapter extends FirestoreRecyclerAdapter<Class, ClassAdapter.C
     }
     public void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
-    }
-    @NonNull
-    @Override
-    public ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_class, parent, false);
-        return new ClassesHolder(view, mListener);
     }
 
     class ClassesHolder extends RecyclerView.ViewHolder {

@@ -1,8 +1,8 @@
 package com.project.learningbuddy.listener;
 
-import com.project.learningbuddy.model.Class;
+import com.project.learningbuddy.model.Classes;
 
 public interface ClassDataListener {
-    void onSuccess(Class classes);
+    void onSuccess(Classes classes);
     void onFailure(Exception exception);
 }

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.teacher.TeacherClassroomActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/student_classroomToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#0f0f0f"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+<!--            <ImageView-->
+<!--                android:id="@+id/classDelete"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:src="@drawable/icon_delete"-->
+<!--                android:layout_marginEnd="20dp"/>-->
+
+            <TextView
+                android:id="@+id/classDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DELETE"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="end"/>
+        </androidx.appcompat.widget.Toolbar>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:padding="10dp"-->
+<!--            android:gravity="center"-->
+<!--            android:background="#f1f2f6">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_accessCode"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="20sp"-->
+<!--                android:layout_weight="1"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/img_copy"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@drawable/icon_copy"/>-->
+
+<!--        </LinearLayout>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/teacher_quiz_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ced6e0"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fab_addButtonColorNormal="#808080"
+        app:fab_addButtonColorPressed="#f3f3f3"
+        app:fab_addButtonPlusIconColor="@color/white"
+        app:fab_labelStyle="@style/customFab"
+        android:layout_gravity="bottom|end">
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/student_List"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white"
+            app:fab_icon="@drawable/icon_students_list"
+            app:fab_size="mini"
+            app:fab_title="Student List" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/learningMaterial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white"
+            app:fab_icon="@drawable/icon_files"
+            app:fab_size="mini"
+            app:fab_title="Learning Material" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/createQuizBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white"
+            app:fab_icon="@drawable/icon_quiz"
+            app:fab_size="mini"
+            app:fab_title="Create Quiz" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/createAssignmentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white"
+            app:fab_icon="@drawable/icon_assignment"
+            app:fab_size="mini"
+            app:fab_title="Create Assignment" />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white"
+            app:fab_icon="@drawable/icon_score"
+            app:fab_size="mini"
+            app:fab_title="Quiz Score" />
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

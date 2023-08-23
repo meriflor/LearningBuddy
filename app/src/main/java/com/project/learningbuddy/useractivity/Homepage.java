@@ -82,6 +82,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 //            openFragment(new FragmentHome());
 //            navigationView.setCheckedItem(R.id.nav_home);
             checkUserType();
+            navigationView.setCheckedItem(R.id.nav_classes);
         }
     }
 
@@ -109,10 +110,10 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
-            case R.id.nav_home:
-//                openFragment(new FragmentHome());
-                checkUserType();
-                break;
+//            case R.id.nav_home:
+////                openFragment(new FragmentHome());
+//                checkUserType();
+//                break;
             case R.id.nav_profile:
                 openFragment(new FragmentProfile());
                 break;
@@ -138,7 +139,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             public void onSuccess(User user) {
                 if(user.getUserType().equals("Student")){
-//                    openFragment(new FragmentClassesStudent());
+                    openFragment(new FragmentClassesStudent());
                 }else if(user.getUserType().equals("Teacher")){
                     openFragment(new FragmentClassesTeacher());
                 }

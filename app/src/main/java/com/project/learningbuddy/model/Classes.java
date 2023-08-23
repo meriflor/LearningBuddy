@@ -1,8 +1,6 @@
 package com.project.learningbuddy.model;
 
-import java.sql.Timestamp;
-
-public class Class {
+public class Classes {
 
     private String className;
     private String subjectName;
@@ -12,11 +10,11 @@ public class Class {
     private String ownerTeacherID;
     private com.google.firebase.Timestamp timestamp;
 
-    public Class(){
+    public Classes(){
 
     }
 
-    public Class(String className, String subjectName, String classYearLevel, String classSection, String accessCode, String ownerTeacherID, com.google.firebase.Timestamp timestamp){
+    public Classes(String className, String subjectName, String classYearLevel, String classSection, String accessCode, String ownerTeacherID, com.google.firebase.Timestamp timestamp){
         this.className = className;
         this.subjectName = subjectName;
         this.classYearLevel = classYearLevel;

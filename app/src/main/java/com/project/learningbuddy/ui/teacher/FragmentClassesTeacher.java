@@ -1,10 +1,7 @@
 package com.project.learningbuddy.ui.teacher;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +16,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.adapter.ClassAdapter;
+import com.project.learningbuddy.adapter.ClassesAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.ClassDataListener;
-import com.project.learningbuddy.model.Class;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
+import com.project.learningbuddy.model.Classes;
 //import com.trialProjects.test100.FirebaseServices.DbQuery;
 //import com.trialProjects.test100.Listener.MyCompleteListener;
 //import com.trialProjects.test100.R;
@@ -44,14 +36,14 @@ public class FragmentClassesTeacher extends Fragment {
     //widgets
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
-
     private EditText et_className, et_subjectName, et_classYearLevel, et_classSection;
     private Button btn_create, btn_cancel;
     private FloatingActionButton fab;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private ClassAdapter adapter;
+    private ClassesAdapter adapter;
     private View view;
+    String userID = firebaseAuth.getCurrentUser().getUid();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,21 +65,32 @@ public class FragmentClassesTeacher extends Fragment {
     private void getClassList(){
         CollectionReference classRef = firebaseFirestore.collection("classes");
         Query classQuery = classRef
-                .whereEqualTo("ownerTeacherID", FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .orderBy("timestamp", Query.Direction.ASCENDING);
+                .whereEqualTo("ownerTeacherID", userID)
+                .orderBy("timestamp", Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<Class> options = new FirestoreRecyclerOptions.Builder<Class>().setQuery(classQuery, Class.class).build();
-        adapter = new ClassAdapter(options);
+        FirestoreRecyclerOptions<Classes> options = new FirestoreRecyclerOptions.Builder<Classes>().setQuery(classQuery, Classes.class).build();
+        adapter = new ClassesAdapter(options);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new ClassAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new ClassesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                Classes classes = documentSnapshot.toObject(Classes.class);
+                String classroomID = documentSnapshot.getId().toString();
+                String teacherID =documentSnapshot.getString("teacherID");
+                String className = documentSnapshot.getString("className");
+                String accessCode = documentSnapshot.getString("accessCode");
+                Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
+//                intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
+//                intent.putExtra(TeacherClassroomActivity.CLASSROOMID,classroomID);
+//                intent.putExtra(TeacherClassroomActivity.ACCESSCODE,accessCode);
+//                intent.putExtra(TeacherClassroomActivity.TEACHERID, teacherID);
 
+                startActivity(intent);
             }
         });
     }
@@ -121,8 +124,8 @@ public class FragmentClassesTeacher extends Fragment {
                 }else{
                     ClassController.createClass(className, subjectName, classYearLevel, classSection, FirebaseAuth.getInstance().getCurrentUser().getUid(), new ClassDataListener() {
                         @Override
-                        public void onSuccess(Class classes) {
-                            showToast("Class created successfully!");
+                        public void onSuccess(Classes classes) {
+                            showToast("Classes created successfully!");
                             adapter.notifyDataSetChanged();
                         }
                         @Override
