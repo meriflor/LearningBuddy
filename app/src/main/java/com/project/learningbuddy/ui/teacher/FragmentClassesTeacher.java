@@ -2,6 +2,7 @@ package com.project.learningbuddy.ui.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,16 +80,11 @@ public class FragmentClassesTeacher extends Fragment {
         adapter.setOnItemClickListener(new ClassesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Classes classes = documentSnapshot.toObject(Classes.class);
-                String classroomID = documentSnapshot.getId().toString();
-                String teacherID =documentSnapshot.getString("teacherID");
+                String classID = documentSnapshot.getId().toString();
                 String className = documentSnapshot.getString("className");
-                String accessCode = documentSnapshot.getString("accessCode");
                 Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
-//                intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
-//                intent.putExtra(TeacherClassroomActivity.CLASSROOMID,classroomID);
-//                intent.putExtra(TeacherClassroomActivity.ACCESSCODE,accessCode);
-//                intent.putExtra(TeacherClassroomActivity.TEACHERID, teacherID);
+                intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
+                intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
 
                 startActivity(intent);
             }
