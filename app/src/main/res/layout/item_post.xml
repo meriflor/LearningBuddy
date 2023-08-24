@@ -17,7 +17,6 @@
             android:id="@+id/post_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_pencil"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
         <LinearLayout
@@ -29,29 +28,26 @@
                 android:id="@+id/post_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quiz: First Semester History of Necromancy"
                 android:textColor="#474747"
                 android:fontFamily="@font/quicksand"
                 android:textStyle="bold"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:id="@+id/post_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Haneshi Hageshi"
                 android:textColor="#474747"
                 android:fontFamily="@font/quicksand"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/post_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="August 23, 2023"
                 android:textColor="#8E8E8E"
                 android:fontFamily="@font/quicksand"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         </LinearLayout>
     </LinearLayout>

@@ -33,6 +33,18 @@
             android:exported="true"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".ui.teacher.announcement.TeacherAnnouncementActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.teacher.announcement.TeacherCreateAnnouncement"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.teacher.announcement.ViewAnnouncementActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".Splashcreen"
             android:exported="true">
             <intent-filter>

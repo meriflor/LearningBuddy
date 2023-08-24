@@ -2,6 +2,7 @@ package com.project.learningbuddy.ui.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,8 @@ import com.project.learningbuddy.adapter.QuizzesAdapter;
 import com.project.learningbuddy.firebase.QuizController;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Quizzes;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class TeacherQuizzesActivity extends AppCompatActivity {
 
@@ -116,6 +119,16 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showToast(String text){

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -15,50 +16,51 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.model.Quizzes;
+import com.project.learningbuddy.model.Announcements;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class QuizzesAdapter extends FirestoreRecyclerAdapter<Quizzes, QuizzesAdapter.ClassesHolder> {
+public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements, AnnouncementsAdapter.ClassesHolder> {
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
-    public QuizzesAdapter(FirestoreRecyclerOptions<Quizzes> options) {
+    public AnnouncementsAdapter(@NonNull FirestoreRecyclerOptions<Announcements> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(QuizzesAdapter.ClassesHolder holder, int position, Quizzes model) {
-        holder.quizIcon.setBackgroundResource(R.drawable.icon_pencil);
-        holder.quizTitle.setText(model.getQuizTitle());
-        DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(model.getQuizCreator());
+    protected void onBindViewHolder(@NonNull AnnouncementsAdapter.ClassesHolder holder, int position, @NonNull Announcements model) {
+        holder.announcementIcon.setBackgroundResource(R.drawable.icon_announcement);
+        holder.announcementTitle.setText(model.getAnnouncementTitle());
+        DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(model.getAnnouncementCreator());
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     String fullName = documentSnapshot.getString("fullName");
-                    holder.quizCreatorName.setText(fullName);
+                    holder.announcementCreator.setText(fullName);
                 }
             }
         });
-        // Convert Timestamp to Date
         Date date = model.getTimestamp().toDate();
 
         // Format the Date to "Month Day, Year" format
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
         String formattedDate = dateFormat.format(date);
 
-        holder.quizTimestamp.setText(formattedDate);
+        holder.announcementTimestamp.setText(formattedDate);
     }
 
+    @NonNull
     @Override
-    public ClassesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
+    public AnnouncementsAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post,
+                parent, false);
         return new ClassesHolder(view, mListener);
     }
 
@@ -68,16 +70,18 @@ public class QuizzesAdapter extends FirestoreRecyclerAdapter<Quizzes, QuizzesAda
     }
     public void setOnItemClickListener(OnItemClickListener listener){mListener = listener;};
 
-    class ClassesHolder extends RecyclerView.ViewHolder {
-        ImageView quizIcon;
-        TextView quizTitle, quizCreatorName, quizTimestamp;
+
+    public class ClassesHolder extends RecyclerView.ViewHolder {
+        ImageView announcementIcon;
+        TextView announcementTitle, announcementCreator, announcementTimestamp;
+
         public ClassesHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
-            quizIcon = itemView.findViewById(R.id.post_icon);
-            quizTitle = itemView.findViewById(R.id.post_title);
-            quizCreatorName = itemView.findViewById(R.id.post_user);
-            quizTimestamp = itemView.findViewById(R.id.post_date);
+            announcementIcon = itemView.findViewById(R.id.post_icon);
+            announcementTitle = itemView.findViewById(R.id.post_title);
+            announcementCreator = itemView.findViewById(R.id.post_user);
+            announcementTimestamp = itemView.findViewById(R.id.post_date);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
