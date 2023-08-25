@@ -32,7 +32,6 @@
         android:backgroundTint="@color/violet"
         android:hint="Class Name"
         android:singleLine="true"
-        android:textColor="@color/white"
         android:textColorHint="#808080"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

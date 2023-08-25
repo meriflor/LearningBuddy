@@ -16,7 +16,7 @@
             android:id="@+id/student_classroomToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#0f0f0f"
+            android:background="@color/violet"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -62,7 +62,7 @@
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fab_addButtonColorNormal="#808080"
+        app:fab_addButtonColorNormal="@color/violet"
         app:fab_addButtonColorPressed="#f3f3f3"
         app:fab_addButtonPlusIconColor="@color/white"
         app:fab_labelStyle="@style/customFab"
