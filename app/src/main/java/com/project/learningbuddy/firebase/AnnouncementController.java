@@ -1,7 +1,5 @@
 package com.project.learningbuddy.firebase;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -34,7 +32,7 @@ public class AnnouncementController {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(Exception e) {
                 myCompleteListener.onFailure();
             }
         });
@@ -55,7 +53,7 @@ public class AnnouncementController {
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
+            public void onFailure(Exception e) {
                 myCompleteListener.onFailure();
             }
         });
@@ -73,7 +71,7 @@ public class AnnouncementController {
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         myCompleteListener.onFailure();
                     }
                 });
