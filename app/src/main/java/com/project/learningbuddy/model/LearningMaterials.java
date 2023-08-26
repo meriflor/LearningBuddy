@@ -46,4 +46,28 @@ public class LearningMaterials {
     public void setFiles(List<String> files) {
         this.files = files;
     }
+
+    public String getClassID() {
+        return classID;
+    }
+
+    public String getMaterialTitle() {
+        return materialTitle;
+    }
+
+    public String getMaterialContent() {
+        return materialContent;
+    }
+
+    public String getMaterialCreator() {
+        return materialCreator;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public List<String> getFiles() {
+        return files;
+    }
 }
