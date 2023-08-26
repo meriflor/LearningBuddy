@@ -20,12 +20,13 @@ import com.project.learningbuddy.listener.MyCompleteListener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ViewAnnouncementActivity extends AppCompatActivity {
+    public static final String CLASSID = "Class ID";
     public static String ANNOUNCEMENTID = "Announcement ID";
     public static String ANNOUNCEMENTTITLE = "Announcement Title";
     public static String ANNOUNCEMENTCONTENT = "Announcement Content";
     public ImageView deleteAnnouncement;
     public TextView announcementTitle, announcementContent;
-    public String announcementID, annTitle, annContent;
+    public String classID, announcementID, annTitle, annContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +34,7 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
 
 //        Intent
         Intent intent = getIntent();
+        classID = intent.getStringExtra(CLASSID);
         announcementID = intent.getStringExtra(ANNOUNCEMENTID);
         annTitle = intent.getStringExtra(ANNOUNCEMENTTITLE);
         annContent = intent.getStringExtra(ANNOUNCEMENTCONTENT);
@@ -54,20 +56,29 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
         deleteAnnouncement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AnnouncementController.deleteAnnouncement(announcementID, new MyCompleteListener() {
-                    @Override
-                    public void onSuccess() {
-                        showToast("Announcement deleted");
-                        finish();
-                    }
-                    @Override
-                    public void onFailure() {
-                        showToast("Something went wrong!");
-                    }
-                });
+                deleteAnnouncementData();
             }
         });
 
+        viewAnnouncementData();
+    }
+
+    private void deleteAnnouncementData() {
+        AnnouncementController.deleteAnnouncement(classID, announcementID, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                showToast("Deleted Successfully");
+                finish();
+            }
+
+            @Override
+            public void onFailure() {
+                Log.e("Tag", "Something went wrong!");
+            }
+        });
+    }
+
+    private void viewAnnouncementData() {
         announcementTitle.setText(annTitle);
         announcementContent.setText(annContent);
     }

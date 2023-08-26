@@ -2,7 +2,6 @@ package com.project.learningbuddy.ui.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-//import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,9 +26,6 @@ import com.project.learningbuddy.adapter.ClassesAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.ClassDataListener;
 import com.project.learningbuddy.model.Classes;
-//import com.trialProjects.test100.FirebaseServices.DbQuery;
-//import com.trialProjects.test100.Listener.MyCompleteListener;
-//import com.trialProjects.test100.R;
 
 public class FragmentClassesTeacher extends Fragment {
 
@@ -82,9 +77,15 @@ public class FragmentClassesTeacher extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 String classID = documentSnapshot.getId().toString();
                 String className = documentSnapshot.getString("className");
+                String classYearLevel = documentSnapshot.getString("classYearLevel");
+                String classSection = documentSnapshot.getString("classSection");
+                String subjectName = documentSnapshot.getString("subjectName");
                 Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
                 intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
                 intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
+                intent.putExtra(TeacherClassroomActivity.CLASSSUBJECT,subjectName);
+                intent.putExtra(TeacherClassroomActivity.YEARLEVEL, classYearLevel);
+                intent.putExtra(TeacherClassroomActivity.SECTION, classSection);
 
                 startActivity(intent);
             }

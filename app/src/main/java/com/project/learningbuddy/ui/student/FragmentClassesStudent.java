@@ -1,6 +1,7 @@
 package com.project.learningbuddy.ui.student;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -78,12 +80,21 @@ public class FragmentClassesStudent extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-//        adapter.setOnItemClickListener(new JoinClassesAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-//
-//            }
-//        });
+        adapter.setOnItemClickListener(new JoinClassesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                String classID = documentSnapshot.getId();
+                String className = documentSnapshot.getString("className");
+                String classYearLevel = documentSnapshot.getString("classYearLevel");
+                String classSection = documentSnapshot.getString("classSection");
+                Intent intent = new Intent(getContext(), StudentClassroomActivity.class);
+                intent.putExtra(StudentClassroomActivity.CLASSID, classID);
+                intent.putExtra(StudentClassroomActivity.CLASSNAME, className);
+                intent.putExtra(StudentClassroomActivity.YEARLEVEL, classYearLevel);
+                intent.putExtra(StudentClassroomActivity.SECTION, classSection);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

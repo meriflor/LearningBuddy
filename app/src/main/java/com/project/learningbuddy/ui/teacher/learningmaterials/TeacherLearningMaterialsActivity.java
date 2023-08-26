@@ -8,8 +8,16 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
+import com.project.learningbuddy.adapter.LearningMaterialsAdapter;
+import com.project.learningbuddy.model.LearningMaterials;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -20,6 +28,8 @@ public class TeacherLearningMaterialsActivity extends AppCompatActivity {
     public String classID, className;
 
     public ImageView btnCreate;
+    public RecyclerView recyclerView;
+    public LearningMaterialsAdapter adapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +56,22 @@ public class TeacherLearningMaterialsActivity extends AppCompatActivity {
             }
         });
 
+        getLearningMaterialsList();
+
+    }
+
+    private void getLearningMaterialsList() {
+        Query matQuery = FirebaseFirestore.getInstance().collection("learning_materials")
+                .whereEqualTo("classID", classID)
+                .orderBy("timestamp", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<LearningMaterials> options = new FirestoreRecyclerOptions.Builder<LearningMaterials>()
+                .setQuery(matQuery, LearningMaterials.class).build();
+        adapter = new LearningMaterialsAdapter(options);
+        recyclerView = findViewById(R.id.teacher_learning_materials_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -56,5 +82,17 @@ public class TeacherLearningMaterialsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 }

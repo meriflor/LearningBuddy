@@ -2,7 +2,6 @@ package com.project.learningbuddy.ui.teacher.announcement;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
@@ -58,29 +56,34 @@ public class TeacherAnnouncementActivity extends AppCompatActivity {
     }
 
     public void getAnnouncementList(){
-        Query announcementQuery = FirebaseFirestore.getInstance().collection("announcements")
+        Query annQuery = FirebaseFirestore.
+                getInstance().collection("classes")
+                .limit(1)
                 .whereEqualTo("classID", classID)
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .getFirestore().collection("announcements")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .orderBy("announcementTitle", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<Announcements> options = new FirestoreRecyclerOptions.Builder<Announcements>()
-                .setQuery(announcementQuery, Announcements.class).build();
+                .setQuery(annQuery, Announcements.class).build();
         adapter = new AnnouncementsAdapter(options);
         recyclerView = findViewById(R.id.teacher_announcement_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new AnnouncementsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String announcementID = documentSnapshot.getId().toString();
-                Intent intent = new Intent(TeacherAnnouncementActivity.this, ViewAnnouncementActivity.class);
-                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, announcementID);
-                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
-                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
-                startActivity(intent);
-            }
-        });
+//        adapter.setOnItemClickListener(new AnnouncementsAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+//                String announcementID = documentSnapshot.getId().toString();
+//                Intent intent = new Intent(TeacherAnnouncementActivity.this, ViewAnnouncementActivity.class);
+//                intent.putExtra(ViewAnnouncementActivity.CLASSID, classID);
+//                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, announcementID);
+//                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
+//                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
+//                startActivity(intent);
+//            }
+//        });
     }
 
     @Override
