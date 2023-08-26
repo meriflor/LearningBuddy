@@ -23,28 +23,29 @@
             android:exported="false" />
         <activity
             android:name=".useractivity.Homepage"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
         <activity
             android:name=".ui.teacher.TeacherClassroomActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
         <activity
             android:name=".ui.teacher.TeacherQuizzesActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
         <activity
             android:name=".ui.teacher.announcement.TeacherAnnouncementActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
         <activity
             android:name=".ui.teacher.announcement.TeacherCreateAnnouncement"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
         <activity
             android:name=".ui.teacher.announcement.ViewAnnouncementActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.learningmaterials.TeacherLearningMaterialsActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.learningmaterials.TeacherCreateLearningMaterials"
+            android:exported="true"/>
+
         <activity
             android:name=".Splashcreen"
             android:exported="true">

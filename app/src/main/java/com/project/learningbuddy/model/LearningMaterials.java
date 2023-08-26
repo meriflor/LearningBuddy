@@ -8,13 +8,13 @@ import java.util.Map;
 public class LearningMaterials {
     private String classID, materialTitle, materialContent, materialCreator;
     private Timestamp timestamp;
-    private List<Map<String, String>> files;
+    private List<String> files;
 
     public LearningMaterials(){
 
     }
 
-    public LearningMaterials(String classID, String materialTitle, String materialContent, String materialCreator, Timestamp timestamp, List<Map<String, String>> files) {
+    public LearningMaterials(String classID, String materialTitle, String materialContent, String materialCreator, Timestamp timestamp, List<String> files) {
         this.classID = classID;
         this.materialTitle = materialTitle;
         this.materialContent = materialContent;
@@ -43,7 +43,7 @@ public class LearningMaterials {
         this.timestamp = timestamp;
     }
 
-    public void setFiles(List<Map<String, String>> files) {
+    public void setFiles(List<String> files) {
         this.files = files;
     }
 }

@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.ui.teacher.announcement.TeacherAnnouncementActivity;
+import com.project.learningbuddy.ui.teacher.learningmaterials.TeacherLearningMaterialsActivity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -57,6 +58,16 @@ public class TeacherClassroomActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(TeacherClassroomActivity.this, TeacherAnnouncementActivity.class);
                 intent.putExtra(TeacherAnnouncementActivity.CLASSID,classID);
+                startActivity(intent);
+            }
+        });
+
+        learningMaterials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TeacherClassroomActivity.this, TeacherLearningMaterialsActivity.class);
+                intent.putExtra(TeacherLearningMaterialsActivity.CLASSID, classID);
+                intent.putExtra(TeacherLearningMaterialsActivity.CLASSNAME, className);
                 startActivity(intent);
             }
         });
