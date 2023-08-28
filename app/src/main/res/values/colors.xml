@@ -10,4 +10,7 @@
     <color name="violet">#38195F</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="textHint">#9D8BB3</color>
+    <color name="warning">#A52222</color>
+
 </resources>

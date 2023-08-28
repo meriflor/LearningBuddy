@@ -23,6 +23,7 @@ import com.project.learningbuddy.adapter.PostsAdapter;
 import com.project.learningbuddy.model.Posts;
 import com.project.learningbuddy.ui.teacher.announcement.TeacherAnnouncementActivity;
 import com.project.learningbuddy.ui.teacher.learningmaterials.TeacherLearningMaterialsActivity;
+import com.project.learningbuddy.ui.teacher.quizzes.TeacherQuizzesActivity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 

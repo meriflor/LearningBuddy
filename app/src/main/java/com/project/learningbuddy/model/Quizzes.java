@@ -4,14 +4,15 @@ import com.google.firebase.Timestamp;
 
 public class Quizzes {
 
-    private String classID, quizTitle, quizDesc, quizVisibility, quizCreator;
+    private String classID, quizTitle, quizDesc, quizCreator;
     private Timestamp timestamp;
+    private Boolean quizVisibility;
 
     public Quizzes(){
 
     }
 
-    public Quizzes(String classID, String quizTitle, String quizDesc, String quizVisibility, String quizCreator, Timestamp timestamp){
+    public Quizzes(String classID, String quizTitle, String quizDesc, Boolean quizVisibility, String quizCreator, Timestamp timestamp){
         this.classID = classID;
         this.quizTitle = quizTitle;
         this.quizDesc = quizDesc;
@@ -44,11 +45,11 @@ public class Quizzes {
         this.quizDesc = quizDesc;
     }
 
-    public String getQuizVisibility() {
+    public Boolean getQuizVisibility() {
         return quizVisibility;
     }
 
-    public void setQuizVisibility(String quizVisibility) {
+    public void setQuizVisibility(Boolean quizVisibility) {
         this.quizVisibility = quizVisibility;
     }
 

@@ -1,4 +1,4 @@
-package com.project.learningbuddy.ui.teacher;
+package com.project.learningbuddy.ui.teacher.quizzes;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
@@ -47,6 +48,7 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
         //Toolbar
         Toolbar toolbar = findViewById(R.id.student_classroomToolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 //        creating quiz
@@ -108,8 +110,11 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
     }
 
     public void getQuizList(){
-        Query quizQuery = FirebaseFirestore.getInstance().collection("quizzes")
-                .whereEqualTo("classID", classID)
+
+        Query quizQuery = FirebaseFirestore.getInstance()
+                .collection("classes")
+                .document(classID)
+                .collection("quizzes")
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Quizzes> options = new FirestoreRecyclerOptions.Builder<Quizzes>()
@@ -119,6 +124,19 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new QuizzesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                String quizID = documentSnapshot.getId();
+                Intent intent = new Intent(TeacherQuizzesActivity.this, ViewQuizzesActivity.class);
+                intent.putExtra(ViewQuizzesActivity.CLASSID, classID);
+                intent.putExtra(ViewQuizzesActivity.QUIZID, quizID);
+                intent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
+                intent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizDesc"));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

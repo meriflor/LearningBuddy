@@ -31,7 +31,13 @@
             android:name=".ui.teacher.TeacherSettingsActivity"
             android:exported="true"/>
         <activity
-            android:name=".ui.teacher.TeacherQuizzesActivity"
+            android:name=".ui.teacher.quizzes.TeacherQuizzesActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.quizzes.ViewQuizzesActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.quizzes.TeacherCreateQuestion"
             android:exported="true"/>
         <activity
             android:name=".ui.teacher.announcement.TeacherAnnouncementActivity"

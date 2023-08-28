@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.teacher.TeacherQuizzesActivity">
+    tools:context=".ui.teacher.quizzes.TeacherQuizzesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,8 +43,7 @@
             android:id="@+id/teacher_quiz_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ced6e0"
-            android:orientation="vertical"
+            android:background="#f3f3f3"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"/>
     </LinearLayout>

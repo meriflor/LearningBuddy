@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/teacher_quizToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Question"
+                    android:fontFamily="@font/quicksand"
+                    android:textSize="24sp"
+                    android:textColor="@color/violet"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"/>
+                <EditText
+                    android:id="@+id/et_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#9D8BB3"
+                    android:backgroundTint="@color/violet"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/quicksand"
+                    android:hint="Enter a question . . ."/>
+
+                <Button
+                    android:id="@+id/btn_option_create"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="#f3f3f3"
+                    android:text="Add Option"
+                    android:drawablePadding="6dp"
+                    android:paddingHorizontal="10dp"
+                    android:drawableLeft="@drawable/icon_add"
+                    android:layout_gravity="end"
+                    android:fontFamily="@font/quicksand"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/violet"/>
+
+                <LinearLayout
+                    android:id="@+id/options_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="10dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Answer"
+                    android:fontFamily="@font/quicksand"
+                    android:textSize="24sp"
+                    android:textColor="@color/violet"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_correct_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:textSize="12sp"
+                    tools:ignore="SpeakableTextPresentCheck"
+                    tools:visibility="visible"
+                    android:scrollbarSize="40sp"
+                    android:textColor="@color/black"
+                    style="@style/Widget.AppCompat.DropDownItem.Spinner"/>
+
+                <Button
+                    android:id="@+id/btn_add_question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_gravity="end"
+                    android:background="#f3f3f3"
+                    android:drawablePadding="6dp"
+                    android:paddingHorizontal="10dp"
+                    android:drawableLeft="@drawable/icon_add"
+                    android:text="Add Question"
+                    android:fontFamily="@font/quicksand"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/violet"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
