@@ -3,7 +3,6 @@ package com.project.learningbuddy.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -33,6 +32,7 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
             R.layout.class_backgroundimage2
             // Add more background layouts as needed
     };
+
     public ClassesAdapter(FirestoreRecyclerOptions<Classes> options) {
         super(options);
     }
@@ -43,7 +43,6 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
         int backgroundLayoutResId = backgroundLayouts[randomIndex];
         View customLayout = LayoutInflater.from(holder.itemView.getContext())
                 .inflate(backgroundLayoutResId, holder.cardView, false);
-        ImageView iconImageView = customLayout.findViewById(R.id.imageView2);
         holder.cardView.addView(customLayout);
         TextView className = customLayout.findViewById(R.id.tv_class_name);
         TextView classYearLevel = customLayout.findViewById(R.id.tv_class_year_level);

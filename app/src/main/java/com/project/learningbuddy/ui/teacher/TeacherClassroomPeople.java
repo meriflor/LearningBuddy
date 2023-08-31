@@ -22,8 +22,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.adapter.TeacherListAdapter;
 import com.project.learningbuddy.adapter.StudentListAdapter;
+import com.project.learningbuddy.adapter.TeacherListAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.firebase.UserController;
 import com.project.learningbuddy.listener.ExistListener;
@@ -83,7 +83,7 @@ public class TeacherClassroomPeople extends AppCompatActivity {
                 .collection("classes")
                 .document(classID)
                 .collection("teachers")
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .orderBy("timestamp", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<UserClass> options = new FirestoreRecyclerOptions.Builder<UserClass>()
                 .setQuery(teacherQuery, UserClass.class)
@@ -99,7 +99,7 @@ public class TeacherClassroomPeople extends AppCompatActivity {
                 .collection("classes")
                 .document(classID)
                 .collection("students")
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .orderBy("timestamp", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<UserClass> options = new FirestoreRecyclerOptions.Builder<UserClass>()
                 .setQuery(teacherQuery, UserClass.class)
@@ -138,11 +138,12 @@ public class TeacherClassroomPeople extends AppCompatActivity {
 
     }
 
-    private void checkEmailUserTypeExist(String email, String userType) {
-        UserController.checkEmailUserTypeExist(email, userType, new ExistListener() {
+    private void checkEmailClassExist(String email, String userType) {
+        UserController.checkEmailClassExist(classID, email, userType, new ExistListener() {
             @Override
             public void onExist(Boolean exist) {
-                if(exist){
+
+                if(exist) {
                     ClassController.addUserToClass(email, classID, userType, new MyCompleteListener() {
                         @Override
                         public void onSuccess() {
@@ -154,6 +155,23 @@ public class TeacherClassroomPeople extends AppCompatActivity {
                             showToast("Please check the internet.");
                         }
                     });
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.d("TAG", e.getMessage());
+                showToast(e.getMessage());
+            }
+        });
+    }
+
+    private void checkEmailUserTypeExist(String email, String userType) {
+        UserController.checkEmailUserTypeExist(email, userType, new ExistListener() {
+            @Override
+            public void onExist(Boolean exist) {
+                if(exist){
+                    checkEmailClassExist(email, userType);
                 }else{
                     Log.d("TAG", "There's an error in checking email,, it exist but its not there.");
                 }

@@ -1,5 +1,9 @@
 package com.project.learningbuddy.firebase;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,6 +66,39 @@ public class UserController {
         }).addOnFailureListener(listener::onFailure);
     }
 
+    public static void checkEmailClassExist(String classID, String email, String userType, ExistListener existListener){
+        String collection;
+        if(userType.equals("Teacher"))
+            collection = "teachers";
+        else
+            collection = "students";
+
+        firebaseFirestore.collection("classes")
+                .document(classID)
+                .collection(collection)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            boolean existEmail = false;
+                            for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                                if(documentSnapshot.getString("email").equals(email)){
+                                    existEmail = true;
+                                    Log.d("TAG", "Does this email: "+documentSnapshot.getString("email")+" exists!");
+                                    break;
+                                }
+                            }
+
+
+                            if(existEmail)
+                                existListener.onFailure(new Exception("This user already joined in this class."));
+                            else
+                                existListener.onExist(true);
+
+                        }
+                    }
+                });
+    }
     public static void checkEmailUserTypeExist(String email, String userType, ExistListener existListener){
         firebaseFirestore.collection("users")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

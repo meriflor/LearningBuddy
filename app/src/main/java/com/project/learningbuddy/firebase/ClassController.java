@@ -278,10 +278,12 @@ public class ClassController {
                             String userID = documentSnapshot.getId();
                             Map<String, Object> user = new HashMap<>();
                             user.put("userID", userID);
+                            user.put("email", email);
                             user.put("timestamp", Timestamp.now());
 
                             if (userType.equals("Teacher")) {
                                 user.put("userType", "Teacher");
+                                user.put("title", "Co-Adviser");
                             } else if (userType.equals("Student")) {
                                 user.put("userType", "Student");
                             }
