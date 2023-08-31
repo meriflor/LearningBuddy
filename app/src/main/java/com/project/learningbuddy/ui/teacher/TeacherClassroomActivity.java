@@ -118,10 +118,6 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     }
 
     private void getPostsList() {
-//        Query postQuery = FirebaseFirestore.getInstance().collection("posts")
-//                .whereEqualTo("classID", classID)
-//                .orderBy("timestamp", Query.Direction.DESCENDING);
-
         Query postQuery = FirebaseFirestore.
                 getInstance().collection("classes")
                 .document(classID)
@@ -170,7 +166,7 @@ public class TeacherClassroomActivity extends AppCompatActivity {
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         quizIntent.putExtra(ViewQuizzesActivity.QUIZID, documentSnapshot.getId());
                                         quizIntent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
-                                        quizIntent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizDesc"));
+                                        quizIntent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizContent"));
                                         quizIntent.putExtra(ViewQuizzesActivity.CLASSID, classID);
                                         startActivity(quizIntent);
                                     }

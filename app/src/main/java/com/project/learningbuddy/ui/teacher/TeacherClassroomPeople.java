@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,12 +22,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.adapter.PeopleListAdapter;
+import com.project.learningbuddy.adapter.TeacherListAdapter;
+import com.project.learningbuddy.adapter.StudentListAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.firebase.UserController;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.UserClass;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class TeacherClassroomPeople extends AppCompatActivity {
 
@@ -37,7 +41,8 @@ public class TeacherClassroomPeople extends AppCompatActivity {
 
     public AlertDialog.Builder dialogBuilder;
     public AlertDialog dialog;
-    public PeopleListAdapter adapter;
+    public TeacherListAdapter teachAdapter;
+    public StudentListAdapter studAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,26 +88,26 @@ public class TeacherClassroomPeople extends AppCompatActivity {
         FirestoreRecyclerOptions<UserClass> options = new FirestoreRecyclerOptions.Builder<UserClass>()
                 .setQuery(teacherQuery, UserClass.class)
                 .build();
-        adapter = new PeopleListAdapter(options, classID);
+        teachAdapter = new TeacherListAdapter(options, classID);
         listTeacher = findViewById(R.id.teacherlist_recyclerView);
         listTeacher.setLayoutManager(new LinearLayoutManager(this));
-        listTeacher.setAdapter(adapter);
+        listTeacher.setAdapter(teachAdapter);
     }
 
     private void displayStudentList() {
-//        Query teacherQuery = FirebaseFirestore.getInstance()
-//                .collection("classes")
-//                .document(classID)
-//                .collection("students")
-//                .orderBy("timestamp", Query.Direction.DESCENDING);
-//
-//        FirestoreRecyclerOptions<UserClass> options = new FirestoreRecyclerOptions.Builder<UserClass>()
-//                .setQuery(teacherQuery, UserClass.class)
-//                .build();
-//        adapter = new PeopleListAdapter(options, classID);
-//        listStudent = findViewById(R.id.studentlist_recyclerView);
-//        listStudent.setLayoutManager(new LinearLayoutManager(this));
-//        listStudent.setAdapter(adapter);
+        Query teacherQuery = FirebaseFirestore.getInstance()
+                .collection("classes")
+                .document(classID)
+                .collection("students")
+                .orderBy("timestamp", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<UserClass> options = new FirestoreRecyclerOptions.Builder<UserClass>()
+                .setQuery(teacherQuery, UserClass.class)
+                .build();
+        studAdapter = new StudentListAdapter(options, classID);
+        listStudent = findViewById(R.id.studentlist_recyclerView);
+        listStudent.setLayoutManager(new LinearLayoutManager(this));
+        listStudent.setAdapter(studAdapter);
     }
 
 
@@ -163,5 +168,29 @@ public class TeacherClassroomPeople extends AppCompatActivity {
 
     private void showToast(String text) {
         Toast.makeText(TeacherClassroomPeople.this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        teachAdapter.startListening();
+        studAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        teachAdapter.stopListening();
+        studAdapter.stopListening();
     }
 }

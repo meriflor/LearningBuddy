@@ -49,12 +49,15 @@
                     android:id="@+id/btn_add_teacher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:minWidth="70dp"
+                    android:padding="5dp"
                     android:layout_gravity="center_horizontal"
-                    android:backgroundTint="@color/violet"
-                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/icon_person_3"
                     android:text="Add"
                     android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/violet"
                     android:fontFamily="@font/quicksand"
                     android:textStyle="bold">
                 </Button>
@@ -64,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_weight="1"
+                android:layout_marginVertical="6dp"
                 android:background="@color/violet"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -71,17 +75,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:minHeight="250dp"/>
+                android:minHeight="50dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:paddingTop="10dp"
                     android:text="Students"
@@ -96,12 +101,15 @@
                     android:id="@+id/btn_add_student"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:minWidth="70dp"
+                    android:padding="5dp"
                     android:layout_gravity="center_horizontal"
-                    android:backgroundTint="@color/violet"
-                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/icon_person_3"
                     android:text="Add"
                     android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/violet"
                     android:fontFamily="@font/quicksand"
                     android:textStyle="bold">
                 </Button>
@@ -111,6 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_weight="1"
+                android:layout_marginVertical="6dp"
                 android:background="@color/violet"/>
 
 
@@ -119,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:minHeight="250dp"/>
+                android:minHeight="50dp"/>
 
 
         </LinearLayout>

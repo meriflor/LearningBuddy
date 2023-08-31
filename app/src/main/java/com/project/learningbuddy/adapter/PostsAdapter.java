@@ -57,7 +57,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                         holder,
                         R.drawable.icon_announcement);
                 break;
-            case "Learning Materials":
+            case "Learning Material":
                 query(model.getClassID(),
                         model.getGetID(),
                         "learning_materials",
@@ -69,6 +69,8 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
             default:
                 holder.postIcon.setBackgroundResource(R.drawable.icon_bubble);
                 holder.postTitle.setText("Unknown");
+                holder.postCreator.setText("Unknown");
+                holder.postTimestamp.setText("Unknown");
                 break;
         }
     }

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -15,6 +16,8 @@ import com.project.learningbuddy.model.Classes;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.Random;
+
 public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAdapter.ClassesHolder> {
 
     /**
@@ -23,15 +26,34 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
      *
      * @param options
      */
+
+    int[] backgroundLayouts = {
+            R.layout.class_backgroundimage1,
+            R.layout.class_backgroundimage2,
+            R.layout.class_backgroundimage3,
+            R.layout.class_backgroundimage4
+            // Add more background layouts as needed
+    };
     public ClassesAdapter(FirestoreRecyclerOptions<Classes> options) {
         super(options);
     }
 
     @Override
     protected void onBindViewHolder(ClassesAdapter.ClassesHolder holder, int position, Classes classes) {
+        int randomIndex = new Random().nextInt(backgroundLayouts.length);
+        int backgroundLayoutResId = backgroundLayouts[randomIndex];
+
+        // Inflate the selected background layout
+        View backgroundLayout = LayoutInflater.from(holder.itemView.getContext())
+                .inflate(backgroundLayoutResId, holder.cardView, false);
+
+        // Set the background layout as the background of the CardView
+        holder.cardView.removeAllViews(); // Clear previous content if any
+        holder.cardView.addView(backgroundLayout);
         holder.className.setText(classes.getClassName());
         holder.classYearLevel.setText(classes.getClassYearLevel());
         holder.classSection.setText(classes.getClassSection());
+
     }
 
     @NonNull
@@ -51,12 +73,14 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
 
     class ClassesHolder extends RecyclerView.ViewHolder {
         TextView className, classSection, classYearLevel, studentCount;
+        CardView cardView;
 
         public ClassesHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             className = itemView.findViewById(R.id.tv_class_name);
             classYearLevel = itemView.findViewById(R.id.tv_class_year_level);
             classSection = itemView.findViewById(R.id.tv_class_section);
+            cardView = itemView.findViewById(R.id.class_cardView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

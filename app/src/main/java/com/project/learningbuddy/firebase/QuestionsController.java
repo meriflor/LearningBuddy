@@ -17,6 +17,7 @@ import java.util.Map;
 public class QuestionsController {
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    public static String userID = firebaseAuth.getCurrentUser().getUid();
 
     public static void createQuestion(String classID, String quizID, String question, List<String> options, String answer, MyCompleteListener myCompleteListener){
         CollectionReference quesRef = firebaseFirestore.collection("classes").document(classID)

@@ -133,7 +133,7 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
                 intent.putExtra(ViewQuizzesActivity.CLASSID, classID);
                 intent.putExtra(ViewQuizzesActivity.QUIZID, quizID);
                 intent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
-                intent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizDesc"));
+                intent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizContent"));
                 startActivity(intent);
             }
         });

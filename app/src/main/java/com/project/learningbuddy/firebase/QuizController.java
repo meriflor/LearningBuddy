@@ -14,7 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.Posts;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,33 +28,51 @@ public class QuizController {
 
         Map<String, Object> quizData = new HashMap<>();
         quizData.put("quizTitle", quizTitle);
-        quizData.put("quizDesc", quizDesc);
+        quizData.put("quizContent", quizDesc);
         quizData.put("quizCreator", userID);
         quizData.put("visibility", false);
         quizData.put("timestamp", Timestamp.now());
 
-        // Add the announcement as a subcollection under the specific class document
         classRef.collection("quizzes").add(quizData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        String quizID = documentReference.getId();
-//
-                        Posts postData = new Posts();
-                        postData.setClassID(classID);
-                        postData.setGetID(quizID);
-                        postData.setPostType("Quiz");
+                        myCompleteListener.onSuccess();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        myCompleteListener.onFailure();
+                    }
+                });
+    }
 
-                        classRef.collection("posts").add(postData)
+    public static void publicQuiz(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
+        Map<String, Object> publicQuiz = new HashMap<>();
+        publicQuiz.put("visibility", visibility);
+        Map<String, Object> posts = new HashMap<>();
+        posts.put("classID", classID);
+        posts.put("getID", quizID);
+        posts.put("postType", "Quiz");
+
+        DocumentReference classes = firebaseFirestore.collection("classes").document(classID);
+
+        classes.collection("quizzes")
+                .document(quizID)
+                .update(publicQuiz)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        classes.collection("posts")
+                                .add(posts)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         myCompleteListener.onSuccess();
                                     }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
+                                }).addOnFailureListener(new OnFailureListener() {
                                     @Override
-                                    public void onFailure(Exception e) {
+                                    public void onFailure(@NonNull Exception e) {
                                         myCompleteListener.onFailure();
                                     }
                                 });

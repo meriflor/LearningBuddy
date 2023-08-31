@@ -15,11 +15,14 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Announcements;
-import com.project.learningbuddy.model.Posts;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AnnouncementController {
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    public static String userID = firebaseAuth.getCurrentUser().getUid();
 
 
 //    public static void deleteAnnouncement(String announcementID, MyCompleteListener myCompleteListener){
@@ -41,7 +44,6 @@ public class AnnouncementController {
 //    }
 
     public static void createAnnouncement(String classID, String announcementTitle, String announcementContent, MyCompleteListener myCompleteListener) {
-        String userID = firebaseAuth.getCurrentUser().getUid();
         DocumentReference classRef = firebaseFirestore.collection("classes").document(classID);
 
         Announcements announcementData = new Announcements();
@@ -56,13 +58,14 @@ public class AnnouncementController {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         String announcementId = documentReference.getId();
-//
-                        Posts postData = new Posts();
-                        postData.setClassID(classID);
-                        postData.setGetID(announcementId);
-                        postData.setPostType("Announcement");
 
-                        classRef.collection("posts").add(postData)
+                        Map<String, Object> posts = new HashMap<>();
+                        posts.put("classID", classID);
+                        posts.put("getID", announcementId);
+                        posts.put("postType", "Announcement");
+                        posts.put("timestamp", Timestamp.now());
+
+                        classRef.collection("posts").add(posts)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {

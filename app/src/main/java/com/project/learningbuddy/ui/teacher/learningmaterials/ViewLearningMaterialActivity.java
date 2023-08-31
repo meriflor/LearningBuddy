@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -105,10 +103,10 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
                                 // Display the content based on the file type
                                 switch (fileType) {
                                     case "image":
-                                        ImageView imageView = new ImageView(ViewLearningMaterialActivity.this);
-                                        // Use Glide or Picasso to load and display images
-                                        Glide.with(ViewLearningMaterialActivity.this).load(fileUrl).into(imageView);
-                                        filesContainer.addView(imageView);
+//                                        ImageView imageView = new ImageView(ViewLearningMaterialActivity.this);
+//                                        // Use Glide or Picasso to load and display images
+//                                        Glide.with(ViewLearningMaterialActivity.this).load(fileUrl).into(imageView);
+//                                        filesContainer.addView(imageView);
                                         break;
                                     case "video":
                                         // Use a VideoView to play videos

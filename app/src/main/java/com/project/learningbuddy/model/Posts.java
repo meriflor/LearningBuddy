@@ -4,20 +4,17 @@ import com.google.firebase.Timestamp;
 
 public class Posts {
 
-    private String classID, getID, postType, postTitle, postContent, postCreatorID;
+    private String classID, getID, postType;
     private Timestamp timestamp;
 
     public Posts(){
 
     }
 
-    public Posts(String classID, String getID, String postType, String postTitle, String postContent, String postCreatorID, Timestamp timestamp){
+    public Posts(String classID, String getID, String postType, Timestamp timestamp){
         this.classID = classID;
         this.getID = getID;
         this.postType = postType;
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.postCreatorID = postCreatorID;
         this.timestamp = timestamp;
     }
 
@@ -35,30 +32,6 @@ public class Posts {
 
     public void setPostType(String postType) {
         this.postType = postType;
-    }
-
-    public String getPostTitle() {
-        return postTitle;
-    }
-
-    public void setPostTitle(String postTitle) {
-        this.postTitle = postTitle;
-    }
-
-    public String getPostContent() {
-        return postContent;
-    }
-
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
-    }
-
-    public String getPostCreatorID() {
-        return postCreatorID;
-    }
-
-    public void setPostCreatorID(String postCreatorID) {
-        this.postCreatorID = postCreatorID;
     }
 
     public Timestamp getTimestamp() {

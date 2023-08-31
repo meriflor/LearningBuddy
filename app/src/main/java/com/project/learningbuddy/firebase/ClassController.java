@@ -42,8 +42,9 @@ public class ClassController {
             @Override
             public void onSuccess(Void unused) {
                 Map<String, Object> teachers = new HashMap<>();
-                teachers.put("teacherID", firebaseAuth.getCurrentUser().getUid());
-                teachers.put("teacherType", "Adviser");
+                teachers.put("userID", ownerTeacherID);
+                teachers.put("userType", "Teacher");
+                teachers.put("title", "Adviser");
                 teachers.put("timestamp", Timestamp.now());
                 firebaseFirestore
                         .collection("classes")
@@ -54,10 +55,6 @@ public class ClassController {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         classDataListener.onSuccess(classes); // Pass the created Classes instance
-                                        firebaseFirestore.collection("classes")
-                                                .document(documentReference.getId())
-                                                .collection("teachers")
-                                                .add(teachers);
                                     }
                                 });
             }
