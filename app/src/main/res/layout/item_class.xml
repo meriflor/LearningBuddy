@@ -9,74 +9,74 @@
     app:cardElevation="5dp"
     android:id="@+id/class_cardView">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:background="@drawable/class_background_01"
-        android:layout_height="match_parent"
-        android:padding="20dp">
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:background="@drawable/class_background_01"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:padding="20dp">-->
 
-        <TextView
-            android:id="@+id/tv_class_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:ellipsize="end"
-            android:text="Class"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="#f3f3f3"
-            android:textSize="20sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_class_name"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:ellipsize="end"-->
+<!--            android:text="Class"-->
+<!--            android:singleLine="true"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Headline"-->
+<!--            android:textColor="#f3f3f3"-->
+<!--            android:textSize="20sp"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"/>-->
 
-        <TextView
-            android:id="@+id/tv_class_year_level"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_class_name"
-            android:layout_alignParentStart="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Class Year Level"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#f3f3f3"
-            app:layout_constraintTop_toBottomOf="@id/tv_class_name"
-            app:layout_constraintLeft_toLeftOf="@id/tv_class_name"
-            app:layout_constraintRight_toRightOf="@id/tv_class_name"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_class_year_level"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/tv_class_name"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:ellipsize="end"-->
+<!--            android:maxLines="1"-->
+<!--            android:text="Class Year Level"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--            android:textColor="#f3f3f3"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_class_name"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/tv_class_name"-->
+<!--            app:layout_constraintRight_toRightOf="@id/tv_class_name"/>-->
 
-        <TextView
-            android:id="@+id/tv_class_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_class_year_level"
-            android:layout_alignParentStart="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Class Section"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#f3f3f3"
-            app:layout_constraintTop_toBottomOf="@id/tv_class_year_level"
-            app:layout_constraintLeft_toLeftOf="@id/tv_class_year_level"
-            app:layout_constraintRight_toRightOf="@id/tv_class_year_level"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_class_section"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/tv_class_year_level"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:ellipsize="end"-->
+<!--            android:maxLines="1"-->
+<!--            android:text="Class Section"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--            android:textColor="#f3f3f3"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_class_year_level"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/tv_class_year_level"-->
+<!--            app:layout_constraintRight_toRightOf="@id/tv_class_year_level"/>-->
 
-        <TextView
-            android:id="@+id/tv_extra_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_class_year_level"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="extra infoasdfasdfasdf"
-            android:textStyle="italic"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#f3f3f3"
-            app:layout_constraintTop_toBottomOf="@id/tv_class_section"
-            app:layout_constraintLeft_toLeftOf="@id/tv_class_section"
-            app:layout_constraintRight_toRightOf="@id/tv_class_section"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tv_extra_info"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/tv_class_year_level"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:ellipsize="end"-->
+<!--            android:maxLines="1"-->
+<!--            android:text="extra infoasdfasdfasdf"-->
+<!--            android:textStyle="italic"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--            android:textColor="#f3f3f3"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_class_section"-->
+<!--            app:layout_constraintLeft_toLeftOf="@id/tv_class_section"-->
+<!--            app:layout_constraintRight_toRightOf="@id/tv_class_section"/>-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.cardview.widget.CardView>

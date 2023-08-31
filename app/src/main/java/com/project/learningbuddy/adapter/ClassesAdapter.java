@@ -3,6 +3,7 @@ package com.project.learningbuddy.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -29,9 +30,7 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
 
     int[] backgroundLayouts = {
             R.layout.class_backgroundimage1,
-            R.layout.class_backgroundimage2,
-            R.layout.class_backgroundimage3,
-            R.layout.class_backgroundimage4
+            R.layout.class_backgroundimage2
             // Add more background layouts as needed
     };
     public ClassesAdapter(FirestoreRecyclerOptions<Classes> options) {
@@ -42,17 +41,17 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
     protected void onBindViewHolder(ClassesAdapter.ClassesHolder holder, int position, Classes classes) {
         int randomIndex = new Random().nextInt(backgroundLayouts.length);
         int backgroundLayoutResId = backgroundLayouts[randomIndex];
-
-        // Inflate the selected background layout
-        View backgroundLayout = LayoutInflater.from(holder.itemView.getContext())
+        View customLayout = LayoutInflater.from(holder.itemView.getContext())
                 .inflate(backgroundLayoutResId, holder.cardView, false);
+        ImageView iconImageView = customLayout.findViewById(R.id.imageView2);
+        holder.cardView.addView(customLayout);
+        TextView className = customLayout.findViewById(R.id.tv_class_name);
+        TextView classYearLevel = customLayout.findViewById(R.id.tv_class_year_level);
+        TextView classSection = customLayout.findViewById(R.id.tv_class_section);
 
-        // Set the background layout as the background of the CardView
-        holder.cardView.removeAllViews(); // Clear previous content if any
-        holder.cardView.addView(backgroundLayout);
-        holder.className.setText(classes.getClassName());
-        holder.classYearLevel.setText(classes.getClassYearLevel());
-        holder.classSection.setText(classes.getClassSection());
+        className.setText(classes.getClassName());
+        classYearLevel.setText(classes.getClassYearLevel());
+        classSection.setText(classes.getClassSection());
 
     }
 
