@@ -1,6 +1,6 @@
 package com.project.learningbuddy.listener;
 
-public interface ClassExistListener {
-    void onClassExist(Boolean exist);
+public interface ExistListener {
+    void onExist(Boolean exist);
     void onFailure(Exception e);
 }

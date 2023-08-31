@@ -1,5 +1,8 @@
 package com.project.learningbuddy.ui.teacher;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -18,7 +22,6 @@ import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.CoreHelper;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.useractivity.Homepage;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -33,7 +36,8 @@ public class TeacherSettingsActivity extends AppCompatActivity {
 
     public EditText et_aboutClassName, et_aboutClassSubject, et_aboutClassYearLevel, et_aboutClassSection;
     public Button btn_aboutSave;
-    public ImageButton btn_aboutDelete;
+    public TextView accessCode;
+    public ImageButton btn_aboutDelete, btn_copyAccessCode;
 
     public CoreHelper coreHelper;
 
@@ -60,11 +64,23 @@ public class TeacherSettingsActivity extends AppCompatActivity {
         et_aboutClassSection = findViewById(R.id.et_about_classSection);
         btn_aboutSave = findViewById(R.id.btn_about_save);
         btn_aboutDelete = findViewById(R.id.btn_about_delete);
+        accessCode = findViewById(R.id.accessCode);
+        btn_copyAccessCode = findViewById(R.id.copy_accessCode);
 
         et_aboutClassName.setText(className);
         et_aboutClassSubject.setText(subjectName);
         et_aboutClassYearLevel.setText(classYearLevel);
         et_aboutClassSection.setText(classSection);
+        accessCode.setText(classID);
+
+        btn_copyAccessCode.setOnClickListener(view -> {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("Text", accessCode.getText().toString());
+            clipboardManager.setPrimaryClip(clipData);
+            btn_copyAccessCode.setImageDrawable(getResources().getDrawable(R.drawable.icon_copy_success));
+            Toast.makeText(TeacherSettingsActivity.this, "Text copied to clipboard",
+                    Toast.LENGTH_SHORT).show();
+        });
 
         btn_aboutSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +102,7 @@ public class TeacherSettingsActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 showToast("Deleted successfully.");
-                startActivity(new Intent(TeacherSettingsActivity.this, Homepage.class));
+                finish();
             }
 
             @Override
@@ -106,7 +122,7 @@ public class TeacherSettingsActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 showToast("Updated successfully.");
-                Intent intent = new Intent(TeacherSettingsActivity.this, Homepage.class);
+                Intent intent = new Intent(TeacherSettingsActivity.this, TeacherClassroomActivity.class);
                 startActivity(intent);
                 finish();
             }

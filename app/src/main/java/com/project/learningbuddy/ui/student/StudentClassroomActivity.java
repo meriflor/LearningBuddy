@@ -8,16 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.PostsAdapter;
-import com.project.learningbuddy.model.Posts;
 
 public class StudentClassroomActivity extends AppCompatActivity {
 
@@ -57,15 +51,15 @@ public class StudentClassroomActivity extends AppCompatActivity {
     }
 
     private void getPostsList() {
-        Query postQuery = FirebaseFirestore.getInstance().collection("posts")
-                .whereEqualTo("classID", classID)
-                .orderBy("timestamp", Query.Direction.DESCENDING);
-
-        FirestoreRecyclerOptions<Posts> options = new FirestoreRecyclerOptions.Builder<Posts>()
-                .setQuery(postQuery, Posts.class).build();
-        adapter = new PostsAdapter(options);
-        recyclerView = findViewById(R.id.student_post_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+//        Query postQuery = FirebaseFirestore.getInstance().collection("posts")
+//                .whereEqualTo("classID", classID)
+//                .orderBy("timestamp", Query.Direction.DESCENDING);
+//
+//        FirestoreRecyclerOptions<Posts> options = new FirestoreRecyclerOptions.Builder<Posts>()
+//                .setQuery(postQuery, Posts.class).build();
+//        adapter = new PostsAdapter(options, classID);
+//        recyclerView = findViewById(R.id.student_post_recyclerview);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(adapter);
     }
 }

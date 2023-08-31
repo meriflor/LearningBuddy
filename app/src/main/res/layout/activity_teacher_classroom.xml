@@ -33,6 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginEnd="20dp"
+                    android:onClick="openPeopleList"
                     android:src="@drawable/icon_students_list_white"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -101,6 +102,7 @@
 
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/create_announcement_post"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="5dp"
@@ -122,7 +124,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Share with you class..."
+                            android:text="Share with your class..."
                             android:fontFamily="@font/quicksand"
                             android:textColor="#474747"
                             android:gravity="center_vertical"

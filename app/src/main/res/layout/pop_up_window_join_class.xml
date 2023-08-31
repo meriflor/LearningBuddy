@@ -19,8 +19,9 @@
         android:hint="Access Code"
         android:textColor="@color/white"
         android:singleLine="true"
-        android:textColorHint="#808080"
+        android:textColorHint="@color/textHint"
         android:textSize="16sp"
+        android:fontFamily="@font/quicksand"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
@@ -33,6 +34,8 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/loginbtn"
         android:text="Join"
+        android:fontFamily="@font/quicksand"
+        android:textStyle="bold"
 
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/violet"
@@ -50,6 +53,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:text="Cancel"
+        android:fontFamily="@font/quicksand"
+        android:textStyle="bold"
         android:background="@drawable/loginbtn"
         android:backgroundTint="@color/violet"
         android:textColor="@color/white"

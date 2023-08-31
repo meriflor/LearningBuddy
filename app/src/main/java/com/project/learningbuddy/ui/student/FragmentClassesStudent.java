@@ -3,7 +3,6 @@ package com.project.learningbuddy.ui.student;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.JoinClassesAdapter;
 import com.project.learningbuddy.firebase.ClassController;
-import com.project.learningbuddy.listener.ClassExistListener;
+import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.JoinClasses;
 
@@ -128,9 +126,9 @@ public class FragmentClassesStudent extends Fragment {
                 if(accessCode.isEmpty()){
                     showToast("Please enter the access code.");
                 }else{
-                    ClassController.checkClassExist(accessCode, new ClassExistListener() {
+                    ClassController.checkClassExist(accessCode, new ExistListener() {
                         @Override
-                        public void onClassExist(Boolean exist) {
+                        public void onExist(Boolean exist) {
 //                            check if the student has already joined the class
                             ClassController.joinClass(accessCode, userID, new MyCompleteListener() {
                                 @Override

@@ -10,11 +10,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -22,8 +24,12 @@ import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.PostsAdapter;
 import com.project.learningbuddy.model.Posts;
 import com.project.learningbuddy.ui.teacher.announcement.TeacherAnnouncementActivity;
+import com.project.learningbuddy.ui.teacher.announcement.TeacherCreateAnnouncement;
+import com.project.learningbuddy.ui.teacher.announcement.ViewAnnouncementActivity;
 import com.project.learningbuddy.ui.teacher.learningmaterials.TeacherLearningMaterialsActivity;
+import com.project.learningbuddy.ui.teacher.learningmaterials.ViewLearningMaterialActivity;
 import com.project.learningbuddy.ui.teacher.quizzes.TeacherQuizzesActivity;
+import com.project.learningbuddy.ui.teacher.quizzes.ViewQuizzesActivity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -39,6 +45,8 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
     public PostsAdapter adapter;
     public TextView tv_className, tv_classYearNSection;
+    public CardView createAnnouncement;
+    public FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,16 @@ public class TeacherClassroomActivity extends AppCompatActivity {
 
         tv_className.setText(className);
         tv_classYearNSection.setText(classYearLevel + " | " + classSection);
+
+        createAnnouncement = findViewById(R.id.create_announcement_post);
+        createAnnouncement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TeacherClassroomActivity.this, TeacherCreateAnnouncement.class);
+                intent.putExtra(TeacherCreateAnnouncement.CLASSID, classID);
+                startActivity(intent);
+            }
+        });
 
         //Floating buttons
         FloatingActionButton quizzes = findViewById(R.id.quizzes);
@@ -100,8 +118,14 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     }
 
     private void getPostsList() {
-        Query postQuery = FirebaseFirestore.getInstance().collection("posts")
-                .whereEqualTo("classID", classID)
+//        Query postQuery = FirebaseFirestore.getInstance().collection("posts")
+//                .whereEqualTo("classID", classID)
+//                .orderBy("timestamp", Query.Direction.DESCENDING);
+
+        Query postQuery = FirebaseFirestore.
+                getInstance().collection("classes")
+                .document(classID)
+                .collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Posts> options = new FirestoreRecyclerOptions.Builder<Posts>()
@@ -115,29 +139,63 @@ public class TeacherClassroomActivity extends AppCompatActivity {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 String postType = documentSnapshot.getString("postType");
+                String documentID = documentSnapshot.getString("getID");
+                Log.d("TAG", documentID + " is the ID biatch");
                 switch (postType){
-                    case "Announcements":
-                        viewAnnouncement();
+                    case "Announcement":
+                        Intent announcementIntent = new Intent(TeacherClassroomActivity.this, ViewAnnouncementActivity.class);
+                        firebaseFirestore.collection("classes")
+                                .document(classID)
+                                .collection("announcements")
+                                        .document(documentID).get()
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, documentSnapshot.getId());
+                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
+                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
+                                                announcementIntent.putExtra(ViewAnnouncementActivity.CLASSID, classID);
+                                                startActivity(announcementIntent);
+                                            }
+                                        });
                         break;
                     case "Quiz":
-                        startActivity(new Intent(TeacherClassroomActivity.this, TeacherQuizzesActivity.class));
+                        Intent quizIntent = new Intent(TeacherClassroomActivity.this, ViewQuizzesActivity.class);
+                        firebaseFirestore.collection("classes")
+                                .document(classID)
+                                .collection("quizzes")
+                                .document(documentID).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        quizIntent.putExtra(ViewQuizzesActivity.QUIZID, documentSnapshot.getId());
+                                        quizIntent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
+                                        quizIntent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizDesc"));
+                                        quizIntent.putExtra(ViewQuizzesActivity.CLASSID, classID);
+                                        startActivity(quizIntent);
+                                    }
+                                });
                         break;
-                    case "Learning Materials":
-                        startActivity(new Intent(TeacherClassroomActivity.this, TeacherLearningMaterialsActivity.class));
+                    case "Learning Material":
+                        Intent matIntent = new Intent(TeacherClassroomActivity.this, ViewLearningMaterialActivity.class);
+                        firebaseFirestore.collection("classes")
+                                .document(classID)
+                                .collection("quizzes")
+                                .document(documentID).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        matIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
+                                        matIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
+                                        startActivity(matIntent);
+                                    }
+                                });
                         break;
                     default:
                         Toast.makeText(TeacherClassroomActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
-
-    private void viewAnnouncement() {
-//        Intent intent = new Intent(TeacherClassroomActivity.this, ViewAnnouncementActivity.class);
-//        intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, announcementID);
-//        intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
-//        intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
-//        startActivity(intent);
     }
 
     @Override
@@ -170,6 +228,12 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         intent.putExtra(TeacherSettingsActivity.SECTION, classSection);
         intent.putExtra(TeacherSettingsActivity.SUBJECTNAME, subjectName);
         Log.d("TAG", className);
+        startActivity(intent);
+    }
+
+    public void openPeopleList(View view) {
+        Intent intent = new Intent(TeacherClassroomActivity.this, TeacherClassroomPeople.class);
+        intent.putExtra(TeacherClassroomPeople.CLASSID, classID);
         startActivity(intent);
     }
 }

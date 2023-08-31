@@ -31,6 +31,9 @@
             android:name=".ui.teacher.TeacherSettingsActivity"
             android:exported="true"/>
         <activity
+            android:name=".ui.teacher.TeacherClassroomPeople"
+            android:exported="true"/>
+        <activity
             android:name=".ui.teacher.quizzes.TeacherQuizzesActivity"
             android:exported="true"/>
         <activity
@@ -53,6 +56,9 @@
             android:exported="true"/>
         <activity
             android:name=".ui.teacher.learningmaterials.TeacherCreateLearningMaterials"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.learningmaterials.ViewLearningMaterialActivity"
             android:exported="true"/>
         <activity
             android:name=".ui.student.StudentClassroomActivity"

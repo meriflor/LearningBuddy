@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.LearningMaterialsAdapter;
@@ -61,8 +61,9 @@ public class TeacherLearningMaterialsActivity extends AppCompatActivity {
     }
 
     private void getLearningMaterialsList() {
-        Query matQuery = FirebaseFirestore.getInstance().collection("learning_materials")
-                .whereEqualTo("classID", classID)
+        Query matQuery = FirebaseFirestore.getInstance().collection("classes")
+                .document(classID)
+                .collection("learning_materials")
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<LearningMaterials> options = new FirestoreRecyclerOptions.Builder<LearningMaterials>()
@@ -72,6 +73,16 @@ public class TeacherLearningMaterialsActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new LearningMaterialsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                Intent intent = new Intent(TeacherLearningMaterialsActivity.this, ViewLearningMaterialActivity.class);
+                intent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
+                intent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

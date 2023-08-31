@@ -1,11 +1,5 @@
 package com.project.learningbuddy.ui.teacher.learningmaterials;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -19,6 +13,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -124,11 +124,17 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
             final StorageReference storageReference = storage.getReference();
             for (int i = 0; i < fileList.size(); i++) {
                 final int finalI = i;
-                storageReference.child("learningMaterials/" + classID + "-" + className + "/" + userID + "/" ).child(fileList.get(i).getImageName()).putFile(fileList.get(i).getImageURI()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                storageReference.child("learningMaterials/" + userID + "/" )
+                        .child(fileList.get(i).getImageName())
+                        .putFile(fileList.get(i).getImageURI())
+                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()){
-                            storageReference.child("learningMaterials/" + classID + "-" + className + "/" + userID + "/" ).child(fileList.get(finalI).getImageName()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            storageReference.child("learningMaterials/" + userID + "/" )
+                                    .child(fileList.get(finalI).getImageName())
+                                    .getDownloadUrl()
+                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(Task<Uri> task) {
                                     counter++;
@@ -136,7 +142,9 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                                     if (task.isSuccessful()){
                                         savedFileUri.add(task.getResult().toString());
                                     }else{
-                                        storageReference.child("learningMaterials/" + classID + "-" + className + "/" + userID + "/" ).child(fileList.get(finalI).getImageName()).delete();
+                                        storageReference.child("learningMaterials/" + userID + "/" )
+                                                .child(fileList.get(finalI).getImageName())
+                                                .delete();
                                         Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't save "+fileList.get(finalI).getImageName(), Toast.LENGTH_SHORT).show();
                                     }
                                     if (counter == fileList.size()){
@@ -166,18 +174,18 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
         for (UploadFileModel fileModel : fileList) {
             fileUrlList.add(fileModel.getImageURI().toString()); // Assuming getImageURI() returns a Uri
         }
-        LearningMaterialsController.createLearningMaterial(classID, title, content, fileUrlList, new MyCompleteListener() {
+        LearningMaterialsController.createClassLearningMaterial(classID, title, content, fileUrlList, new MyCompleteListener() {
             @Override
             public void onSuccess() {
                 progressDialog.dismiss();
-                coreHelper.createAlert("Success", "Images uploaded and saved successfully!", "OK", "", null, null, null);
-
+                coreHelper.createAlert("Success", "File(s) uploaded and saved successfully!", "OK", "", null, null, null);
+                finish();
             }
 
             @Override
             public void onFailure() {
                 progressDialog.dismiss();
-                coreHelper.createAlert("Error", "Images uploaded but we couldn't save them to database.", "OK", "", null, null, null);
+                coreHelper.createAlert("Error", "File(s) uploaded but we couldn't save them to database.", "OK", "", null, null, null);
             }
         });
     }

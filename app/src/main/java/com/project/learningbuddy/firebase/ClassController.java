@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.learningbuddy.listener.ClassDataListener;
-import com.project.learningbuddy.listener.ClassExistListener;
+import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Classes;
 import com.project.learningbuddy.model.JoinClasses;
@@ -41,7 +41,25 @@ public class ClassController {
         classRef.set(classes).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                classDataListener.onSuccess(classes); // Pass the created Classes instance
+                Map<String, Object> teachers = new HashMap<>();
+                teachers.put("teacherID", firebaseAuth.getCurrentUser().getUid());
+                teachers.put("teacherType", "Adviser");
+                teachers.put("timestamp", Timestamp.now());
+                firebaseFirestore
+                        .collection("classes")
+                        .document(classRef.getId())
+                        .collection("teachers")
+                        .add(teachers)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        classDataListener.onSuccess(classes); // Pass the created Classes instance
+                                        firebaseFirestore.collection("classes")
+                                                .document(documentReference.getId())
+                                                .collection("teachers")
+                                                .add(teachers);
+                                    }
+                                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -51,22 +69,27 @@ public class ClassController {
         });
     }
 
-    public static void checkClassExist(String accessCode, ClassExistListener classExistenceListener) {
+    public static void checkClassExist(String accessCode, ExistListener classExistenceListener) {
         firebaseFirestore.collection("classes")
                 .whereEqualTo("accessCode", accessCode)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty()) {
-                            classExistenceListener.onClassExist(true);
+                            classExistenceListener.onExist(true);
                         } else {
-                            classExistenceListener.onClassExist(false);
+                            classExistenceListener.onExist(false);
                         }
                     } else {
                         // Error occurred while checking class existence
                         classExistenceListener.onFailure(task.getException());
                     }
                 });
+    }
+
+//    Checking if you have already joined the class
+    public static void checkClassJoinedExist(String email, ExistListener existListener){
+
     }
 
     public static void joinClass(String classID, String studentID, MyCompleteListener myCompleteListener){
@@ -239,6 +262,56 @@ public class ClassController {
                                         myCompleteListener.onSuccess();
                                     }
                                 });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        myCompleteListener.onFailure();
+                    }
+                });
+    }
+
+    public static void addUserToClass(String email, String classID, String userType, MyCompleteListener myCompleteListener){
+        firebaseFirestore.collection("users")
+                .whereEqualTo("email", email)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String userID = documentSnapshot.getId();
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("userID", userID);
+                            user.put("timestamp", Timestamp.now());
+
+                            if (userType.equals("Teacher")) {
+                                user.put("userType", "Teacher");
+                            } else if (userType.equals("Student")) {
+                                user.put("userType", "Student");
+                            }
+
+                            String collection = userType.equals("Teacher") ? "teachers" : "students";
+
+                            firebaseFirestore.collection("classes")
+                                    .document(classID)
+                                    .collection(collection)
+                                    .add(user)
+                                    .addOnSuccessListener(documentReference -> myCompleteListener.onSuccess())
+                                    .addOnFailureListener(e -> myCompleteListener.onFailure());
+                        }
+                    }
+                });
+    }
+
+    public static void removeUser(String classID, String userType, String userClassID, MyCompleteListener myCompleteListener){
+        firebaseFirestore
+                .collection("classes")
+                .document(classID)
+                .collection(userType)
+                .document(userClassID)
+                .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        myCompleteListener.onSuccess();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

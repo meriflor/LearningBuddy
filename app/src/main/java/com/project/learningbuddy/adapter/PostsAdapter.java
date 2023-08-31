@@ -1,5 +1,6 @@
 package com.project.learningbuddy.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +31,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
      *
      * @param options
      */
+
     public PostsAdapter(@NonNull FirestoreRecyclerOptions<Posts> options) {
         super(options);
     }
@@ -37,36 +40,71 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
     protected void onBindViewHolder(@NonNull PostsAdapter.ClassesHolder holder, int position, @NonNull Posts model) {
         switch (model.getPostType()) {
             case "Quiz":
-                holder.postIcon.setBackgroundResource(R.drawable.icon_pencil);
+                query(model.getClassID(),
+                        model.getGetID(),
+                        "quizzes",
+                        "quizTitle",
+                        "quizCreator",
+                        holder,
+                        R.drawable.icon_pencil);
                 break;
             case "Announcement":
-                holder.postIcon.setBackgroundResource(R.drawable.icon_announcement);
+                query(model.getClassID(),
+                        model.getGetID(),
+                        "announcements",
+                        "announcementTitle",
+                        "announcementCreator",
+                        holder,
+                        R.drawable.icon_announcement);
                 break;
             case "Learning Materials":
-                holder.postIcon.setBackgroundResource(R.drawable.icon_attachment_3);
+                query(model.getClassID(),
+                        model.getGetID(),
+                        "learning_materials",
+                        "materialTitle",
+                        "materialCreator",
+                        holder,
+                        R.drawable.icon_attachment_3);
                 break;
             default:
                 holder.postIcon.setBackgroundResource(R.drawable.icon_bubble);
+                holder.postTitle.setText("Unknown");
                 break;
         }
-        holder.postTitle.setText(model.getPostTitle());
-        DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(model.getPostCreatorID());
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+    }
+
+    private void query(String classID, String getID, String collection, String postTitle, String postCreator, PostsAdapter.ClassesHolder holder, int drawable) {
+        DocumentReference query = FirebaseFirestore.getInstance().collection("classes")
+                .document(classID)
+                .collection(collection)
+                .document(getID);
+
+        query.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    String fullName = documentSnapshot.getString("fullName");
-                    holder.postCreator.setText(fullName);
+                String title = documentSnapshot.getString(postTitle);
+
+                String userID = documentSnapshot.getString(postCreator);
+
+                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                if(timestamp != null){
+                    Date date = timestamp.toDate();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                    String formattedDate = dateFormat.format(date);
+                    FirebaseFirestore.getInstance().collection("users")
+                            .document(userID)
+                            .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    holder.postCreator.setText(documentSnapshot.getString("fullName"));;
+                                    holder.postTitle.setText(title);
+                                    holder.postIcon.setBackgroundResource(drawable);
+                                    holder.postTimestamp.setText(formattedDate);
+                                }
+                            });
                 }
             }
         });
-        Date date = model.getTimestamp().toDate();
-
-        // Format the Date to "Month Day, Year" format
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
-        String formattedDate = dateFormat.format(date);
-
-        holder.postTimestamp.setText(formattedDate);
     }
 
     @NonNull
@@ -96,6 +134,8 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
             postCreator = itemView.findViewById(R.id.post_user);
             postTimestamp = itemView.findViewById(R.id.post_date);
 
+            Log.d("TAG", "Are you seeing this?"
+            );
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
