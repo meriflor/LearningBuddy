@@ -3,6 +3,7 @@ package com.project.learningbuddy.ui.teacher;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -40,11 +41,13 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     public static final String YEARLEVEL = "Class Year Level";
     public static final String SECTION = "Class Section";
     public static final String CLASSSUBJECT = "Subject Name";
+//    public static final String BGLAYOUT = "Background Layout";
     public String className, classID, classYearLevel, classSection, subjectName;
+    public int backgroundLayout, studentCount;
 
     public RecyclerView recyclerView;
     public PostsAdapter adapter;
-    public TextView tv_className, tv_classYearNSection;
+    public TextView tv_className, tv_classYearNSection, tv_subjectName, tv_extra;
     public CardView createAnnouncement;
     public FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -58,6 +61,20 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         classYearLevel = intent.getStringExtra(YEARLEVEL);
         classSection = intent.getStringExtra(SECTION);
         subjectName = intent.getStringExtra(CLASSSUBJECT);
+        backgroundLayout = intent.getIntExtra("bgLayout", -1);
+        studentCount = intent.getIntExtra("studentCount", -1);
+
+
+
+        CardView classInfo = findViewById(R.id.class_info);
+        View customLayout = LayoutInflater.from(this)
+                .inflate(backgroundLayout, classInfo, false);
+        classInfo.addView(customLayout);
+
+        tv_className = customLayout.findViewById(R.id.tv_class_name);
+        tv_subjectName = customLayout.findViewById(R.id.tv_class_year_level);
+        tv_classYearNSection = customLayout.findViewById(R.id.tv_class_section);
+        tv_extra = customLayout.findViewById(R.id.tv_extra_info);
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.student_classroomToolbar);
@@ -65,11 +82,10 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(className);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tv_className = findViewById(R.id.class_name);
-        tv_classYearNSection = findViewById(R.id.class_year_level_section);
-
         tv_className.setText(className);
+        tv_subjectName.setText(subjectName);
         tv_classYearNSection.setText(classYearLevel + " | " + classSection);
+        tv_extra.setText(studentCount + " Student(s)");
 
         createAnnouncement = findViewById(R.id.create_announcement_post);
         createAnnouncement.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +239,8 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         intent.putExtra(TeacherSettingsActivity.YEARLEVEL, classYearLevel);
         intent.putExtra(TeacherSettingsActivity.SECTION, classSection);
         intent.putExtra(TeacherSettingsActivity.SUBJECTNAME, subjectName);
+        intent.putExtra("studentCount", studentCount);
+        intent.putExtra("bgLayout", backgroundLayout);
         Log.d("TAG", className);
         startActivity(intent);
     }

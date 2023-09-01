@@ -22,6 +22,7 @@ import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.CoreHelper;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.MyCompleteListener;
+import com.project.learningbuddy.useractivity.Homepage;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -40,6 +41,7 @@ public class TeacherSettingsActivity extends AppCompatActivity {
     public ImageButton btn_aboutDelete, btn_copyAccessCode;
 
     public CoreHelper coreHelper;
+    public int studentCount, backgroundLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +54,8 @@ public class TeacherSettingsActivity extends AppCompatActivity {
         subjectName = intent.getStringExtra(SUBJECTNAME);
         classYearLevel = intent.getStringExtra(YEARLEVEL);
         classSection = intent.getStringExtra(SECTION);
+        studentCount = intent.getIntExtra("studentCount", -1);
+        backgroundLayout = intent.getIntExtra("bgLayout", -1);
 
         Toolbar toolbar = findViewById(R.id.teacher_settings_toolbar);
         setSupportActionBar(toolbar);
@@ -122,7 +126,7 @@ public class TeacherSettingsActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 showToast("Updated successfully.");
-                Intent intent = new Intent(TeacherSettingsActivity.this, TeacherClassroomActivity.class);
+                Intent intent = new Intent(TeacherSettingsActivity.this, Homepage.class);
                 startActivity(intent);
                 finish();
             }

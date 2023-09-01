@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.ClassesAdapter;
 import com.project.learningbuddy.firebase.ClassController;
@@ -80,14 +82,29 @@ public class FragmentClassesTeacher extends Fragment {
                 String classYearLevel = documentSnapshot.getString("classYearLevel");
                 String classSection = documentSnapshot.getString("classSection");
                 String subjectName = documentSnapshot.getString("subjectName");
+                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+                int intValue = backgroundLayout.intValue();
                 Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
                 intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
                 intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
                 intent.putExtra(TeacherClassroomActivity.CLASSSUBJECT,subjectName);
                 intent.putExtra(TeacherClassroomActivity.YEARLEVEL, classYearLevel);
                 intent.putExtra(TeacherClassroomActivity.SECTION, classSection);
+                intent.putExtra("bgLayout", intValue);
+                firebaseFirestore
+                        .collection("classes")
+                        .document(classID)
+                                .collection("students")
+                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                int students = queryDocumentSnapshots.size();
+                                intent.putExtra("studentCount", students);
 
-                startActivity(intent);
+                                startActivity(intent);
+                            }
+                        });
+
             }
         });
     }

@@ -61,6 +61,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/class_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
