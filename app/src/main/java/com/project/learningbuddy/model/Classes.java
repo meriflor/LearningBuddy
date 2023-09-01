@@ -8,19 +8,21 @@ public class Classes {
     private String classSection;
     private String accessCode;
     private String ownerTeacherID;
+    private int backgroundLayout;
     private com.google.firebase.Timestamp timestamp;
 
     public Classes(){
 
     }
 
-    public Classes(String className, String subjectName, String classYearLevel, String classSection, String accessCode, String ownerTeacherID, com.google.firebase.Timestamp timestamp){
+    public Classes(String className, String subjectName, String classYearLevel, String classSection, String accessCode, String ownerTeacherID, int backgroundLayout, com.google.firebase.Timestamp timestamp){
         this.className = className;
         this.subjectName = subjectName;
         this.classYearLevel = classYearLevel;
         this.classSection = classSection;
         this.accessCode = accessCode;
         this.ownerTeacherID = ownerTeacherID;
+        this.backgroundLayout = backgroundLayout;
         this.timestamp = timestamp;
     }
 
@@ -74,6 +76,10 @@ public class Classes {
 
     public com.google.firebase.Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public int getBackgroundLayout() {
+        return backgroundLayout;
     }
 
     public void setTimestamp(com.google.firebase.Timestamp timestamp) {

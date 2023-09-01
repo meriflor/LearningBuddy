@@ -24,7 +24,7 @@ import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.ClassesAdapter;
 import com.project.learningbuddy.firebase.ClassController;
-import com.project.learningbuddy.listener.ClassDataListener;
+import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Classes;
 
 public class FragmentClassesTeacher extends Fragment {
@@ -119,14 +119,14 @@ public class FragmentClassesTeacher extends Fragment {
                     showToast("Please fill in the blanks.");
                     return;
                 }else{
-                    ClassController.createClass(className, subjectName, classYearLevel, classSection, FirebaseAuth.getInstance().getCurrentUser().getUid(), new ClassDataListener() {
+                    ClassController.createClass(className, subjectName, classYearLevel, classSection, FirebaseAuth.getInstance().getCurrentUser().getUid(), new MyCompleteListener() {
                         @Override
-                        public void onSuccess(Classes classes) {
+                        public void onSuccess() {
                             showToast("Classes created successfully!");
                             adapter.notifyDataSetChanged();
                         }
                         @Override
-                        public void onFailure(Exception exception) {
+                        public void onFailure() {
                             showToast("Something went wrong!");
                         }
                     });

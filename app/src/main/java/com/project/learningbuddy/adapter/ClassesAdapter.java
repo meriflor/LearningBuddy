@@ -16,8 +16,6 @@ import com.project.learningbuddy.model.Classes;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.Random;
-
 public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAdapter.ClassesHolder> {
 
     /**
@@ -27,28 +25,14 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
      * @param options
      */
 
-    int[] backgroundLayouts = {
-            R.layout.class_backgroundimage1,
-            R.layout.class_backgroundimage2,
-            R.layout.class_backgroundimage3,
-            R.layout.class_backgroundimage4,
-            R.layout.class_backgroundimage5,
-            R.layout.class_backgroundimage6,
-            R.layout.class_backgroundimage7,
-            R.layout.class_backgroundimage8,
-            // Add more background layouts as needed
-    };
-
     public ClassesAdapter(FirestoreRecyclerOptions<Classes> options) {
         super(options);
     }
 
     @Override
     protected void onBindViewHolder(ClassesAdapter.ClassesHolder holder, int position, Classes classes) {
-        int randomIndex = new Random().nextInt(backgroundLayouts.length);
-        int backgroundLayoutResId = backgroundLayouts[randomIndex];
         View customLayout = LayoutInflater.from(holder.itemView.getContext())
-                .inflate(backgroundLayoutResId, holder.cardView, false);
+                .inflate(classes.getBackgroundLayout(), holder.cardView, false);
         holder.cardView.addView(customLayout);
         TextView className = customLayout.findViewById(R.id.tv_class_name);
         TextView classYearLevel = customLayout.findViewById(R.id.tv_class_year_level);

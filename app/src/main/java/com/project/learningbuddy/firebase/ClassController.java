@@ -9,34 +9,49 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.project.learningbuddy.listener.ClassDataListener;
+import com.project.learningbuddy.R;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.Classes;
 import com.project.learningbuddy.model.JoinClasses;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class ClassController {
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
-    public static void createClass(String className, String subjectName, String classYearLevel, String classSection, String ownerTeacherID, ClassDataListener classDataListener){
+    public static int[] backgroundLayouts = {
+            R.layout.class_backgroundimage1,
+            R.layout.class_backgroundimage2,
+            R.layout.class_backgroundimage3,
+            R.layout.class_backgroundimage4,
+            R.layout.class_backgroundimage5,
+            R.layout.class_backgroundimage6,
+            R.layout.class_backgroundimage7,
+            R.layout.class_backgroundimage8,
+            // Add more background layouts as needed
+    };
+
+    public static void createClass(String className, String subjectName, String classYearLevel, String classSection, String ownerTeacherID, MyCompleteListener myCompleteListener){
+        int randomIndex = new Random().nextInt(backgroundLayouts.length);
+        int backgroundLayoutResId = backgroundLayouts[randomIndex];
         DocumentReference classRef = firebaseFirestore
                 .collection("classes")
                 .document();
 
-        Classes classes = new Classes();
-        classes.setClassName(className);
-        classes.setSubjectName(subjectName);
-        classes.setClassYearLevel(classYearLevel);
-        classes.setClassSection(classSection);
-        classes.setAccessCode(classRef.getId());
-        classes.setOwnerTeacherID(ownerTeacherID);
-        classes.setTimestamp(Timestamp.now());
+        Map<String, Object> classes = new HashMap<>();
+        classes.put("className", className);
+        classes.put("subjectName", subjectName);
+        classes.put("classYearLevel", classYearLevel);
+        classes.put("classSection", classSection);
+        classes.put("accessCode", classRef.getId());
+        classes.put("ownerTeacherID", ownerTeacherID);
+        classes.put("backgroundLayout", backgroundLayoutResId);
+        classes.put("timestamp", Timestamp.now());
 
         classRef.set(classes).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -54,14 +69,14 @@ public class ClassController {
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
-                                        classDataListener.onSuccess(classes); // Pass the created Classes instance
+                                        myCompleteListener.onSuccess(); // Pass the created Classes instance
                                     }
                                 });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(Exception e) {
-                classDataListener.onFailure(new Exception("Something went wrong!"));
+                myCompleteListener.onFailure();
             }
         });
     }
