@@ -29,7 +29,13 @@ public class ClassesAdapter extends FirestoreRecyclerAdapter<Classes, ClassesAda
 
     int[] backgroundLayouts = {
             R.layout.class_backgroundimage1,
-            R.layout.class_backgroundimage2
+            R.layout.class_backgroundimage2,
+            R.layout.class_backgroundimage3,
+            R.layout.class_backgroundimage4,
+            R.layout.class_backgroundimage5,
+            R.layout.class_backgroundimage6,
+            R.layout.class_backgroundimage7,
+            R.layout.class_backgroundimage8,
             // Add more background layouts as needed
     };
 

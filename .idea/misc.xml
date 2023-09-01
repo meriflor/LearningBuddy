@@ -7,7 +7,9 @@
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable-v24/icon_settings.xml" value="0.223" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable-v24/icon_students_list_white.xml" value="0.1245" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/backgroundhome1.xml" value="0.282" />
+        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/baseline_delete_24.xml" value="0.233" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/class_background_01.xml" value="0.282" />
+        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/class_backgroundopacity.xml" value="0.233" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/class_image_bckg1.xml" value="0.282" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.2895" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.2895" />
@@ -39,10 +41,10 @@
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/activity_teacher_learning_materials_create.xml" value="0.27239583333333334" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/activity_teacher_quizzes.xml" value="0.25" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage.xml" value="0.27239583333333334" />
-        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage1.xml" value="0.5" />
+        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage1.xml" value="0.18" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage2.xml" value="0.5" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage3.xml" value="0.27239583333333334" />
-        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage4.xml" value="0.27239583333333334" />
+        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage4.xml" value="0.33" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage5.xml" value="0.5" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage6.xml" value="0.27239583333333334" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/class_backgroundimage7.xml" value="0.5" />
@@ -57,6 +59,7 @@
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/item_post.xml" value="0.5" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/item_post_announcement.xml" value="0.5116279069767442" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/nav_header.xml" value="0.5" />
+        <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/pop_up_window_add_people.xml" value="0.21296296296296297" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/pop_up_window_create_class.xml" value="0.33" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/pop_up_window_create_question.xml" value="0.27239583333333334" />
         <entry key="..\:/Users/vcaes/AndroidStudioProjects/LearningBuddy001/app/src/main/res/layout/pop_up_window_create_quiz.xml" value="0.27239583333333334" />
