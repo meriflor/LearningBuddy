@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.QuestionsAdapter;
 import com.project.learningbuddy.firebase.QuizController;
+import com.project.learningbuddy.listener.CheckVisibility;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Questions;
 
@@ -82,22 +84,14 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab_quiz_create);
         settings = findViewById(R.id.quiz_settings);
         visibility = findViewById(R.id.quiz_visibility);
-        visibility.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(visibility.isChecked()){
-                    visibility.setText("Public");
-                    showToast("Quiz is ready");
-                    setVisibility(true);
-                }else{
-                    visibility.setText("Private");
-                    showToast("Quiz is set to private");
-                    setVisibility(false);
-                }
-            }
+
+//        Visibility of the quiz
+        visibility.setOnClickListener(view -> {
+            checkVisibility();
         });
         getVisibility();
 
+//        adding a question to the quiz
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,12 +99,110 @@ public class ViewQuizzesActivity extends AppCompatActivity {
             }
         });
 
+//        settigns of the quiz
         settings.setOnClickListener(v-> {
             viewSettings();
         });
 
+//        display the questions
         viewQuestions();
     }
+
+    private void getVisibility() {
+        FirebaseFirestore.getInstance()
+                .collection("classes")
+                .document(classID)
+                .collection("quizzes")
+                .document(quizID)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if(documentSnapshot.getBoolean("visibility")){
+                            visibility.setChecked(true);
+                            visibility.setText("Public");
+                        }else{
+                            visibility.setChecked(false);
+                            visibility.setText("Private");
+                        }
+                    }
+                });
+    }
+
+    private void checkVisibility() {
+        QuizController.checkVisibility(classID, quizID, new CheckVisibility() {
+            @Override
+            public void visibilityCheck(Boolean vPublic) {
+                if(vPublic){
+                    postQuiz(false);
+                    visibility.setChecked(false);
+                    visibility.setText("Private");
+                    showToast("Quiz is set to private");
+                }else{
+                    dialogOpen();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                showToast(e.getMessage());
+            }
+        });
+    }
+
+    private void editVisibility(boolean b) {
+        QuizController.editVisibility(classID, quizID, b, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("TAG", "visibility is set to " + b);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("TAG", "Something went wrong!");
+            }
+        });
+    }
+
+    private void dialogOpen() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(ViewQuizzesActivity.this).inflate(R.layout.pop_up_window_confirmation_visibility, null);
+        Button btnConfirm = view.findViewById(R.id.btn_confirm);
+        Button btnCancel = view.findViewById(R.id.btn_cancel);
+
+        AlertDialog alertDialog;
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+
+        btnConfirm.setOnClickListener(view1 -> {
+            visibility.setText("Public");
+            showToast("Quiz is ready");
+            postQuiz(true);
+            alertDialog.dismiss();
+            visibility.setChecked(true);
+
+        });btnCancel.setOnClickListener(view1 -> {
+            alertDialog.dismiss();
+            visibility.setText("Private");
+            visibility.setChecked(false);
+        });
+    }
+
+    private void postQuiz(boolean b) {
+        QuizController.publicQuiz(classID, quizID, b, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("TAG", "visibility is set to " + b);
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("TAG", "Something went wrong!");
+            }
+        });
+    }
+
 
     private void viewSettings() {
         View editQuizInfo = getLayoutInflater().inflate(R.layout.pop_up_window_edit_quiz, null);
@@ -171,36 +263,10 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         });
     }
 
-    private void setVisibility(boolean b) {
-        QuizController.quizVisibility(classID, quizID, b, new MyCompleteListener() {
-            @Override
-            public void onSuccess() {
-                Log.d("TAG", "Quiz visibility updated");
-            }
-
-            @Override
-            public void onFailure() {
-                Log.d("TAG", "Something went wrong!");
-            }
-        });
-    }
-
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
-    private void getVisibility() {
-        FirebaseFirestore.getInstance()
-                        .collection("classes").document(classID)
-                        .collection("quizzes").document(quizID)
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Boolean checkVisibility = documentSnapshot.getBoolean("visibility");
-                        visibility.setChecked(checkVisibility);
-                    }
-                });
-    }
 
     private void viewQuestions() {
         Query quesQuery = FirebaseFirestore.getInstance().collection("classes")

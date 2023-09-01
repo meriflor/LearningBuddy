@@ -1,6 +1,8 @@
 package com.project.learningbuddy.ui.teacher.learningmaterials;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +46,10 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Drawable navIcon = toolbar.getNavigationIcon();
+        if (navIcon != null) {
+            navIcon.setColorFilter(getResources().getColor(R.color.violet), PorterDuff.Mode.SRC_ATOP);
+        }
 
         Intent intent = getIntent();
         materialID = intent.getStringExtra(MATID);

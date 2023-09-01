@@ -45,6 +45,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                         "quizzes",
                         "quizTitle",
                         "quizCreator",
+                        model.getTimestamp(),
                         holder,
                         R.drawable.icon_pencil);
                 break;
@@ -54,6 +55,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                         "announcements",
                         "announcementTitle",
                         "announcementCreator",
+                        model.getTimestamp(),
                         holder,
                         R.drawable.icon_announcement);
                 break;
@@ -63,6 +65,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                         "learning_materials",
                         "materialTitle",
                         "materialCreator",
+                        model.getTimestamp(),
                         holder,
                         R.drawable.icon_attachment_3);
                 break;
@@ -75,7 +78,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
         }
     }
 
-    private void query(String classID, String getID, String collection, String postTitle, String postCreator, PostsAdapter.ClassesHolder holder, int drawable) {
+    private void query(String classID, String getID, String collection, String postTitle, String postCreator, Timestamp timestamp, PostsAdapter.ClassesHolder holder, int drawable) {
         DocumentReference query = FirebaseFirestore.getInstance().collection("classes")
                 .document(classID)
                 .collection(collection)
@@ -88,7 +91,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
 
                 String userID = documentSnapshot.getString(postCreator);
 
-                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+//                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
                 if(timestamp != null){
                     Date date = timestamp.toDate();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());

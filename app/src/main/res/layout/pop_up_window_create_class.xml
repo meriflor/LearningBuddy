@@ -34,6 +34,7 @@
         android:singleLine="true"
         android:textColorHint="#808080"
         android:textSize="16sp"
+        android:fontFamily="@font/quicksand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,6 +50,7 @@
         android:textColor="@color/black"
         android:textColorHint="#808080"
         android:textSize="16sp"
+        android:fontFamily="@font/quicksand"
         app:layout_constraintEnd_toEndOf="@id/class_name"
         app:layout_constraintStart_toStartOf="@id/class_name"
         app:layout_constraintTop_toBottomOf="@id/class_name" />
@@ -64,6 +66,7 @@
         android:textColor="@color/black"
         android:textColorHint="#808080"
         android:textSize="16sp"
+        android:fontFamily="@font/quicksand"
         app:layout_constraintLeft_toLeftOf="@id/class_subject_name"
         app:layout_constraintLeft_toRightOf="@id/class_subject_name"
         app:layout_constraintTop_toBottomOf="@id/class_subject_name" />
@@ -79,6 +82,7 @@
         android:textColor="@color/black"
         android:textColorHint="#808080"
         android:textSize="16sp"
+        android:fontFamily="@font/quicksand"
         app:layout_constraintLeft_toLeftOf="@id/class_year_level"
         app:layout_constraintRight_toRightOf="@id/class_year_level"
         app:layout_constraintTop_toBottomOf="@id/class_year_level" />
@@ -94,6 +98,8 @@
         android:text="Create"
         android:textColor="@color/white"
         android:textSize="15sp"
+        android:fontFamily="@font/quicksand"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@id/class_section"
         app:layout_constraintRight_toLeftOf="@id/class_btn_cancel"
         app:layout_constraintTop_toBottomOf="@id/class_section" />
@@ -109,6 +115,8 @@
         android:text="Cancel"
         android:textColor="@color/white"
         android:textSize="15sp"
+        android:fontFamily="@font/quicksand"
+        android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/class_btn_create"
         app:layout_constraintRight_toRightOf="@id/class_section"
         app:layout_constraintTop_toBottomOf="@id/class_section" />

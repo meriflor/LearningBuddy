@@ -10,9 +10,11 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.project.learningbuddy.listener.CheckVisibility;
 import com.project.learningbuddy.listener.MyCompleteListener;
 
 import java.util.HashMap;
@@ -47,39 +49,115 @@ public class QuizController {
                 });
     }
 
-    public static void publicQuiz(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
-        Map<String, Object> publicQuiz = new HashMap<>();
-        publicQuiz.put("visibility", visibility);
-        Map<String, Object> posts = new HashMap<>();
-        posts.put("classID", classID);
-        posts.put("getID", quizID);
-        posts.put("postType", "Quiz");
+//    public static void publicQuiz(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
+//        if(visibility){
+//            Map<String, Object> publicQuiz = new HashMap<>();
+//            publicQuiz.put("visibility", visibility);
+//            Map<String, Object> posts = new HashMap<>();
+//            posts.put("classID", classID);
+//            posts.put("getID", quizID);
+//            posts.put("postType", "Quiz");
+//            posts.put("timestamp", Timestamp.now());
+//
+//            DocumentReference classes = firebaseFirestore.collection("classes").document(classID);
+//
+//            classes.collection("quizzes")
+//                    .document(quizID)
+//                    .update(publicQuiz)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void unused) {
+//                            classes.collection("posts")
+//                                    .add(posts)
+//                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                        @Override
+//                                        public void onSuccess(DocumentReference documentReference) {
+//                                            myCompleteListener.onSuccess();
+//                                        }
+//                                    }).addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            myCompleteListener.onFailure();
+//                                        }
+//                                    });
+//                        }
+//                    });
+//        }else{
+//            firebaseFirestore.collection("classes")
+//                    .document(classID)
+//                    .collection("posts")
+//                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
+//                                if(documentSnapshot.getString("getID").equals(quizID)){
+//                                    firebaseFirestore.collection("classes")
+//                                            .document(classID)
+//                                            .collection("posts")
+//                                            .document(documentSnapshot.getId())
+//                                            .delete()
+//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                    if(task.isSuccessful()){
+//                                                        myCompleteListener.onSuccess();
+//                                                    }else{
+//                                                        myCompleteListener.onFailure();
+//                                                    }
+//                                                }
+//                                            });
+//                                }
+//                            }
+//                        }
+//                    });
+//        }
+//    }
 
-        DocumentReference classes = firebaseFirestore.collection("classes").document(classID);
+    public static void publicQuiz(String classID, String quizID, boolean visibility, MyCompleteListener myCompleteListener) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference quizRef = db.collection("classes").document(classID).collection("quizzes").document(quizID);
 
-        classes.collection("quizzes")
-                .document(quizID)
-                .update(publicQuiz)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        classes.collection("posts")
-                                .add(posts)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
+        // Update quiz visibility
+        quizRef
+                .update("visibility", visibility)
+                .addOnSuccessListener(unused -> {
+                    if (visibility) {
+                        // If making the quiz public, create a corresponding post
+                        Map<String, Object> post = new HashMap<>();
+                        post.put("classID", classID);
+                        post.put("getID", quizID);
+                        post.put("postType", "Quiz");
+                        post.put("timestamp", Timestamp.now());
+
+                        db.collection("classes")
+                                .document(classID)
+                                .collection("posts")
+                                .add(post)
+                                .addOnSuccessListener(documentReference -> myCompleteListener.onSuccess())
+                                .addOnFailureListener(e -> myCompleteListener.onFailure());
+                    } else {
+                        // If making the quiz private, delete the corresponding post
+                        db.collection("classes")
+                                .document(classID)
+                                .collection("posts")
+                                .whereEqualTo("getID", quizID)
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            document.getReference().delete();
+                                        }
                                         myCompleteListener.onSuccess();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+                                    } else {
                                         myCompleteListener.onFailure();
                                     }
                                 });
                     }
-                });
+                })
+                .addOnFailureListener(e -> myCompleteListener.onFailure());
     }
-    
+
+
     public static void deleteQuiz(String classID, String quizID, MyCompleteListener myCompleteListener){
         firebaseFirestore.collection("classes")
                 .document(classID)
@@ -137,7 +215,26 @@ public class QuizController {
 
     }
 
-    public static void quizVisibility(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
+    public static void checkVisibility(String classID, String quizID, CheckVisibility checkVisibility){
+        firebaseFirestore.collection("classes")
+                .document(classID)
+                .collection("quizzes")
+                .document(quizID)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        checkVisibility.visibilityCheck(documentSnapshot.getBoolean("visibility"));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        checkVisibility.onFailure(new Exception("Something went wrong!"));
+                    }
+                });
+    }
+
+    public static void editVisibility(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
         DocumentReference quizRef = FirebaseFirestore.getInstance()
                 .collection("classes")
                 .document(classID)

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/violet"
+        android:fontFamily="@font/quicksand"
+        android:textSize="20sp"
+        android:text="Confirmation"
+        android:textStyle="bold"
+        android:textColorHint="@color/textHint"
+        android:textColor="@color/violet"
+        android:singleLine="true"
+        android:layout_marginBottom="12dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/violet"
+        android:fontFamily="@font/quicksand"
+        android:textSize="16sp"
+        android:text="Are you sure you want to publicize this quiz?"
+        android:textColorHint="@color/textHint"
+        android:textColor="@color/violet"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/violet"
+        android:fontFamily="@font/quicksand"
+        android:textSize="12sp"
+        android:text="Once publicized, the quiz will be posted and displayed in the class, and students will be able to access it."
+        android:textColorHint="@color/textHint"
+        android:textColor="@color/violet"
+        android:layout_marginBottom="12dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/loginbtn"
+            android:fontFamily="@font/quicksand"
+            android:textStyle="bold"
+            android:text="Confirm"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/violet"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            />
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:text="Cancel"
+            android:fontFamily="@font/quicksand"
+            android:textStyle="bold"
+            android:background="@drawable/loginbtn"
+            android:backgroundTint="@color/violet"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+    </LinearLayout>
+
+</LinearLayout>

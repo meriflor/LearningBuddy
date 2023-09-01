@@ -24,25 +24,6 @@ public class AnnouncementController {
     public static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     public static String userID = firebaseAuth.getCurrentUser().getUid();
 
-
-//    public static void deleteAnnouncement(String announcementID, MyCompleteListener myCompleteListener){
-//        firebaseFirestore.collection("announcements")
-//                .document(announcementID)
-//                .delete()
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        myCompleteListener.onSuccess();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(Exception e) {
-//                        myCompleteListener.onFailure();
-//                    }
-//                });
-//    }
-
     public static void createAnnouncement(String classID, String announcementTitle, String announcementContent, MyCompleteListener myCompleteListener) {
         DocumentReference classRef = firebaseFirestore.collection("classes").document(classID);
 
