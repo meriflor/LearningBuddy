@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.firebase.AnnouncementController;
 import com.project.learningbuddy.listener.MyCompleteListener;
@@ -21,7 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class TeacherCreateAnnouncement extends AppCompatActivity {
 
     public static final String CLASSID = "Class Room Id";
-    public String classID;
+    public String classID, title, content, annID, classId;
 
     public ImageView btn_announcementPost;
     public EditText et_announcementTitle, et_announcementContent;
@@ -33,6 +32,10 @@ public class TeacherCreateAnnouncement extends AppCompatActivity {
 //        Intent (Passing of classID)
         Intent intent = getIntent();
         classID = intent.getStringExtra(CLASSID);
+        annID = intent.getStringExtra("id");
+        title = intent.getStringExtra("title");
+        content = intent.getStringExtra("content");
+        classId = intent.getStringExtra("classID");
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.student_classroomToolbar);
@@ -43,6 +46,11 @@ public class TeacherCreateAnnouncement extends AppCompatActivity {
         et_announcementTitle = findViewById(R.id.announcement_title);
         et_announcementContent = findViewById(R.id.announcement_content);
 
+        if(annID != null){
+            et_announcementTitle.setText(title);
+            et_announcementContent.setText(content);
+        }
+
         btn_announcementPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,17 +60,38 @@ public class TeacherCreateAnnouncement extends AppCompatActivity {
                     showToast("Please provide the necessary information.");
                 }else{
 //                    create announcement and post at the same time
-                    AnnouncementController.createAnnouncement(classID, announcementTitle, announcementContent, new MyCompleteListener() {
-                        @Override
-                        public void onSuccess() {
-                            showToast("Announcement Posted.");
-                            finish();
-                        }
-                        @Override
-                        public void onFailure() {
-                            showToast("Something went wrong!");
-                        }
-                    });
+                    if(annID != null){
+                        AnnouncementController.updateAnnouncement(classId, annID, announcementTitle, announcementContent, new MyCompleteListener() {
+                            @Override
+                            public void onSuccess() {
+                                showToast("Updated Successfully.");
+                                annID = "";
+                                Intent intent2 = new Intent(TeacherCreateAnnouncement.this, TeacherAnnouncementActivity.class);
+                                if(classID == null)
+                                    intent2.putExtra(TeacherAnnouncementActivity.CLASSID, classId);
+                                else
+                                    intent2.putExtra(TeacherAnnouncementActivity.CLASSID, classID);
+                                startActivity(intent2);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                showToast("Something went wrong!");
+                            }
+                        });
+                    }else{
+                        AnnouncementController.createAnnouncement(classID, announcementTitle, announcementContent, new MyCompleteListener() {
+                            @Override
+                            public void onSuccess() {
+                                showToast("Announcement Posted.");
+                                finish();
+                            }
+                            @Override
+                            public void onFailure() {
+                                showToast("Something went wrong!");
+                            }
+                        });
+                    }
                 }
             }
         });

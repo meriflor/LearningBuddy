@@ -62,7 +62,6 @@ public class TeacherListAdapter extends FirestoreRecyclerAdapter<UserClass, Teac
                         }
 
                         holder.name.setText(documentSnapshot.getString("fullName"));
-
                     }
                 });
     }
@@ -91,7 +90,7 @@ public class TeacherListAdapter extends FirestoreRecyclerAdapter<UserClass, Teac
             remove.setOnClickListener(v->{
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    ClassController.removeUser(classID, getSnapshots().getSnapshot(position).getString("userType"), getSnapshots().getSnapshot(position).getId(), new MyCompleteListener() {
+                    ClassController.removeUser(classID, getSnapshots().getSnapshot(position).getString("userType"), getSnapshots().getSnapshot(position).getString("userID"), getSnapshots().getSnapshot(position).getId(), new MyCompleteListener() {
                         @Override
                         public void onSuccess() {
                             Toast.makeText(itemView.getContext(), "User Removed", Toast.LENGTH_SHORT).show();

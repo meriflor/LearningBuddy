@@ -195,7 +195,7 @@ public class QuizController {
     public static void editQuiz(String classID, String quizID, String title, String desc, MyCompleteListener myCompleteListener){
         Map<String, Object> editQuiz = new HashMap<>();
         editQuiz.put("quizTitle", title);
-        editQuiz.put("quizDesc", desc);
+        editQuiz.put("quizContent", desc);
 
         firebaseFirestore.collection("classes")
                 .document(classID)

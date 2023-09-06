@@ -24,7 +24,7 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
     public static String ANNOUNCEMENTID = "Announcement ID";
     public static String ANNOUNCEMENTTITLE = "Announcement Title";
     public static String ANNOUNCEMENTCONTENT = "Announcement Content";
-    public ImageView deleteAnnouncement;
+    public ImageView deleteAnnouncement, editAnnouncement;
     public TextView announcementTitle, announcementContent;
     public String classID, announcementID, annTitle, annContent;
     @Override
@@ -51,6 +51,7 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
         announcementTitle = findViewById(R.id.announcement_title_tv);
         announcementContent = findViewById(R.id.announcement_content_tv);
         deleteAnnouncement = findViewById(R.id.announcement_delete);
+        editAnnouncement = findViewById(R.id.announcement_edit);
         announcementContent.setMovementMethod(new ScrollingMovementMethod());
 
         deleteAnnouncement.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +59,15 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
             public void onClick(View view) {
                 deleteAnnouncementData();
             }
+        });
+
+        editAnnouncement.setOnClickListener(view -> {
+            Intent intent1 = new Intent(ViewAnnouncementActivity.this, TeacherCreateAnnouncement.class);
+            intent1.putExtra("classID", classID);
+            intent1.putExtra("title", annTitle);
+            intent1.putExtra("id", announcementID);
+            intent1.putExtra("content", annContent);
+            startActivity(intent1);
         });
 
         viewAnnouncementData();

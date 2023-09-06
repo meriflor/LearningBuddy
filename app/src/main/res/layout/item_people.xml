@@ -22,7 +22,7 @@
             android:textColor="@color/violet"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:text="Meriflor N. Gonoy" />
+            android:text="" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:textColor="@color/violet"
                 android:textSize="12sp"
                 android:layout_weight="1"
-                android:text="Adviser"
+                android:text=""
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>

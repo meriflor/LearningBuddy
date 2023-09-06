@@ -224,11 +224,16 @@ public class ViewQuizzesActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String title = editTitle.getText().toString().trim();
                 String desc = editDesc.getText().toString().trim();
+
+                Log.d("TAG", title + " is the title and " + desc + " is the description or content.");
                 QuizController.editQuiz(classID, quizID, title, desc, new MyCompleteListener() {
                     @Override
                     public void onSuccess() {
                         showToast("Quiz updated successfully");
                         dialog.dismiss();
+                        Intent intent = new Intent(ViewQuizzesActivity.this, TeacherQuizzesActivity.class);
+                        intent.putExtra(TeacherQuizzesActivity.CLASSID, classID);
+                        startActivity(intent);
                     }
 
                     @Override

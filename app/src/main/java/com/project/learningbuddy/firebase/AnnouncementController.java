@@ -14,7 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.Announcements;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +26,11 @@ public class AnnouncementController {
     public static void createAnnouncement(String classID, String announcementTitle, String announcementContent, MyCompleteListener myCompleteListener) {
         DocumentReference classRef = firebaseFirestore.collection("classes").document(classID);
 
-        Announcements announcementData = new Announcements();
-        announcementData.setAnnouncementTitle(announcementTitle);
-        announcementData.setAnnouncementContent(announcementContent);
-        announcementData.setAnnouncementCreator(userID);
-        announcementData.setTimestamp(Timestamp.now());
+        Map<String, Object> announcementData = new HashMap<>();
+        announcementData.put("announcementTitle", announcementTitle);
+        announcementData.put("announcementContent", announcementContent);
+        announcementData.put("announcementCreator", userID);
+        announcementData.put("timestamp", Timestamp.now());
 
         // Add the announcement as a subcollection under the specific class document
         classRef.collection("announcements").add(announcementData)
@@ -68,6 +67,43 @@ public class AnnouncementController {
                     }
                 });
     }
+
+    public static void updateAnnouncement(String classID, String announcementID, String announcementTitle, String announcementContent, MyCompleteListener myCompleteListener) {
+        Map<String, Object> announcement = new HashMap<>();
+        announcement.put("announcementTitle", announcementTitle);
+        announcement.put("announcementContent", announcementContent);
+
+        firebaseFirestore.collection("classes")
+                .document(classID)
+                .collection("announcements")
+                .document(announcementID)
+                .update(announcement)
+                .addOnSuccessListener(unused -> {
+                    Map<String, Object> post = new HashMap<>();
+                    post.put("timestamp", Timestamp.now());
+
+                    firebaseFirestore.collection("classes")
+                            .document(classID)
+                            .collection("posts")
+                            .whereEqualTo("getID", announcementID)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                        firebaseFirestore.collection("classes")
+                                                .document(classID)
+                                                .collection("posts")
+                                                .document(documentSnapshot.getId())
+                                                .update(post);
+                                        myCompleteListener.onSuccess();
+                                    }
+                                }else{
+                                    myCompleteListener.onFailure();
+                                }
+                            });
+                });
+    }
+
 
     public static void deleteAnnouncement(String classID, String announcementID, MyCompleteListener myCompleteListener) {
             firebaseFirestore.collection("classes")

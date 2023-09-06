@@ -89,12 +89,11 @@ public class UserController {
                                 }
                             }
 
-
-                            if(existEmail)
+                            if(existEmail){
                                 existListener.onFailure(new Exception("This user already joined in this class."));
-                            else
+                            }else{
                                 existListener.onExist(true);
-
+                            }
                         }
                     }
                 });

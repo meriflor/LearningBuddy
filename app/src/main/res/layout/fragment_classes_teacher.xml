@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ced6e0"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
+            android:backgroundTint="@android:color/transparent"
+            android:paddingBottom="10dp"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

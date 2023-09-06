@@ -18,16 +18,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.adapter.ClassesAdapter;
+import com.project.learningbuddy.adapter.ClassListTeacherAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.Classes;
+import com.project.learningbuddy.model.TeacherClass;
 
 public class FragmentClassesTeacher extends Fragment {
 
@@ -39,7 +38,7 @@ public class FragmentClassesTeacher extends Fragment {
     private FloatingActionButton fab;
     private FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private ClassesAdapter adapter;
+    private ClassListTeacherAdapter adapter;
     private View view;
     String userID = firebaseAuth.getCurrentUser().getUid();
 
@@ -61,50 +60,60 @@ public class FragmentClassesTeacher extends Fragment {
         return view;
     }
     private void getClassList(){
-        CollectionReference classRef = firebaseFirestore.collection("classes");
-        Query classQuery = classRef
-                .whereEqualTo("ownerTeacherID", userID)
-                .orderBy("timestamp", Query.Direction.DESCENDING);
-
-        FirestoreRecyclerOptions<Classes> options = new FirestoreRecyclerOptions.Builder<Classes>().setQuery(classQuery, Classes.class).build();
-        adapter = new ClassesAdapter(options);
+        Query classQuery = firebaseFirestore
+                .collection("teacher_class")
+                .whereEqualTo("userID", userID)
+                .orderBy("className", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<TeacherClass> options = new FirestoreRecyclerOptions.Builder<TeacherClass>()
+                .setQuery(classQuery, TeacherClass.class)
+                .build();
+        adapter = new ClassListTeacherAdapter(options);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new ClassesAdapter.OnItemClickListener() {
+
+        adapter.setOnItemClickListener(new ClassListTeacherAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String classID = documentSnapshot.getId().toString();
-                String className = documentSnapshot.getString("className");
-                String classYearLevel = documentSnapshot.getString("classYearLevel");
-                String classSection = documentSnapshot.getString("classSection");
-                String subjectName = documentSnapshot.getString("subjectName");
-                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-                int intValue = backgroundLayout.intValue();
-                Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
-                intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
-                intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
-                intent.putExtra(TeacherClassroomActivity.CLASSSUBJECT,subjectName);
-                intent.putExtra(TeacherClassroomActivity.YEARLEVEL, classYearLevel);
-                intent.putExtra(TeacherClassroomActivity.SECTION, classSection);
-                intent.putExtra("bgLayout", intValue);
+                String classID = documentSnapshot.getString("classID");
+
                 firebaseFirestore
                         .collection("classes")
                         .document(classID)
-                                .collection("students")
-                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                int students = queryDocumentSnapshots.size();
-                                intent.putExtra("studentCount", students);
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                String className = documentSnapshot.getString("className");
+                                String classYearLevel = documentSnapshot.getString("classYearLevel");
+                                String classSection = documentSnapshot.getString("classSection");
+                                String subjectName = documentSnapshot.getString("subjectName");
+                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+                                int intValue = backgroundLayout.intValue();
+                                Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
+                                intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
+                                intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
+                                intent.putExtra(TeacherClassroomActivity.CLASSSUBJECT,subjectName);
+                                intent.putExtra(TeacherClassroomActivity.YEARLEVEL, classYearLevel);
+                                intent.putExtra(TeacherClassroomActivity.SECTION, classSection);
+                                intent.putExtra("bgLayout", intValue);
+                                firebaseFirestore
+                                        .collection("classes")
+                                        .document(classID)
+                                        .collection("students")
+                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                int students = queryDocumentSnapshots.size();
+                                                intent.putExtra("studentCount", students);
 
-                                startActivity(intent);
+                                                startActivity(intent);
+                                            }
+                                        });
                             }
                         });
-
             }
         });
     }

@@ -12,7 +12,8 @@
         android:padding="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/tv_class_name"

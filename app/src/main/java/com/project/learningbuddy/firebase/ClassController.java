@@ -1,7 +1,11 @@
 package com.project.learningbuddy.firebase;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,6 +43,7 @@ public class ClassController {
     public static void createClass(String className, String subjectName, String classYearLevel, String classSection, String ownerTeacherID, MyCompleteListener myCompleteListener){
         int randomIndex = new Random().nextInt(backgroundLayouts.length);
         int backgroundLayoutResId = backgroundLayouts[randomIndex];
+
         DocumentReference classRef = firebaseFirestore
                 .collection("classes")
                 .document();
@@ -53,25 +58,44 @@ public class ClassController {
         classes.put("backgroundLayout", backgroundLayoutResId);
         classes.put("timestamp", Timestamp.now());
 
+        DocumentReference teachClass = firebaseFirestore
+                .collection("teacher_class")
+                .document();
+
+        Map<String, Object> teach = new HashMap<>();
+        teach.put("classID", classRef.getId());
+        teach.put("userID", ownerTeacherID);
+        teach.put("title", "Adviser");
+        teach.put("className", className);
+
         classRef.set(classes).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Map<String, Object> teachers = new HashMap<>();
-                teachers.put("userID", ownerTeacherID);
-                teachers.put("userType", "Teacher");
-                teachers.put("title", "Adviser");
-                teachers.put("timestamp", Timestamp.now());
                 firebaseFirestore
-                        .collection("classes")
-                        .document(classRef.getId())
-                        .collection("teachers")
-                        .add(teachers)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        myCompleteListener.onSuccess(); // Pass the created Classes instance
-                                    }
-                                });
+                        .collection("users")
+                        .document(ownerTeacherID)
+                        .get()
+                        .addOnSuccessListener(documentReference->{
+                            Map<String, Object> teachers = new HashMap<>();
+                            teachers.put("userID", ownerTeacherID);
+                            teachers.put("userType", "Teacher");
+                            teachers.put("title", "Adviser");
+                            teachers.put("email", documentReference.getString("email"));
+                            teachers.put("timestamp", Timestamp.now());
+                            firebaseFirestore
+                                    .collection("classes")
+                                    .document(classRef.getId())
+                                    .collection("teachers")
+                                    .add(teachers)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            myCompleteListener.onSuccess(); // Pass the created Classes instance
+                                            teachClass.set(teach);
+                                        }
+                                    });
+                        });
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -193,6 +217,23 @@ public class ClassController {
                         myCompleteListener.onFailure();
                     }
                 });
+        if(className!=null){
+            Map<String, Object> teach = new HashMap<>();
+            teach.put("className", className);
+            firebaseFirestore.collection("teacher_class")
+                    .whereEqualTo("classID", classID)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                                firebaseFirestore.collection("teacher_class")
+                                        .document(documentSnapshot.getId())
+                                        .update(teach);
+                            }
+                        }
+                    });
+        }
     }
 
     public static void deleteClass(String classID, MyCompleteListener myCompleteListener){
@@ -283,7 +324,7 @@ public class ClassController {
                 });
     }
 
-    public static void addUserToClass(String email, String classID, String userType, MyCompleteListener myCompleteListener){
+    public static void addUserToClass(String email, String classID, String className, String userType, MyCompleteListener myCompleteListener){
         firebaseFirestore.collection("users")
                 .whereEqualTo("email", email)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -309,23 +350,73 @@ public class ClassController {
                                     .document(classID)
                                     .collection(collection)
                                     .add(user)
-                                    .addOnSuccessListener(documentReference -> myCompleteListener.onSuccess())
+                                    .addOnSuccessListener(documentReference ->
+                                            myCompleteListener.onSuccess()
+                                    )
                                     .addOnFailureListener(e -> myCompleteListener.onFailure());
+
+                            if(userType.equals("Teacher")){
+                                Map<String, Object> teach = new HashMap<>();
+                                teach.put("className", className);
+                                teach.put("userID", userID);
+                                teach.put("classID", classID);
+                                teach.put("title", "Co-Adviser");
+                                firebaseFirestore.collection("teacher_class")
+                                        .add(teach);
+                            }else{
+                                Map<String, Object> stud = new HashMap<>();
+                                stud.put("className", className);
+                                stud.put("userID", userID);
+                                stud.put("classID", classID);
+                                stud.put("title", "Student");
+                                firebaseFirestore.collection("student_class")
+                                        .add(stud);
+                            }
                         }
                     }
                 });
     }
 
-    public static void removeUser(String classID, String userType, String userClassID, MyCompleteListener myCompleteListener){
+    public static void removeUser(String classID, String userType, String userID, String userClassID, MyCompleteListener myCompleteListener){
+        String collectionGroup, collection;
+        if(userType.equals("Teacher")){
+            collectionGroup = "teachers";
+            collection = "teacher_class";
+        }else{
+            collectionGroup = "students";
+            collection = "student_class";
+        }
+
         firebaseFirestore
                 .collection("classes")
                 .document(classID)
-                .collection(userType)
+                .collection(collectionGroup)
                 .document(userClassID)
                 .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        Log.d("TAG", userClassID + " and userTYpe "+userType);
                         myCompleteListener.onSuccess();
+                        firebaseFirestore
+                                .collection(collection)
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                                            String docUserID = documentSnapshot.getString("userID");
+                                            String docClassID = documentSnapshot.getString("classID");
+                                            if(docUserID.equals(userID) && docClassID.equals(classID)){
+                                                String docteachClassID = documentSnapshot.getId();
+                                                firebaseFirestore
+                                                        .collection(collection)
+                                                        .document(docteachClassID)
+                                                        .delete();
+                                            }
+                                        }
+                                    }
+                                });
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

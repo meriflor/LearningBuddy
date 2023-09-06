@@ -70,7 +70,7 @@ public class QuestionsAdapter extends FirestoreRecyclerAdapter<Questions, Questi
 
     public class ClassesHolder extends RecyclerView.ViewHolder {
         TextView question, answer;
-        ImageView edit, delete;
+        ImageView delete;
         LinearLayout layoutOptions;
         public ClassesHolder(@NonNull View itemView) {
             super(itemView);

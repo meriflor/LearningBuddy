@@ -41,7 +41,6 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     public static final String YEARLEVEL = "Class Year Level";
     public static final String SECTION = "Class Section";
     public static final String CLASSSUBJECT = "Subject Name";
-//    public static final String BGLAYOUT = "Background Layout";
     public String className, classID, classYearLevel, classSection, subjectName;
     public int backgroundLayout, studentCount;
 
@@ -248,6 +247,7 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     public void openPeopleList(View view) {
         Intent intent = new Intent(TeacherClassroomActivity.this, TeacherClassroomPeople.class);
         intent.putExtra(TeacherClassroomPeople.CLASSID, classID);
+        intent.putExtra(TeacherClassroomPeople.CLASSNAME, className);
         startActivity(intent);
     }
 }

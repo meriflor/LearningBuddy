@@ -46,7 +46,7 @@
             android:id="@+id/question_correct_answer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="asdfasd asdf asdfadf asrt h ku"
+            android:text=""
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
             android:textColor="@color/violet"
             android:fontFamily="@font/quicksand"
@@ -59,16 +59,12 @@
             android:orientation="horizontal"
             android:gravity="end">
             <ImageView
-                android:id="@+id/question_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_edit"/>
-            <ImageView
                 android:id="@+id/question_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/icon_delete_3"
-                android:layout_marginStart="25dp"/>
+                android:padding="6dp"
+                android:layout_marginStart="20dp"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -35,7 +35,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class TeacherClassroomPeople extends AppCompatActivity {
 
     public static final String CLASSID = "Class ID";
-    public String classID;
+    public static final String CLASSNAME = "Class Name";
+    public String classID, className;
     public Button addTeacher, addStudent;
     public RecyclerView listTeacher, listStudent;
 
@@ -61,6 +62,7 @@ public class TeacherClassroomPeople extends AppCompatActivity {
 //        intent
         Intent intent = getIntent();
         classID = intent.getStringExtra(CLASSID);
+        className = intent.getStringExtra(CLASSNAME);
 
 //        Initialization
         addTeacher = findViewById(R.id.btn_add_teacher);
@@ -144,7 +146,7 @@ public class TeacherClassroomPeople extends AppCompatActivity {
             public void onExist(Boolean exist) {
 
                 if(exist) {
-                    ClassController.addUserToClass(email, classID, userType, new MyCompleteListener() {
+                    ClassController.addUserToClass(email, classID, className, userType, new MyCompleteListener() {
                         @Override
                         public void onSuccess() {
                             showToast("User added successfully");
