@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -54,6 +55,7 @@ public class QuizzesAdapter extends FirestoreRecyclerAdapter<Quizzes, QuizzesAda
         String formattedDate = dateFormat.format(date);
 
         holder.quizTimestamp.setText(formattedDate);
+        holder.cardView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -71,6 +73,7 @@ public class QuizzesAdapter extends FirestoreRecyclerAdapter<Quizzes, QuizzesAda
     class ClassesHolder extends RecyclerView.ViewHolder {
         ImageView quizIcon;
         TextView quizTitle, quizCreatorName, quizTimestamp;
+        CardView cardView;
         public ClassesHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
@@ -78,6 +81,7 @@ public class QuizzesAdapter extends FirestoreRecyclerAdapter<Quizzes, QuizzesAda
             quizTitle = itemView.findViewById(R.id.post_title);
             quizCreatorName = itemView.findViewById(R.id.post_user);
             quizTimestamp = itemView.findViewById(R.id.post_date);
+            cardView = itemView.findViewById(R.id.post_cardView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

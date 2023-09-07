@@ -1,18 +1,14 @@
 package com.project.learningbuddy.firebase;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.listener.CheckVisibility;
 import com.project.learningbuddy.listener.MyCompleteListener;
@@ -159,33 +155,40 @@ public class QuizController {
 
 
     public static void deleteQuiz(String classID, String quizID, MyCompleteListener myCompleteListener){
-        firebaseFirestore.collection("classes")
+        firebaseFirestore
+                .collection("classes")
                 .document(classID)
                 .collection("quizzes")
                 .document(quizID)
-                .delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        CollectionReference postsRef = firebaseFirestore.collection("classes")
-                                .document(classID).collection("posts");
-
-                        Query query = postsRef.whereEqualTo("getID", quizID);
-
-                        query.get().addOnCompleteListener(task -> {
-                            if(task.isSuccessful()){
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    // Delete the document
-                                    postsRef.document(document.getId()).delete();
-                                }
-                            }else{
-                                Log.d("TAG", "Error getting documents: ", task.getException());
-                            }
-                        });
+                .collection("questions")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                            documentSnapshot.getReference().delete();
+                        }
+                        firebaseFirestore
+                                .collection("classes")
+                                .document(classID)
+                                .collection("quizzes")
+                                .document(quizID)
+                                .delete();
+                        firebaseFirestore
+                                .collection("classes")
+                                .document(classID)
+                                .collection("posts")
+                                .get()
+                                .addOnCompleteListener(tasks -> {
+                                    if(tasks.isSuccessful()){
+                                        for(QueryDocumentSnapshot documentSnapshot:tasks.getResult()){
+                                            if(documentSnapshot.getString("getID").equals(quizID)){
+                                                documentSnapshot.getReference().delete();
+                                            }
+                                        }
+                                    }
+                                });
                         myCompleteListener.onSuccess();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    }else{
                         myCompleteListener.onFailure();
                     }
                 });

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ import com.project.learningbuddy.model.UploadFileModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TeacherCreateLearningMaterials extends AppCompatActivity {
 
@@ -114,59 +116,155 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
 
     }
 
+//    private void uploadFiles(View view) {
+//        if (fileList.size() != 0) {
+//            final ProgressDialog progressDialog = new ProgressDialog(this);
+//            progressDialog.setMessage("Uploaded 0/"+fileList.size());
+//            progressDialog.setCanceledOnTouchOutside(false); //Remove this line if you want your user to be able to cancel upload
+//            progressDialog.setCancelable(false);    //Remove this line if you want your user to be able to cancel upload
+//            progressDialog.show();
+//            final StorageReference storageReference = storage.getReference();
+//            for (int i = 0; i < fileList.size(); i++) {
+//                final int finalI = i;
+//                final UploadFileModel fileModel = fileList.get(i);
+//                final String imageName = fileModel.getImageName(); // Original name
+//                final String filePath = "learningMaterials/" + userID + "/" + imageName; // File path
+//
+//                storageReference.child(filePath)
+//                    .putFile(fileModel.getImageURI())
+//                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onComplete(Task<UploadTask.TaskSnapshot> task) {
+//                        if (task.isSuccessful()){
+//                            storageReference.child(filePath)
+//                                .getDownloadUrl()
+//                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                                @Override
+//                                public void onComplete(Task<Uri> task) {
+//                                    counter++;
+//                                    progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
+//                                    if (task.isSuccessful()){
+//                                        Uri fileUri = task.getResult();
+//                                        saveFileDetailsToFirestore(imageName, filePath, fileUri);
+//                                        savedFileUri.add(task.getResult().toString());
+//                                    }else{
+//                                        storageReference.child(filePath)
+//                                                .delete();
+//                                        Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't save "+imageName, Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    if (counter == fileList.size()){
+//                                        saveImageDataToFirestore(progressDialog);
+//                                    }
+//                                }
+//                            });
+//                        }else{
+//                            progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
+//                            counter++;
+//                            Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't upload "+fileList.get(finalI).getImageName(), Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                });
+//            }
+//        } else {
+//            coreHelper.createSnackBar(view, "Please add some files first.", "", null, Snackbar.LENGTH_SHORT);
+//        }
+//    }
+
     private void uploadFiles(View view) {
-        if (fileList.size() != 0) {
+        final String title = matTitle.getText().toString().trim();
+        final String content = matContent.getText().toString().trim();
+        if (fileList.size() != 0 && title != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Uploaded 0/"+fileList.size());
             progressDialog.setCanceledOnTouchOutside(false); //Remove this line if you want your user to be able to cancel upload
             progressDialog.setCancelable(false);    //Remove this line if you want your user to be able to cancel upload
             progressDialog.show();
             final StorageReference storageReference = storage.getReference();
-            for (int i = 0; i < fileList.size(); i++) {
-                final int finalI = i;
-                storageReference.child("learningMaterials/" + userID + "/" )
-                        .child(fileList.get(i).getImageName())
-                        .putFile(fileList.get(i).getImageURI())
-                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()){
-                            storageReference.child("learningMaterials/" + userID + "/" )
-                                    .child(fileList.get(finalI).getImageName())
-                                    .getDownloadUrl()
-                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                @Override
-                                public void onComplete(Task<Uri> task) {
-                                    counter++;
-                                    progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
-                                    if (task.isSuccessful()){
-                                        savedFileUri.add(task.getResult().toString());
-                                    }else{
-                                        storageReference.child("learningMaterials/" + userID + "/" )
-                                                .child(fileList.get(finalI).getImageName())
-                                                .delete();
-                                        Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't save "+fileList.get(finalI).getImageName(), Toast.LENGTH_SHORT).show();
+            final String materialID = generateLearningMaterialID();
+            LearningMaterialsController.createLearningMaterial(classID, materialID, title, content, new MyCompleteListener() {
+                @Override
+                public void onSuccess() {
+                    for (int i = 0; i < fileList.size(); i++) {
+                        final int finalI = i;
+                        final UploadFileModel fileModel = fileList.get(i);
+                        final String imageName = fileModel.getImageName(); // Original name
+                        final String filePath = "learningMaterials/" + userID + "/" + materialID + "/" + imageName; // File path
+
+                        storageReference.child(filePath)
+                                .putFile(fileModel.getImageURI())
+                                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onComplete(Task<UploadTask.TaskSnapshot> task) {
+                                        if (task.isSuccessful()){
+                                            storageReference.child(filePath)
+                                                    .getDownloadUrl()
+                                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                        @Override
+                                                        public void onComplete(Task<Uri> task) {
+                                                            counter++;
+                                                            progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
+                                                            if (task.isSuccessful()){
+                                                                Uri fileUri = task.getResult();
+                                                                saveFileDetailsToFirestore(classID, materialID, imageName, filePath, fileUri);
+                                                                savedFileUri.add(task.getResult().toString());
+                                                            }else{
+                                                                storageReference.child(filePath)
+                                                                        .delete();
+                                                                showToast("Couldn't save "+imageName);
+                                                            }
+                                                            if (counter == fileList.size()){
+                                                                progressDialog.dismiss();
+                                                                fileToPost(classID, materialID);
+                                                                coreHelper.createAlert("Success", "File(s) uploaded and saved successfully!", "OK", "", null, null, null);
+                                                                finish();
+                                                            }
+                                                        }
+                                                    });
+                                        }else{
+                                            progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
+                                            counter++;
+                                            showToast("Couldn't upload " + imageName);
+                                        }
                                     }
-                                    if (counter == fileList.size()){
-                                        saveImageDataToFirestore(progressDialog);
-                                    }
-                                }
-                            });
-                        }else{
-                            progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
-                            counter++;
-                            Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't upload "+fileList.get(finalI).getImageName(), Toast.LENGTH_SHORT).show();
-                        }
+                                });
                     }
-                });
-            }
+                }
+                @Override
+                public void onFailure() {
+                    progressDialog.dismiss();
+                    coreHelper.createAlert("Error", "Failed to create the parent document for learning materials.", "OK", "", null, null, null);
+                }
+            });
         } else {
-            coreHelper.createSnackBar(view, "Please add some images first.", "", null, Snackbar.LENGTH_SHORT);
+            coreHelper.createSnackBar(view, "Please add some files first and enter a post title.", "", null, Snackbar.LENGTH_SHORT);
         }
     }
 
+    private String generateLearningMaterialID() {
+        return UUID.randomUUID().toString();
+    }
+
+    private void fileToPost(String classID, String materialID){
+        LearningMaterialsController.postLearningMaterial(classID, materialID);
+    }
+
+    private void saveFileDetailsToFirestore(String classID, String materialID, String originalName, String filePath, Uri fileUri) {
+        // Assuming you have classID, title, and content defined elsewhere
+        LearningMaterialsController.addFileToLearningMaterial(classID, materialID, originalName, filePath, fileUri, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("TAG", originalName + " Uploaded");
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("TAG", originalName + " Upload failed");
+            }
+        });
+    }
+
     private void saveImageDataToFirestore(final ProgressDialog progressDialog) {
-        progressDialog.setMessage("Saving uploaded images...");
+        progressDialog.setMessage("Saving uploaded file(s)...");
 
         String title = matTitle.getText().toString().trim();
         String content = matContent.getText().toString().trim();
@@ -242,5 +340,9 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showToast(String text){
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }

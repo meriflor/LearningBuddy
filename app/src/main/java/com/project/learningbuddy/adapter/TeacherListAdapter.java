@@ -46,15 +46,17 @@ public class TeacherListAdapter extends FirestoreRecyclerAdapter<UserClass, Teac
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (model.getTitle() != null) {
                             if (model.getTitle().equals("Adviser")) {
-                                holder.crown.setVisibility(View.VISIBLE);
+                                holder.crown.setImageResource(R.drawable.icon_crown);
                                 holder.title.setText(model.getTitle());
                                 holder.remove.setVisibility(View.GONE);
                             } else if (model.getTitle() .equals("Co-Adviser")) {
                                 holder.crown.setVisibility(View.GONE);
                                 holder.title.setText(model.getTitle());
+                                holder.remove.setVisibility(View.VISIBLE);
                             } else {
                                 holder.crown.setVisibility(View.GONE);
                                 holder.title.setVisibility(View.GONE);
+                                holder.remove.setVisibility(View.VISIBLE);
                             }
                         } else {
                             holder.crown.setVisibility(View.GONE);

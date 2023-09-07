@@ -1,17 +1,11 @@
 package com.project.learningbuddy.firebase;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.listener.MyCompleteListener;
 
@@ -106,34 +100,29 @@ public class AnnouncementController {
 
 
     public static void deleteAnnouncement(String classID, String announcementID, MyCompleteListener myCompleteListener) {
-            firebaseFirestore.collection("classes")
-                    .document(classID)
-                    .collection("announcements")
-                    .document(announcementID)
-                    .delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        myCompleteListener.onSuccess();
-                        CollectionReference postsRef = firebaseFirestore.collection("classes")
-                                .document(classID).collection("posts");
-
-                        Query query = postsRef.whereEqualTo("getID", announcementID);
-
-                        query.get().addOnCompleteListener(task -> {
-                            if(task.isSuccessful()){
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    // Delete the document
-                                    postsRef.document(document.getId()).delete();
-                                }
-                            }else{
-                                Log.d("TAG", "Error getting documents: ", task.getException());
+        firebaseFirestore
+                .collection("classes")
+                .document(classID)
+                .collection("posts")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        for (QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                            if(documentSnapshot.getString("getID").equals(announcementID)){
+                                firebaseFirestore.collection("classes")
+                                        .document(classID)
+                                        .collection("posts")
+                                        .document(documentSnapshot.getId()).delete();
+                                firebaseFirestore
+                                        .collection("classes")
+                                        .document(classID)
+                                        .collection("announcements")
+                                        .document(announcementID)
+                                        .delete();
+                                myCompleteListener.onSuccess();
                             }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                        }
+                    }else{
                         myCompleteListener.onFailure();
                     }
                 });

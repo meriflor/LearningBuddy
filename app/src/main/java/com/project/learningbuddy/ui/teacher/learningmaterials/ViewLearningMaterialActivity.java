@@ -6,11 +6,14 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.learningbuddy.R;
+import com.project.learningbuddy.firebase.LearningMaterialsController;
+import com.project.learningbuddy.listener.MyCompleteListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +40,10 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
     public static final String MATID = "Materials ID";
     public static final String CLASSID = "Class ID";
     public String materialID, classID;
+    public TextView matTitle, matContent, matTimestamp;
+    public LinearLayout filesContainer;
+
+    public ImageView delete;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,8 +64,55 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         materialID = intent.getStringExtra(MATID);
         classID = intent.getStringExtra(CLASSID);
 
-        viewLearningMaterials();
+        matTitle = findViewById(R.id.mat_title);
+        matContent = findViewById(R.id.mat_content);
+        matTimestamp = findViewById(R.id.mat_timestamp);
+        filesContainer = findViewById(R.id.files_container);
+        delete = findViewById(R.id.materials_delete);
 
+        delete.setOnClickListener(view -> {
+            deleteMaterials();
+        });
+
+//        viewLearningMaterials();
+        viewMaterials();
+
+    }
+
+    private void viewMaterials() {
+        FirebaseFirestore.getInstance()
+                .collection("classes")
+                .document(classID)
+                .collection("learning_materials")
+                .document(materialID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                    Date date = timestamp.toDate();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                    String formattedDate = dateFormat.format(date);
+
+                    matTitle.setText(documentSnapshot.getString("materialTitle"));
+                    matContent.setText(documentSnapshot.getString("materialContent"));
+                    matTimestamp.setText(formattedDate);
+
+
+                });
+    }
+
+    private void deleteMaterials() {
+        LearningMaterialsController.deleteMaterials(classID, materialID, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                showToast("Deleted successfully");
+                finish();
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("TAG", "Something went wrong!");
+            }
+        });
     }
 
     private void viewLearningMaterials() {
@@ -74,12 +130,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
                             String description = documentSnapshot.getString("materialContent");
                             Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
                             List<String> attachedFiles = (List<String>) documentSnapshot.get("files");
-
-                            // Find views within the layout
-                            TextView matTitle = findViewById(R.id.mat_title);
-                            TextView matContent = findViewById(R.id.mat_content);
-                            TextView matTimestamp = findViewById(R.id.mat_timestamp);
-                            LinearLayout filesContainer = findViewById(R.id.files_container);
 
                             Date date = timestamp.toDate();
 
@@ -169,5 +219,19 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         }
 
         return "unknown";
+    }
+
+    public void showToast(String text){
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@org.checkerframework.checker.nullness.qual.NonNull MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

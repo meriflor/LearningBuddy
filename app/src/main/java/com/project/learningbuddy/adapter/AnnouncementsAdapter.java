@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -54,6 +55,7 @@ public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements
         String formattedDate = dateFormat.format(date);
 
         holder.announcementTimestamp.setText(formattedDate);
+        holder.cardView.setVisibility(View.VISIBLE);
     }
 
     @NonNull
@@ -74,6 +76,7 @@ public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements
     public class ClassesHolder extends RecyclerView.ViewHolder {
         ImageView announcementIcon;
         TextView announcementTitle, announcementCreator, announcementTimestamp;
+        CardView cardView;
 
         public ClassesHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -82,6 +85,7 @@ public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements
             announcementTitle = itemView.findViewById(R.id.post_title);
             announcementCreator = itemView.findViewById(R.id.post_user);
             announcementTimestamp = itemView.findViewById(R.id.post_date);
+            cardView = itemView.findViewById(R.id.post_cardView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -31,7 +31,6 @@
                 android:id="@+id/class_crown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_crown"
                 android:layout_gravity="center"/>
             <TextView
                 android:id="@+id/user_title"
@@ -62,6 +61,7 @@
         android:layout_gravity="center|end"
         android:layout_marginVertical="5dp"
         android:layout_marginEnd="5dp"
+        android:visibility="gone"
         />
 
 </LinearLayout>

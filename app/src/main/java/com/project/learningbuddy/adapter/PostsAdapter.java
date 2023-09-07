@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -105,6 +106,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                                     holder.postTitle.setText(title);
                                     holder.postIcon.setBackgroundResource(drawable);
                                     holder.postTimestamp.setText(formattedDate);
+                                    holder.cardView.setVisibility(View.VISIBLE);
                                 }
                             });
                 }
@@ -130,6 +132,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
     public class ClassesHolder extends RecyclerView.ViewHolder {
         ImageView postIcon;
         TextView postTitle, postCreator, postTimestamp;
+        CardView cardView;
 
         public ClassesHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
@@ -138,6 +141,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
             postTitle = itemView.findViewById(R.id.post_title);
             postCreator = itemView.findViewById(R.id.post_user);
             postTimestamp = itemView.findViewById(R.id.post_date);
+            cardView = itemView.findViewById(R.id.post_cardView);
 
             Log.d("TAG", "Are you seeing this?"
             );

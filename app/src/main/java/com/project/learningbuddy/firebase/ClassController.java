@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -239,89 +240,72 @@ public class ClassController {
     public static void deleteClass(String classID, MyCompleteListener myCompleteListener){
         firebaseFirestore.collection("classes")
                 .document(classID)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        firebaseFirestore.collection("student_class")
-                                .whereEqualTo("classID", classID)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            documentSnapshot.getReference().delete();
-                                        }
-                                        myCompleteListener.onSuccess();
-                                    }
-                                });
-                        firebaseFirestore.collection("announcements")
-                                .whereEqualTo("classID", classID)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            documentSnapshot.getReference().delete();
-                                        }
-                                        myCompleteListener.onSuccess();
-                                    }
-                                });
-                        firebaseFirestore.collection("quizzes")
-                                .whereEqualTo("classID", classID)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                                        firebaseFirestore.collection("student_class")
-//                                                .whereEqualTo("classID", classID)
-//                                                .get()
-//                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                                                    @Override
-//                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                                                            documentSnapshot.getReference().delete();
-//                                                        }
-//                                                        myCompleteListener.onSuccess();
-//                                                    }
-//                                                });
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            documentSnapshot.getReference().delete();
-                                        }
-                                        myCompleteListener.onSuccess();
-                                    }
-                                });
-                        firebaseFirestore.collection("posts")
-                                .whereEqualTo("classID", classID)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            documentSnapshot.getReference().delete();
-                                        }
-                                        myCompleteListener.onSuccess();
-                                    }
-                                });
-                        firebaseFirestore.collection("learning_materials")
-                                .whereEqualTo("classID", classID)
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            documentSnapshot.getReference().delete();
-                                        }
-                                        myCompleteListener.onSuccess();
-                                    }
-                                });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
+                .delete().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        deleteCollection(classID, "quizzes", "questions");
+                        deleteCollection(classID, "quizzes", "scores");
+                        deleteCollection(classID, "learning_materials", "files");
+
+                        deleteCollection(classID, "learning_materials", "");
+                        deleteCollection(classID, "announcements", "");
+                        deleteCollection(classID, "quizzes", "");
+                        deleteCollection(classID, "posts", "");
+                        deleteCollection(classID, "teachers", "");
+                        deleteCollection(classID, "students", "");
+
+                        deleteCollection(classID, "teacher_class", "");
+                        deleteCollection(classID, "student_class", "");
+
+                        myCompleteListener.onSuccess();
+                    }else{
                         myCompleteListener.onFailure();
                     }
                 });
+    }
+
+    public static void deleteCollection(String classID, String collection, String subCollection){
+        if(subCollection.isEmpty()){
+            if(collection.equals("teacher_class") || collection.equals("student_class")){
+                CollectionReference collectionReference = firebaseFirestore.collection(collection);
+                collectionReference.whereEqualTo("classID", classID)
+                    .get().addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                                collectionReference.document(documentSnapshot.getId()).delete();
+                            }
+                        }
+                    });
+            }else{
+                CollectionReference collectionReference = firebaseFirestore.collection("classes")
+                        .document(classID).collection(collection);
+                collectionReference.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                            collectionReference.document(documentSnapshot.getId()).delete();
+                        }
+                    }
+                });
+            }
+        }else{
+            CollectionReference collectionReference = firebaseFirestore.collection("classes")
+                    .document(classID)
+                    .collection(collection);
+//            if(subCollection.equals("questions")){
+                collectionReference.get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                            CollectionReference quesRef = collectionReference.document(documentSnapshot.getId())
+                                .collection(subCollection);
+                            quesRef.get().addOnCompleteListener(task1 -> {
+                                for(QueryDocumentSnapshot documentSnapshot1:task1.getResult()){
+                                    quesRef.document(documentSnapshot1.getId()).delete();
+                                }
+                            });
+                        }
+                    }
+                });
+//            }
+        }
     }
 
     public static void addUserToClass(String email, String classID, String className, String userType, MyCompleteListener myCompleteListener){

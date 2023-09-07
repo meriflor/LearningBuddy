@@ -20,12 +20,11 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/quicksand"
         android:hint="Name"
-
         android:paddingTop="8dp"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textStyle="bold" />
 
@@ -33,11 +32,10 @@
         android:id="@+id/user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/quicksand"
         android:hint="email@gmail.com"
-
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textColorHint="@color/white" />
 
 
