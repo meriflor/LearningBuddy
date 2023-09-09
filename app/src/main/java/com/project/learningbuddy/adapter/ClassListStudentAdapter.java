@@ -15,29 +15,23 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.model.ClassList;
 
-public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList, ClassListTeacherAdapter.ClassesHolder> {
+public class ClassListStudentAdapter extends FirestoreRecyclerAdapter<ClassList, ClassListStudentAdapter.ClassesHolder> {
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
-    public ClassListTeacherAdapter(@NonNull FirestoreRecyclerOptions<ClassList> options) {
+    public ClassListStudentAdapter(@NonNull FirestoreRecyclerOptions<ClassList> options) {
         super(options);
     }
 
-    private OnItemClickListener mListener;
-    public interface OnItemClickListener{
-        void onItemClick(DocumentSnapshot documentSnapshot, int position);
-    }
-    public void setOnItemClickListener(OnItemClickListener listener){mListener = listener;};
-
     @Override
-    protected void onBindViewHolder(@NonNull ClassListTeacherAdapter.ClassesHolder holder, int position, @NonNull ClassList model) {
+    protected void onBindViewHolder(@NonNull ClassListStudentAdapter.ClassesHolder holder, int position, @NonNull ClassList model) {
         FirebaseFirestore.getInstance()
                 .collection("classes")
                 .document(model.getClassID())
@@ -46,7 +40,6 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
                         int intValue = backgroundLayout.intValue();
-                        Log.d("TAG", "background: "+intValue);
                         String classYearLevel = documentSnapshot.getString("classYearLevel");
                         String classSection = documentSnapshot.getString("classSection");
 
@@ -61,42 +54,46 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                         FirebaseFirestore.getInstance()
                                 .collection("classes")
                                 .document(model.getClassID())
-                                .collection("students")
-                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        int students = queryDocumentSnapshots.size();
-
-                                        holder.cardView.addView(customLayout);
-                                        tvclassName.setText(model.getClassName());
-                                        tvclassYearLevel.setText(classYearLevel);
-                                        tvclassSection.setText(classSection);
-                                        extra.setText(students + " students(s)");
+                                .collection("teachers")
+                                .get().addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        for(QueryDocumentSnapshot documentSnapshot1:task.getResult()){
+                                            if(documentSnapshot1.getString("title").equals("Adviser")){
+                                                String teacherName = documentSnapshot1.getString("fullName");
+                                                holder.cardView.addView(customLayout);
+                                                tvclassName.setText(model.getClassName());
+                                                tvclassYearLevel.setText(classYearLevel);
+                                                tvclassSection.setText(classSection);
+                                                extra.setText(teacherName);
+                                            }
+                                        }
                                     }
                                 });
+
                     }
                 });
     }
+    private OnItemClickListener mListener;
+    public interface OnItemClickListener{
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener){mListener = listener;};
+
 
     @NonNull
     @Override
-    public ClassListTeacherAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ClassListStudentAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_class, parent, false);
         return new ClassesHolder(view, mListener);
     }
 
     public class ClassesHolder extends RecyclerView.ViewHolder {
-//        TextView className, classSection, classYearLevel, studentCount;
         CardView cardView;
         public ClassesHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
 
-//            className = itemView.findViewById(R.id.tv_class_name);
-//            classYearLevel = itemView.findViewById(R.id.tv_class_year_level);
-//            classSection = itemView.findViewById(R.id.tv_class_section);
             cardView = itemView.findViewById(R.id.class_cardView);
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

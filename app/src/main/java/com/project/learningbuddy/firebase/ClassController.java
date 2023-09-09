@@ -10,16 +10,13 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.JoinClasses;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,6 +78,7 @@ public class ClassController {
                             teachers.put("userID", ownerTeacherID);
                             teachers.put("userType", "Teacher");
                             teachers.put("title", "Adviser");
+                            teachers.put("fullName", documentReference.getString("fullName"));
                             teachers.put("email", documentReference.getString("email"));
                             teachers.put("timestamp", Timestamp.now());
                             firebaseFirestore
@@ -125,75 +123,55 @@ public class ClassController {
     }
 
 //    Checking if you have already joined the class
-    public static void checkClassJoinedExist(String email, ExistListener existListener){
-
+    public static void checkStudentClassExist(ExistListener existListener){
+        firebaseFirestore.collection("student_class")
+                .whereEqualTo("userID", firebaseAuth.getCurrentUser().getUid())
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        if(!task.getResult().isEmpty()){
+                            existListener.onExist(false);
+                        }else{
+                            existListener.onFailure( new Exception("Something wrong on getting info"));
+                        }
+                    }else{
+                        existListener.onFailure( new Exception("Something wrong on getting info"));
+                    }
+                });
     }
 
     public static void joinClass(String classID, String studentID, MyCompleteListener myCompleteListener){
-        Map<String, Object> studentData = new HashMap<>();
-        studentData.put("studentID", studentID);
-        studentData.put("timestamp", FieldValue.serverTimestamp()); // Timestamp when the student joined
-
-        FirebaseFirestore.getInstance()
-                .collection("classes")
-                .document(classID)
-                .collection("students")
+        firebaseFirestore.collection("users")
                 .document(studentID)
-                .set(studentData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        myCompleteListener.onSuccess();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        myCompleteListener.onFailure();
-                    }
-                });
-
-        firebaseFirestore.collection("classes").document(classID)
                 .get().addOnSuccessListener(documentSnapshot -> {
-                    if(documentSnapshot.exists()){
-                        String className = documentSnapshot.getString("className");
-                        String classSubject = documentSnapshot.getString("classSubject");
-                        String classYearLevel = documentSnapshot.getString("classYearLevel");
-                        String classSection = documentSnapshot.getString("classSection");
-
-                        // Create a UserClasses object
-                        JoinClasses joinClasses = new JoinClasses(
-                                classID,
-                                studentID,
-                                className,
-                                classSubject,
-                                classYearLevel,
-                                classSection,
-                                Timestamp.now()
-                        );
-
-                        firebaseFirestore.collection("student_class")
-                                .add(joinClasses)
-                                .addOnSuccessListener(documentReference -> {
-                                    if(myCompleteListener != null){
-                                        myCompleteListener.onSuccess();
-                                    }
-                                }).addOnFailureListener(e -> {
-                                    if(myCompleteListener != null){
-                                        myCompleteListener.onFailure();
-                                    }
-                                });
-                    }else{
-                        if(myCompleteListener != null){
-                            myCompleteListener.onFailure();
-                        }
-                    }
-
-
-                }).addOnFailureListener(e -> {
-                    if (myCompleteListener != null) {
-                        myCompleteListener.onFailure();
-                    }
+                    String email = documentSnapshot.getString("email");
+                    Map<String, Object> studentData = new HashMap<>();
+                    studentData.put("email", email);
+                    studentData.put("userID", studentID);
+                    studentData.put("userType", "Student");
+                    studentData.put("timestamp", Timestamp.now());
+                    firebaseFirestore.collection("classes")
+                            .document(classID)
+                            .collection("students")
+                            .add(studentData);
+                    firebaseFirestore.collection("classes")
+                            .document(classID)
+                            .get().addOnCompleteListener(task -> {
+                                DocumentSnapshot documentSnapshot1 = task.getResult();
+                                String className = documentSnapshot1.getString("className");
+                                Map<String, Object> studClass = new HashMap<>();
+                                studClass.put("classID", classID);
+                                studClass.put("className", className);
+                                studClass.put("userID", studentID);
+                                studClass.put("timestamp", Timestamp.now());
+                                firebaseFirestore.collection("student_class")
+                                        .document().set(studClass).addOnCompleteListener(task1 -> {
+                                            if(task1.isSuccessful()){
+                                                myCompleteListener.onSuccess();
+                                            }else{
+                                                myCompleteListener.onFailure();
+                                            }
+                                        });
+                            });
                 });
     }
 
@@ -324,6 +302,7 @@ public class ClassController {
                             if (userType.equals("Teacher")) {
                                 user.put("userType", "Teacher");
                                 user.put("title", "Co-Adviser");
+                                user.put("fullName", documentSnapshot.getString("fullName"));
                             } else if (userType.equals("Student")) {
                                 user.put("userType", "Student");
                             }

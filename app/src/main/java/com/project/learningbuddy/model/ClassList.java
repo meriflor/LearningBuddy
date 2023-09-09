@@ -1,17 +1,17 @@
 package com.project.learningbuddy.model;
 
-public class TeacherClass {
+public class ClassList {
 
-    private String classID, className, teacherID, title;
+    private String classID, className, userID, title;
 
-    public TeacherClass(){
+    public ClassList(){
 
     }
 
-    public TeacherClass(String classID, String className, String teacherID, String title) {
+    public ClassList(String classID, String className, String userID, String title) {
         this.classID = classID;
         this.className = className;
-        this.teacherID = teacherID;
+        this.userID = userID;
         this.title = title;
     }
 
@@ -23,8 +23,8 @@ public class TeacherClass {
         return className;
     }
 
-    public String getTeacherID() {
-        return teacherID;
+    public String getUserID() {
+        return userID;
     }
 
     public String getTitle() {

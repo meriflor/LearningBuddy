@@ -16,7 +16,7 @@
             android:id="@+id/student_classroomToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#0f0f0f"
+            android:background="@color/violet"
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -37,7 +37,9 @@
                     android:layout_marginEnd="20dp"
                     app:layout_constraintRight_toLeftOf="@id/announcement_delete"
                     app:layout_constraintTop_toTopOf="@id/announcement_delete"
-                    app:layout_constraintBottom_toBottomOf="@id/announcement_delete"/>
+                    app:layout_constraintBottom_toBottomOf="@id/announcement_delete"
+                    android:visibility="gone"
+                    />
 
                 <ImageView
                     android:id="@+id/announcement_delete"
@@ -48,7 +50,8 @@
                     android:padding="6dp"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="gone"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -57,16 +60,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/quicksand"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/violet"
             android:layout_margin="20dp"/>
         <TextView
             android:id="@+id/announcement_content_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/quicksand"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:scrollbars="vertical"
+            android:textColor="@color/violet"
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"/>
     </LinearLayout>

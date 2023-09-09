@@ -1,5 +1,6 @@
 package com.project.learningbuddy.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class TeacherListAdapter extends FirestoreRecyclerAdapter<UserClass, Teac
 
     @Override
     protected void onBindViewHolder(@NonNull TeacherListAdapter.ClassesHolder holder, int position, @NonNull UserClass model) {
+        Log.d("TAGGGG", "gone here???");
         FirebaseFirestore
                 .getInstance()
                 .collection("users")

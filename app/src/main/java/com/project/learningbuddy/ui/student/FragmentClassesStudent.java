@@ -3,6 +3,7 @@ package com.project.learningbuddy.ui.student;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +16,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.R;
-import com.project.learningbuddy.adapter.JoinClassesAdapter;
+import com.project.learningbuddy.adapter.ClassListStudentAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.JoinClasses;
+import com.project.learningbuddy.model.ClassList;
 
 public class FragmentClassesStudent extends Fragment {
 
@@ -35,7 +37,7 @@ public class FragmentClassesStudent extends Fragment {
 
     private RecyclerView recyclerView;
     private View view;
-    private JoinClassesAdapter adapter;
+    private ClassListStudentAdapter adapter;
 
     private FloatingActionButton fab;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -62,35 +64,67 @@ public class FragmentClassesStudent extends Fragment {
     }
 
     private void getClassList() {
-        CollectionReference classref = firebaseFirestore.collection("student_class");
-        Query classQuery = classref
-                .whereEqualTo("studentID", userID)
+        Query classQuery = firebaseFirestore.collection("student_class")
+                .whereEqualTo("userID", userID)
                 .orderBy("className", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<JoinClasses> options = new FirestoreRecyclerOptions.Builder<JoinClasses>()
-                .setQuery(classQuery, JoinClasses.class)
+        FirestoreRecyclerOptions<ClassList> options = new FirestoreRecyclerOptions.Builder<ClassList>()
+                .setQuery(classQuery, ClassList.class)
                 .build();
-        adapter = new JoinClassesAdapter(options);
+        adapter = new ClassListStudentAdapter(options);
 
-        RecyclerView recyclerView = view.findViewById(R.id.student_classListView);
+        recyclerView = view.findViewById(R.id.student_classListView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-
-        adapter.setOnItemClickListener(new JoinClassesAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new ClassListStudentAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String classID = documentSnapshot.getId();
-                String className = documentSnapshot.getString("className");
-                String classYearLevel = documentSnapshot.getString("classYearLevel");
-                String classSection = documentSnapshot.getString("classSection");
-                Intent intent = new Intent(getContext(), StudentClassroomActivity.class);
-                intent.putExtra(StudentClassroomActivity.CLASSID, classID);
-                intent.putExtra(StudentClassroomActivity.CLASSNAME, className);
-                intent.putExtra(StudentClassroomActivity.YEARLEVEL, classYearLevel);
-                intent.putExtra(StudentClassroomActivity.SECTION, classSection);
-                startActivity(intent);
+                String classID = documentSnapshot.getString("classID");
+                Log.d("TAG", classID);
+
+                firebaseFirestore
+                        .collection("classes")
+                        .document(classID)
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                String className = documentSnapshot.getString("className");
+                                String classYearLevel = documentSnapshot.getString("classYearLevel");
+                                String classSection = documentSnapshot.getString("classSection");
+                                String subjectName = documentSnapshot.getString("subjectName");
+                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+                                int intValue = backgroundLayout.intValue();
+                                Intent intent = new Intent(getContext(), StudentClassroomActivity.class);
+                                intent.putExtra(StudentClassroomActivity.CLASSNAME,className);
+                                intent.putExtra(StudentClassroomActivity.CLASSID,classID);
+                                intent.putExtra(StudentClassroomActivity.CLASSSUBJECT,subjectName);
+                                intent.putExtra(StudentClassroomActivity.YEARLEVEL, classYearLevel);
+                                intent.putExtra(StudentClassroomActivity.SECTION, classSection);
+                                intent.putExtra("bgLayout", intValue);
+                                firebaseFirestore
+                                        .collection("classes")
+                                        .document(classID)
+                                        .collection("teachers")
+                                        .get().addOnCompleteListener(task -> {
+                                            if(task.isSuccessful()){
+                                                for(QueryDocumentSnapshot documentSnapshot1:task.getResult()){
+                                                    if(documentSnapshot1.getString("title").equals("Adviser")){
+                                                        String teacherName = documentSnapshot1.getString("fullName");
+
+                                                        Log.d("TAG", className+ classSection+ subjectName+ teacherName);
+                                                        intent.putExtra("teacherName", teacherName);
+
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            }
+                                        });
+                            }
+                        }).addOnFailureListener(e -> {
+                            Log.d("TAG", e.getMessage());
+                        });
             }
         });
     }
@@ -129,25 +163,42 @@ public class FragmentClassesStudent extends Fragment {
                     ClassController.checkClassExist(accessCode, new ExistListener() {
                         @Override
                         public void onExist(Boolean exist) {
-//                            check if the student has already joined the class
-                            ClassController.joinClass(accessCode, userID, new MyCompleteListener() {
-                                @Override
-                                public void onSuccess() {
-                                    showToast("Classes joined!");
-                                }
+                            if(exist){
+                                ClassController.checkStudentClassExist(new ExistListener() {
+                                    @Override
+                                    public void onExist(Boolean exist) {
+                                        if(!exist){
+                                            ClassController.joinClass(accessCode, userID, new MyCompleteListener() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    showToast("Class joined!");
+                                                    dialog.dismiss();
+                                                }
 
-                                @Override
-                                public void onFailure() {
-                                    showToast("Something went wrong!");
-                                }
-                            });
+                                                @Override
+                                                public void onFailure() {
+                                                    showToast("Something went wrong!");
+                                                }
+                                            });
+                                        }else{
+                                            showToast("Already joined the class!");
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Log.d("TAG", e.getMessage());
+                                    }
+                                });
+                            }else{
+                                showToast("Class not exist!");
+                            }
                         }
+
                         @Override
                         public void onFailure(Exception e) {
-                            showToast("Classes doesn't exist!");
+                            Log.d("TAG", e.getMessage());
                         }
                     });
-                    dialog.dismiss();
                 }
             }
         });
@@ -158,20 +209,4 @@ public class FragmentClassesStudent extends Fragment {
     public void showToast(String text){
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
-
-//    private void checkStudentClassExist(String classID) {
-//        FirebaseAuth firebaseAuth;
-//        firebaseAuth = FirebaseAuth.getInstance();
-//        String studentID = firebaseAuth.getCurrentUser().getUid();
-//        DbQuery.checkStudentClassExist(classID, new MyCompleteListener() {
-//            @Override
-//            public void onSuccess() {
-//                Log.d(TAG, "This class already exist in your list");
-//            }
-//            @Override
-//            public void onFailure() {
-//                joinClassSuccessfully(classID, studentID);
-//            }
-//        });
-//    }
 }

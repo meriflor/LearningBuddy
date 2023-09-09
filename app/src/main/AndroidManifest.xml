@@ -64,6 +64,15 @@
         <activity
             android:name=".ui.student.StudentClassroomActivity"
             android:exported="true"/>
+        <activity
+            android:name=".ui.student.StudentClassroomPeople"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.student.ViewAnnouncementActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.student.ViewQuizzesActivity"
+            android:exported="true"/>
 
         <activity
             android:name=".Splashcreen"

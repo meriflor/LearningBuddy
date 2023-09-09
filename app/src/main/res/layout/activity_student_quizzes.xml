@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_violet"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/student_quizTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/quicksand"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:padding="20dp"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="8"
+        android:shadowColor="@color/white"
+        android:textAlignment="center"
+        android:text="First Quiz"/>
+
+    <TextView
+        android:id="@+id/student_quizContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="140dp"
+        android:fontFamily="@font/quicksand"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:paddingVertical="6dp"
+        android:paddingHorizontal="28dp"
+        android:scrollbars="vertical"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="8"
+        android:shadowColor="@color/white"
+        android:textAlignment="center"
+        android:text="This will be recorded on your first grading semester,, be sure to answer all the questions. Good luck and bless your all"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/quicksand"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:padding="20dp"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="8"
+        android:shadowColor="@color/white"
+        android:textAlignment="center"
+        android:text="Reminder: You only have 1 attempt"/>
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/white"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="8"
+        android:shadowColor="@color/violet"
+        android:textColor="@color/violet"
+        android:fontFamily="@font/quicksand"
+        android:textStyle="bold"
+        android:elevation="10dp"
+        android:outlineAmbientShadowColor="@color/white"/>
+
+</LinearLayout>

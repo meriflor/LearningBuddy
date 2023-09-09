@@ -26,7 +26,7 @@ import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.ClassListTeacherAdapter;
 import com.project.learningbuddy.firebase.ClassController;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.TeacherClass;
+import com.project.learningbuddy.model.ClassList;
 
 public class FragmentClassesTeacher extends Fragment {
 
@@ -64,8 +64,8 @@ public class FragmentClassesTeacher extends Fragment {
                 .collection("teacher_class")
                 .whereEqualTo("userID", userID)
                 .orderBy("className", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<TeacherClass> options = new FirestoreRecyclerOptions.Builder<TeacherClass>()
-                .setQuery(classQuery, TeacherClass.class)
+        FirestoreRecyclerOptions<ClassList> options = new FirestoreRecyclerOptions.Builder<ClassList>()
+                .setQuery(classQuery, ClassList.class)
                 .build();
         adapter = new ClassListTeacherAdapter(options);
 

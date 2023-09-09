@@ -14,9 +14,7 @@
             android:id="@+id/student_classListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ced6e0"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp" />
+            android:background="#ced6e0"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/student_fab"
