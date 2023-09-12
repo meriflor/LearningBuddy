@@ -14,6 +14,7 @@ import com.project.learningbuddy.listener.CheckVisibility;
 import com.project.learningbuddy.listener.MyCompleteListener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuizController {
@@ -44,70 +45,6 @@ public class QuizController {
                     }
                 });
     }
-
-//    public static void publicQuiz(String classID, String quizID, Boolean visibility, MyCompleteListener myCompleteListener){
-//        if(visibility){
-//            Map<String, Object> publicQuiz = new HashMap<>();
-//            publicQuiz.put("visibility", visibility);
-//            Map<String, Object> posts = new HashMap<>();
-//            posts.put("classID", classID);
-//            posts.put("getID", quizID);
-//            posts.put("postType", "Quiz");
-//            posts.put("timestamp", Timestamp.now());
-//
-//            DocumentReference classes = firebaseFirestore.collection("classes").document(classID);
-//
-//            classes.collection("quizzes")
-//                    .document(quizID)
-//                    .update(publicQuiz)
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            classes.collection("posts")
-//                                    .add(posts)
-//                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                                        @Override
-//                                        public void onSuccess(DocumentReference documentReference) {
-//                                            myCompleteListener.onSuccess();
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            myCompleteListener.onFailure();
-//                                        }
-//                                    });
-//                        }
-//                    });
-//        }else{
-//            firebaseFirestore.collection("classes")
-//                    .document(classID)
-//                    .collection("posts")
-//                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
-//                                if(documentSnapshot.getString("getID").equals(quizID)){
-//                                    firebaseFirestore.collection("classes")
-//                                            .document(classID)
-//                                            .collection("posts")
-//                                            .document(documentSnapshot.getId())
-//                                            .delete()
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if(task.isSuccessful()){
-//                                                        myCompleteListener.onSuccess();
-//                                                    }else{
-//                                                        myCompleteListener.onFailure();
-//                                                    }
-//                                                }
-//                                            });
-//                                }
-//                            }
-//                        }
-//                    });
-//        }
-//    }
 
     public static void publicQuiz(String classID, String quizID, boolean visibility, MyCompleteListener myCompleteListener) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

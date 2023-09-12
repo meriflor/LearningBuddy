@@ -14,7 +14,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.project.learningbuddy.R;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 
@@ -25,22 +24,23 @@ import java.util.Random;
 public class ClassController {
     public static FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    public static String userID = firebaseAuth.getCurrentUser().getUid();
 
-    public static int[] backgroundLayouts = {
-            R.layout.class_backgroundimage1,
-            R.layout.class_backgroundimage2,
-            R.layout.class_backgroundimage3,
-            R.layout.class_backgroundimage4,
-            R.layout.class_backgroundimage5,
-            R.layout.class_backgroundimage6,
-            R.layout.class_backgroundimage7,
-            R.layout.class_backgroundimage8,
+    public static String[] backgroundLayouts = {
+            "class_backgroundimage1",
+            "class_backgroundimage2",
+            "class_backgroundimage3",
+            "class_backgroundimage4",
+            "class_backgroundimage5",
+            "class_backgroundimage6",
+            "class_backgroundimage7",
+            "class_backgroundimage8",
             // Add more background layouts as needed
     };
 
     public static void createClass(String className, String subjectName, String classYearLevel, String classSection, String ownerTeacherID, MyCompleteListener myCompleteListener){
         int randomIndex = new Random().nextInt(backgroundLayouts.length);
-        int backgroundLayoutResId = backgroundLayouts[randomIndex];
+        String backgroundLayout = backgroundLayouts[randomIndex];
 
         DocumentReference classRef = firebaseFirestore
                 .collection("classes")
@@ -53,7 +53,7 @@ public class ClassController {
         classes.put("classSection", classSection);
         classes.put("accessCode", classRef.getId());
         classes.put("ownerTeacherID", ownerTeacherID);
-        classes.put("backgroundLayout", backgroundLayoutResId);
+        classes.put("backgroundLayout", backgroundLayout);
         classes.put("timestamp", Timestamp.now());
 
         DocumentReference teachClass = firebaseFirestore
@@ -123,18 +123,20 @@ public class ClassController {
     }
 
 //    Checking if you have already joined the class
-    public static void checkStudentClassExist(ExistListener existListener){
+    public static void checkStudentClassExist(String classID, ExistListener existListener){
         firebaseFirestore.collection("student_class")
                 .whereEqualTo("userID", firebaseAuth.getCurrentUser().getUid())
+                .whereEqualTo("classID", classID)
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        if(!task.getResult().isEmpty()){
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot.isEmpty()) {
                             existListener.onExist(false);
-                        }else{
-                            existListener.onFailure( new Exception("Something wrong on getting info"));
+                        } else {
+                            existListener.onExist(true);
                         }
                     }else{
-                        existListener.onFailure( new Exception("Something wrong on getting info"));
+                        existListener.onFailure(new Exception("There's something wrong fetching documents!"));
                     }
                 });
     }
@@ -385,6 +387,43 @@ public class ClassController {
                     @Override
                     public void onFailure(@androidx.annotation.NonNull Exception e) {
                         myCompleteListener.onFailure();
+                    }
+                });
+    }
+
+    public static void leaveClass(String classID, MyCompleteListener myCompleteListener){
+        CollectionReference studRef = firebaseFirestore
+                .collection("classes")
+                .document(classID)
+                .collection("students");
+        CollectionReference studClassRef = firebaseFirestore
+                .collection("student_class");
+
+        studRef.get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                            if(documentSnapshot.getString("userID").equals(userID)){
+                                studRef.document(documentSnapshot.getId()).delete();
+                            }
+                        }
+
+                        studClassRef.get()
+                                .addOnCompleteListener(task1 -> {
+                                    if(task.isSuccessful()){
+                                        for(QueryDocumentSnapshot documentSnapshot: task1.getResult()){
+                                            if(documentSnapshot.getString("userID").equals(userID)
+                                            && documentSnapshot.getString("classID").equals(classID)){
+                                                studClassRef.document(documentSnapshot.getId()).delete();
+                                            }
+                                        }
+                                        myCompleteListener.onSuccess();
+                                    }else{
+                                        myCompleteListener.onFailure();
+                                    }
+                                });
+                    }else{
+                        Log.d("TAG", "Something wrong with fetching the userID");
                     }
                 });
     }

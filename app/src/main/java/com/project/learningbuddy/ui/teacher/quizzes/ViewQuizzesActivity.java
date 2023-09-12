@@ -276,7 +276,8 @@ public class ViewQuizzesActivity extends AppCompatActivity {
     private void viewQuestions() {
         Query quesQuery = FirebaseFirestore.getInstance().collection("classes")
                 .document(classID).collection("quizzes")
-                .document(quizID).collection("questions");
+                .document(quizID).collection("questions")
+                .orderBy("timestamp", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<Questions> options = new FirestoreRecyclerOptions.Builder<Questions>()
                 .setQuery(quesQuery, Questions.class)

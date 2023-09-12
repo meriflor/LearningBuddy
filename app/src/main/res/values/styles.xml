@@ -4,4 +4,126 @@
         <item name="android:background">#f3f3f3</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+<!--    header styles    -->
+    <style name="text_header_violet">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/violet</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="text_header_white">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--normal style-->
+    <style name="text_normal_violet">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/violet</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="text_normal_white">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--    body styles    -->
+    <style name="text_body_violet">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/violet</item>
+    </style>
+    <style name="text_body_white">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+
+    <!--    ==================body styles==================    -->
+    <style name="text_quicksand">
+        <item name="android:fontFamily">@font/quicksand</item>
+    </style>
+    <style name="text_quicksand.body">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="text_quicksand.body2">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="text_quicksand.body3">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="text_quicksand.body4">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="text_quicksand.header">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="text_quicksand.header1">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+    <style name="text_quicksand.header2">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="text_quicksand_bold">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+    </style>
+    <style name="text_quicksand_bold.body">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="text_quicksand_bold.body2">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="text_quicksand_bold.body3">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="text_quicksand_bold.body4">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="text_quicksand_bold.header">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="text_quicksand_bold.header1">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+    <style name="text_quicksand_bold.header2">
+        <item name="android:fontFamily">@font/quicksand_bold</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+<!--    ======================================================   -->
+
+
+    <style name="radio_button_style_violet">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:background">@drawable/radio_button_style</item>
+        <item name="android:button">@android:color/transparent</item>
+        <item name="android:textColor">@drawable/radio_text_style</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:elevation">2dp</item>
+    </style>
 </resources>

@@ -1,6 +1,5 @@
 package com.project.learningbuddy.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,14 +43,18 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-                        int intValue = backgroundLayout.intValue();
-                        Log.d("TAG", "background: "+intValue);
+//                        Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+//                        int intValue = backgroundLayout.intValue();
+
+                        String backgroundLayout = documentSnapshot.getString("backgroundLayout");
+                        int layoutResourceId = holder.itemView.getContext().getResources()
+                                .getIdentifier(backgroundLayout, "layout", holder.itemView.getContext().getPackageName());
+
                         String classYearLevel = documentSnapshot.getString("classYearLevel");
                         String classSection = documentSnapshot.getString("classSection");
 
                         View customLayout = LayoutInflater.from(holder.itemView.getContext())
-                                .inflate(intValue, holder.cardView, false);
+                                .inflate(layoutResourceId, holder.cardView, false);
 
                         TextView tvclassName = customLayout.findViewById(R.id.tv_class_name);
                         TextView tvclassYearLevel = customLayout.findViewById(R.id.tv_class_year_level);

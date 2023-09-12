@@ -20,8 +20,7 @@
         android:shadowDy="0"
         android:shadowRadius="8"
         android:shadowColor="@color/white"
-        android:textAlignment="center"
-        android:text="First Quiz"/>
+        android:textAlignment="center"/>
 
     <TextView
         android:id="@+id/student_quizContent"
@@ -38,8 +37,7 @@
         android:shadowDy="0"
         android:shadowRadius="8"
         android:shadowColor="@color/white"
-        android:textAlignment="center"
-        android:text="This will be recorded on your first grading semester,, be sure to answer all the questions. Good luck and bless your all"/>
+        android:textAlignment="center"/>
 
     <TextView
         android:layout_width="match_parent"

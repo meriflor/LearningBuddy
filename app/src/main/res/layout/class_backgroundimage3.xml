@@ -23,7 +23,6 @@
             android:ellipsize="end"
             android:fontFamily="@font/quicksand"
             android:singleLine="true"
-            android:text="Class"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="#f3f3f3"
             android:textSize="20sp"

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,6 +27,7 @@ public class QuestionsController {
         questions.put("question", question);
         questions.put("options", options);
         questions.put("answer", answer);
+        questions.put("timestamp", Timestamp.now());
         quesRef.add(questions)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

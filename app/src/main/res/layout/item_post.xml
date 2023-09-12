@@ -10,7 +10,8 @@
     app:cardElevation="5dp"
     android:layout_marginHorizontal="10dp"
     android:id="@+id/post_cardView"
-    android:visibility="gone">
+    android:visibility="gone"
+    android:layout_marginBottom="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"

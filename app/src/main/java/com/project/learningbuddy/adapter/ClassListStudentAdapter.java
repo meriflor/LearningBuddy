@@ -38,13 +38,16 @@ public class ClassListStudentAdapter extends FirestoreRecyclerAdapter<ClassList,
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-                        int intValue = backgroundLayout.intValue();
+//                        Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+//                        int intValue = backgroundLayout.intValue();
+                        String backgroundLayout = documentSnapshot.getString("backgroundLayout");
+                        int layoutResourceId = holder.itemView.getContext().getResources()
+                                .getIdentifier(backgroundLayout, "layout", holder.itemView.getContext().getPackageName());
+
                         String classYearLevel = documentSnapshot.getString("classYearLevel");
                         String classSection = documentSnapshot.getString("classSection");
-
                         View customLayout = LayoutInflater.from(holder.itemView.getContext())
-                                .inflate(intValue, holder.cardView, false);
+                                .inflate(layoutResourceId, holder.cardView, false);
 
                         TextView tvclassName = customLayout.findViewById(R.id.tv_class_name);
                         TextView tvclassYearLevel = customLayout.findViewById(R.id.tv_class_year_level);
@@ -61,6 +64,7 @@ public class ClassListStudentAdapter extends FirestoreRecyclerAdapter<ClassList,
                                             if(documentSnapshot1.getString("title").equals("Adviser")){
                                                 String teacherName = documentSnapshot1.getString("fullName");
                                                 holder.cardView.addView(customLayout);
+                                                Log.d("MEOWA", model.getClassName() + classYearLevel + layoutResourceId);
                                                 tvclassName.setText(model.getClassName());
                                                 tvclassYearLevel.setText(classYearLevel);
                                                 tvclassSection.setText(classSection);

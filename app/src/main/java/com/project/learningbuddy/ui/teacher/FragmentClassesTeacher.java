@@ -90,15 +90,20 @@ public class FragmentClassesTeacher extends Fragment {
                                 String classYearLevel = documentSnapshot.getString("classYearLevel");
                                 String classSection = documentSnapshot.getString("classSection");
                                 String subjectName = documentSnapshot.getString("subjectName");
-                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-                                int intValue = backgroundLayout.intValue();
+//                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+//                                int intValue = backgroundLayout.intValue();
+
+                                String backgroundLayout = documentSnapshot.getString("backgroundLayout");
+                                int layoutResourceId = getContext().getResources()
+                                        .getIdentifier(backgroundLayout, "layout", getContext().getPackageName());
+
                                 Intent intent = new Intent(getContext(), TeacherClassroomActivity.class);
                                 intent.putExtra(TeacherClassroomActivity.CLASSNAME,className);
                                 intent.putExtra(TeacherClassroomActivity.CLASSID,classID);
                                 intent.putExtra(TeacherClassroomActivity.CLASSSUBJECT,subjectName);
                                 intent.putExtra(TeacherClassroomActivity.YEARLEVEL, classYearLevel);
                                 intent.putExtra(TeacherClassroomActivity.SECTION, classSection);
-                                intent.putExtra("bgLayout", intValue);
+                                intent.putExtra("bgLayout", layoutResourceId);
                                 firebaseFirestore
                                         .collection("classes")
                                         .document(classID)

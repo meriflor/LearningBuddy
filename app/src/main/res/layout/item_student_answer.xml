@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_weight="1"
+    android:layout_margin="5dp"
+    app:contentPadding="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="#f3f3f3">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/studentQuestion_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_quicksand_bold.body2"
+                android:textColor="@color/violet"
+                />
+            <TextView
+                android:id="@+id/studentAnswer_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_quicksand.body"
+                android:textColor="@color/violet"
+                />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/studentCorrect_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

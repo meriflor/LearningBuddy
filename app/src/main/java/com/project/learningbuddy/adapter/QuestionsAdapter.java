@@ -4,12 +4,14 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,21 +85,45 @@ public class QuestionsAdapter extends FirestoreRecyclerAdapter<Questions, Questi
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        QuestionsController.deleteQuestion(classID, quizID, getSnapshots().getSnapshot(position).getId(), new MyCompleteListener() {
-                            @Override
-                            public void onSuccess() {
-                                Toast.makeText(itemView.getContext(), "Question Deleted", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onFailure() {
-                                Toast.makeText(itemView.getContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        showDeleteConfirmationDialog(position);
                     }
                 }
+            });
+
+
+        }
+        private void showDeleteConfirmationDialog(int position) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(itemView.getContext());
+            View view = LayoutInflater.from(itemView.getContext())
+                    .inflate(R.layout.pop_up_window_confirmation_deletion_question, null);
+            TextView message = view.findViewById(R.id.confirmation_message);
+            Button confirm = view.findViewById(R.id.btn_confirm);
+            Button cancel = view.findViewById(R.id.btn_cancel);
+
+            message.setText("Are you sure you want to delete this question?");
+            dialogBuilder.setView(view);
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
+
+            cancel.setOnClickListener(view1 -> {
+                dialog.cancel();
+            });
+            confirm.setOnClickListener(view2 ->{
+                QuestionsController.deleteQuestion(classID, quizID, getSnapshots().getSnapshot(position).getId(), new MyCompleteListener() {
+                    @Override
+                    public void onSuccess() {
+                        Toast.makeText(itemView.getContext(), "Question Deleted", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Toast.makeText(itemView.getContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
         }
     }

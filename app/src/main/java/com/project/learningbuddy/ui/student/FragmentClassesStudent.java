@@ -94,15 +94,21 @@ public class FragmentClassesStudent extends Fragment {
                                 String classYearLevel = documentSnapshot.getString("classYearLevel");
                                 String classSection = documentSnapshot.getString("classSection");
                                 String subjectName = documentSnapshot.getString("subjectName");
-                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-                                int intValue = backgroundLayout.intValue();
+//                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
+//                                int intValue = backgroundLayout.intValue();
+
+
+                                String backgroundLayout = documentSnapshot.getString("backgroundLayout");
+                                int layoutResourceId = getContext().getResources()
+                                        .getIdentifier(backgroundLayout, "layout", getContext().getPackageName());
+
                                 Intent intent = new Intent(getContext(), StudentClassroomActivity.class);
                                 intent.putExtra(StudentClassroomActivity.CLASSNAME,className);
                                 intent.putExtra(StudentClassroomActivity.CLASSID,classID);
                                 intent.putExtra(StudentClassroomActivity.CLASSSUBJECT,subjectName);
                                 intent.putExtra(StudentClassroomActivity.YEARLEVEL, classYearLevel);
                                 intent.putExtra(StudentClassroomActivity.SECTION, classSection);
-                                intent.putExtra("bgLayout", intValue);
+                                intent.putExtra("bgLayout", layoutResourceId);
                                 firebaseFirestore
                                         .collection("classes")
                                         .document(classID)
@@ -164,10 +170,13 @@ public class FragmentClassesStudent extends Fragment {
                         @Override
                         public void onExist(Boolean exist) {
                             if(exist){
-                                ClassController.checkStudentClassExist(new ExistListener() {
+                                ClassController.checkStudentClassExist(accessCode, new ExistListener() {
                                     @Override
                                     public void onExist(Boolean exist) {
-                                        if(!exist){
+                                        Log.d("RAAAAAAAAAAAAAG", "is it already exist?: "+exist);
+                                        if(exist){
+                                            showToast("Already joined the class!");
+                                        }else{
                                             ClassController.joinClass(accessCode, userID, new MyCompleteListener() {
                                                 @Override
                                                 public void onSuccess() {
@@ -180,8 +189,6 @@ public class FragmentClassesStudent extends Fragment {
                                                     showToast("Something went wrong!");
                                                 }
                                             });
-                                        }else{
-                                            showToast("Already joined the class!");
                                         }
                                     }
                                     @Override

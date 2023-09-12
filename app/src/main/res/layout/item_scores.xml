@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="10dp"
+    app:cardBackgroundColor="@color/violet_light"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    android:id="@+id/score_cardView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+            <TextView
+                android:id="@+id/userName_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="What happened thouhg"
+                style="@style/text_header_violet"
+                android:textSize="14sp"
+                android:fontFamily="@font/quicksand_bold"
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:layout_weight="1"
+                android:paddingEnd="8dp"/>
+            <TextView
+                android:id="@+id/endTimestamp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                style="@style/text_body_violet"
+                android:textSize="11sp"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/score_text"
+            style="@style/text_header_violet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:textSize="26sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/quicksand_bold"
+            android:layout_gravity="center"/>
+        <TextView
+            android:id="@+id/pts_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pts."
+            style="@style/text_body_violet"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:paddingStart="5dp"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
