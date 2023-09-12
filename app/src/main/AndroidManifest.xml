@@ -44,6 +44,9 @@
             android:name=".ui.teacher.quizzes.TeacherCreateQuestion"
             android:exported="true"/>
         <activity
+            android:name=".ui.teacher.quizzes.TeacherStudentRecordsActivity"
+            android:exported="true"/>
+        <activity
             android:name=".ui.teacher.announcement.TeacherAnnouncementActivity"
             android:exported="true"/>
         <activity
@@ -61,6 +64,8 @@
         <activity
             android:name=".ui.teacher.learningmaterials.ViewLearningMaterialActivity"
             android:exported="true"/>
+
+
         <activity
             android:name=".ui.student.StudentClassroomActivity"
             android:exported="true"/>

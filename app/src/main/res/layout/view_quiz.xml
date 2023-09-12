@@ -28,7 +28,7 @@
                     android:id="@+id/quiz_visibility"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="10dp"
                     app:switchPadding="10dp"
                     android:checked="false"
                     android:text="Private"
@@ -43,12 +43,25 @@
                     app:track="@drawable/track"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/quiz_settings"/>
+                    app:layout_constraintRight_toLeftOf="@id/student_records"/>
+                <ImageView
+                    android:id="@+id/student_records"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/icon_records"
+                    android:contentDescription="Settings"
+                    app:layout_constraintRight_toLeftOf="@id/quiz_settings"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
                 <ImageView
                     android:id="@+id/quiz_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:padding="8dp"
                     android:src="@drawable/icon_settings_2"
                     android:contentDescription="Settings"
                     app:layout_constraintRight_toRightOf="parent"
@@ -90,7 +103,8 @@
                     android:layout_height="match_parent"
                     android:background="#f3f3f3"
                     android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp"/>
+                    android:paddingVertical="5dp"
+                    android:overScrollMode="never"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

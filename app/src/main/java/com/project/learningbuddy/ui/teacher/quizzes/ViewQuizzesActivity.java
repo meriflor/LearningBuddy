@@ -47,7 +47,7 @@ public class ViewQuizzesActivity extends AppCompatActivity {
 
     public RecyclerView recyclerView;
     public FloatingActionButton fab;
-    public ImageView settings;
+    public ImageView settings, records;
     public SwitchCompat visibility;
     public TextView tvTitle, tvDesc;
     public QuestionsAdapter adapter;
@@ -84,6 +84,7 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab_quiz_create);
         settings = findViewById(R.id.quiz_settings);
         visibility = findViewById(R.id.quiz_visibility);
+        records = findViewById(R.id.student_records);
 
 //        Visibility of the quiz
         visibility.setOnClickListener(view -> {
@@ -102,6 +103,13 @@ public class ViewQuizzesActivity extends AppCompatActivity {
 //        settigns of the quiz
         settings.setOnClickListener(v-> {
             viewSettings();
+        });
+
+        records.setOnClickListener(view -> {
+            Intent recordIntent = new Intent(this, TeacherStudentRecordsActivity.class);
+            recordIntent.putExtra(TeacherStudentRecordsActivity.CLASSID, classID);
+            recordIntent.putExtra(TeacherStudentRecordsActivity.QUIZID, quizID);
+            startActivity(recordIntent);
         });
 
 //        display the questions
@@ -145,20 +153,6 @@ public class ViewQuizzesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Exception e) {
                 showToast(e.getMessage());
-            }
-        });
-    }
-
-    private void editVisibility(boolean b) {
-        QuizController.editVisibility(classID, quizID, b, new MyCompleteListener() {
-            @Override
-            public void onSuccess() {
-                Log.d("TAG", "visibility is set to " + b);
-            }
-
-            @Override
-            public void onFailure() {
-                Log.d("TAG", "Something went wrong!");
             }
         });
     }
