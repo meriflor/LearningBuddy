@@ -9,4 +9,6 @@
     <string name="nav_close_drawer">Close Navigation drawer</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="already_have_an_account">Already have an Account?</string>
+    <string name="attached_files">Attached Files</string>
+    <string name="delete">Delete</string>
 </resources>

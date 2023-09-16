@@ -41,39 +41,40 @@ public class ClassListStudentAdapter extends FirestoreRecyclerAdapter<ClassList,
 //                        Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
 //                        int intValue = backgroundLayout.intValue();
                         String backgroundLayout = documentSnapshot.getString("backgroundLayout");
-                        int layoutResourceId = holder.itemView.getContext().getResources()
-                                .getIdentifier(backgroundLayout, "layout", holder.itemView.getContext().getPackageName());
+                        if(backgroundLayout!=null){
+                            int layoutResourceId = holder.itemView.getContext().getResources()
+                                    .getIdentifier(backgroundLayout, "layout", holder.itemView.getContext().getPackageName());
 
-                        String classYearLevel = documentSnapshot.getString("classYearLevel");
-                        String classSection = documentSnapshot.getString("classSection");
-                        View customLayout = LayoutInflater.from(holder.itemView.getContext())
-                                .inflate(layoutResourceId, holder.cardView, false);
+                            String classYearLevel = documentSnapshot.getString("classYearLevel");
+                            String classSection = documentSnapshot.getString("classSection");
+                            View customLayout = LayoutInflater.from(holder.itemView.getContext())
+                                    .inflate(layoutResourceId, holder.cardView, false);
 
-                        TextView tvclassName = customLayout.findViewById(R.id.tv_class_name);
-                        TextView tvclassYearLevel = customLayout.findViewById(R.id.tv_class_year_level);
-                        TextView tvclassSection = customLayout.findViewById(R.id.tv_class_section);
-                        TextView extra = customLayout.findViewById(R.id.tv_extra_info);
+                            TextView tvclassName = customLayout.findViewById(R.id.tv_class_name);
+                            TextView tvclassYearLevel = customLayout.findViewById(R.id.tv_class_year_level);
+                            TextView tvclassSection = customLayout.findViewById(R.id.tv_class_section);
+                            TextView extra = customLayout.findViewById(R.id.tv_extra_info);
 
-                        FirebaseFirestore.getInstance()
-                                .collection("classes")
-                                .document(model.getClassID())
-                                .collection("teachers")
-                                .get().addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        for(QueryDocumentSnapshot documentSnapshot1:task.getResult()){
-                                            if(documentSnapshot1.getString("title").equals("Adviser")){
-                                                String teacherName = documentSnapshot1.getString("fullName");
-                                                holder.cardView.addView(customLayout);
-                                                Log.d("MEOWA", model.getClassName() + classYearLevel + layoutResourceId);
-                                                tvclassName.setText(model.getClassName());
-                                                tvclassYearLevel.setText(classYearLevel);
-                                                tvclassSection.setText(classSection);
-                                                extra.setText(teacherName);
+                            FirebaseFirestore.getInstance()
+                                    .collection("classes")
+                                    .document(model.getClassID())
+                                    .collection("teachers")
+                                    .get().addOnCompleteListener(task -> {
+                                        if(task.isSuccessful()){
+                                            for(QueryDocumentSnapshot documentSnapshot1:task.getResult()){
+                                                if(documentSnapshot1.getString("title").equals("Adviser")){
+                                                    String teacherName = documentSnapshot1.getString("fullName");
+                                                    holder.cardView.addView(customLayout);
+                                                    Log.d("MEOWA", model.getClassName() + classYearLevel + layoutResourceId);
+                                                    tvclassName.setText(model.getClassName());
+                                                    tvclassYearLevel.setText(classYearLevel);
+                                                    tvclassSection.setText(classSection);
+                                                    extra.setText(teacherName);
+                                                }
                                             }
                                         }
-                                    }
-                                });
-
+                                    });
+                        }
                     }
                 });
     }

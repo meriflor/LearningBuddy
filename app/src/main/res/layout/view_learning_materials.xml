@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#f3f3f3"
     tools:context=".ui.teacher.learningmaterials.ViewLearningMaterialActivity">
 
     <LinearLayout
@@ -31,7 +32,7 @@
                     android:layout_gravity="end"
                     android:padding="6dp"
                     android:src="@drawable/icon_delete_3"
-                    android:contentDescription="Delete"
+                    android:contentDescription="@string/delete"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -49,56 +50,45 @@
                     android:id="@+id/mat_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
                     android:textColor="@color/violet"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:paddingHorizontal="18dp"/>
+                    android:paddingHorizontal="18dp"
+                    style="@style/text_quicksand_bold.header"/>
                 <TextView
                     android:id="@+id/mat_timestamp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
                     android:textColor="@color/gray"
-                    android:textSize="12sp"
+                    style="@style/text_quicksand.body"
                     android:paddingHorizontal="18dp"/>
                 <TextView
                     android:id="@+id/mat_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
                     android:textColor="@color/violet"
-                    android:textSize="16sp"
+                    style="@style/text_quicksand.body2"
                     android:paddingHorizontal="18dp"
-                    android:paddingVertical="10dp"/>
+                    android:paddingVertical="5dp"/>
                 <TextView
                     android:id="@+id/text_attached_files"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
                     android:textColor="@color/violet"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:text="Attached Files"
+                    style="@style/text_quicksand_bold.body3"
+                    android:text="@string/attached_files"
                     android:paddingHorizontal="18dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="8dp"/>
-
-
-
-                <LinearLayout
-                    android:id="@+id/files_container"
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/files_container"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:paddingHorizontal="10dp"/>-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/learning_materials_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="10dp"/>
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/learning_materials_recyclerview"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="#f3f3f3"-->
-<!--                    android:paddingHorizontal="10dp"-->
-<!--                    android:paddingVertical="5dp"/>-->
+                    android:padding="10dp"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

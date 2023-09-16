@@ -43,6 +43,9 @@ dependencies {
 
 //    widgets
     implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 
 //    Firebase
     implementation 'com.google.firebase:firebase-auth:22.1.1'

@@ -116,60 +116,6 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
 
     }
 
-//    private void uploadFiles(View view) {
-//        if (fileList.size() != 0) {
-//            final ProgressDialog progressDialog = new ProgressDialog(this);
-//            progressDialog.setMessage("Uploaded 0/"+fileList.size());
-//            progressDialog.setCanceledOnTouchOutside(false); //Remove this line if you want your user to be able to cancel upload
-//            progressDialog.setCancelable(false);    //Remove this line if you want your user to be able to cancel upload
-//            progressDialog.show();
-//            final StorageReference storageReference = storage.getReference();
-//            for (int i = 0; i < fileList.size(); i++) {
-//                final int finalI = i;
-//                final UploadFileModel fileModel = fileList.get(i);
-//                final String imageName = fileModel.getImageName(); // Original name
-//                final String filePath = "learningMaterials/" + userID + "/" + imageName; // File path
-//
-//                storageReference.child(filePath)
-//                    .putFile(fileModel.getImageURI())
-//                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onComplete(Task<UploadTask.TaskSnapshot> task) {
-//                        if (task.isSuccessful()){
-//                            storageReference.child(filePath)
-//                                .getDownloadUrl()
-//                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                                @Override
-//                                public void onComplete(Task<Uri> task) {
-//                                    counter++;
-//                                    progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
-//                                    if (task.isSuccessful()){
-//                                        Uri fileUri = task.getResult();
-//                                        saveFileDetailsToFirestore(imageName, filePath, fileUri);
-//                                        savedFileUri.add(task.getResult().toString());
-//                                    }else{
-//                                        storageReference.child(filePath)
-//                                                .delete();
-//                                        Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't save "+imageName, Toast.LENGTH_SHORT).show();
-//                                    }
-//                                    if (counter == fileList.size()){
-//                                        saveImageDataToFirestore(progressDialog);
-//                                    }
-//                                }
-//                            });
-//                        }else{
-//                            progressDialog.setMessage("Uploaded "+counter+"/"+fileList.size());
-//                            counter++;
-//                            Toast.makeText(TeacherCreateLearningMaterials.this, "Couldn't upload "+fileList.get(finalI).getImageName(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                });
-//            }
-//        } else {
-//            coreHelper.createSnackBar(view, "Please add some files first.", "", null, Snackbar.LENGTH_SHORT);
-//        }
-//    }
-
     private void uploadFiles(View view) {
         final String title = matTitle.getText().toString().trim();
         final String content = matContent.getText().toString().trim();
@@ -188,7 +134,8 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                         final int finalI = i;
                         final UploadFileModel fileModel = fileList.get(i);
                         final String imageName = fileModel.getImageName(); // Original name
-                        final String filePath = "learningMaterials/" + userID + "/" + materialID + "/" + imageName; // File path
+                        final String encodedImageName = Uri.encode(imageName);
+                        final String filePath = "learningMaterials/" + userID + "/" + materialID + "/" + encodedImageName; // File path
 
                         storageReference.child(filePath)
                                 .putFile(fileModel.getImageURI())

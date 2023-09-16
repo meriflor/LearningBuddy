@@ -17,9 +17,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.project.learningbuddy.listener.MyCompleteListener;
-import com.project.learningbuddy.model.FileInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,32 +100,32 @@ public class LearningMaterialsController {
 
 
 
-    private static List<FileInfo> uploadFiles(List<FileInfo> files) {
-        List<FileInfo> uploadedFiles = new ArrayList<>();
-
-        for (FileInfo fileInfo : files) {
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
-                    .child("learning_materials")
-                    .child(System.currentTimeMillis() + "_" + fileInfo.getFileName());
-
-            UploadTask uploadTask = storageRef.putFile(fileInfo.getFileUri());
-
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            FileInfo uploadedFile = new FileInfo(fileInfo.getFileType(), fileInfo.getFileName(), uri);
-                            uploadedFiles.add(uploadedFile);
-                        }
-                    });
-                }
-            });
-        }
-
-        return uploadedFiles;
-    }
+//    private static List<FileInfo> uploadFiles(List<FileInfo> files) {
+//        List<FileInfo> uploadedFiles = new ArrayList<>();
+//
+//        for (FileInfo fileInfo : files) {
+//            StorageReference storageRef = FirebaseStorage.getInstance().getReference()
+//                    .child("learning_materials")
+//                    .child(System.currentTimeMillis() + "_" + fileInfo.getFileName());
+//
+//            UploadTask uploadTask = storageRef.putFile(fileInfo.getFileUri());
+//
+//            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            FileInfo uploadedFile = new FileInfo(fileInfo.getFileType(), fileInfo.getFileName(), uri);
+//                            uploadedFiles.add(uploadedFile);
+//                        }
+//                    });
+//                }
+//            });
+//        }
+//
+//        return uploadedFiles;
+//    }
 
 //    this is when we delete the detail in the learning materials in class
     public static void deleteMaterials(String classID, String materialID, MyCompleteListener myCompleteListener){
