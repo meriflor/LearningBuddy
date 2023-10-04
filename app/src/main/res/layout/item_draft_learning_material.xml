@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/violet_light_01"
+    app:contentPadding="15dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/draft_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/text_quicksand_bold.body4"
+            android:singleLine="true"
+            android:textColor="@color/violet"
+            android:text="Title"/>
+        <TextView
+            android:id="@+id/draft_timestamp_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/text_quicksand.body"
+            android:text="Sept. 20, 2022"/>
+        <TextView
+            android:id="@+id/draft_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="5"
+            android:lines="5"
+            style="@style/text_quicksand.body2"
+            android:textColor="@color/gray"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

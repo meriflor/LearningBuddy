@@ -1,6 +1,7 @@
 package com.project.learningbuddy.firebase;
 
-import androidx.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -8,8 +9,11 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.project.learningbuddy.listener.MyCompleteListener;
+import com.project.learningbuddy.listener.QuestionDataListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +40,7 @@ public class QuestionsController {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         myCompleteListener.onFailure();
                     }
                 });
@@ -52,8 +56,29 @@ public class QuestionsController {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         myCompleteListener.onFailure();
+                    }
+                });
+    }
+
+    public static void checkQuestionExist(String classID, String quizID, QuestionDataListener questionDataListener){
+        firebaseFirestore.collection("classes")
+                .document(classID)
+                .collection("quizzes")
+                .document(quizID)
+                .collection("questions")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            Log.d("TAG", "QuestionsExists");
+                        } else {
+                            questionDataListener.onExist(false);
+                        }
+                    }else{
+                        questionDataListener.onFailure(new Exception("There's a problem on fetching the questions in QuestionsController"));
                     }
                 });
     }

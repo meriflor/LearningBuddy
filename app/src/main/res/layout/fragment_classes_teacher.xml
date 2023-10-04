@@ -6,6 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.teacher.FragmentClassesTeacher">
 
+    <ProgressBar
+        android:id="@+id/progressBar_classTeacher"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:indeterminateTint="@color/violet"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -18,21 +26,33 @@
             android:background="#ced6e0"
             android:backgroundTint="@android:color/transparent"
             android:paddingBottom="10dp"
+            android:overScrollMode="never"
             />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fab"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="bottom|end"-->
+<!--            android:layout_marginEnd="32dp"-->
+<!--            android:layout_marginRight="32dp"-->
+<!--            android:layout_marginBottom="32dp"-->
+<!--            app:backgroundTint="#808080"-->
+<!--            android:src="@drawable/ic_baseline_class_24"-->
+<!--            android:contentDescription="Add New Class"-->
+<!--            app:fabSize="normal" />-->
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginBottom="32dp"
-            app:backgroundTint="#808080"
-            android:src="@drawable/ic_baseline_class_24"
-            android:contentDescription="Add New Class"
+            app:backgroundTint="@color/white"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/violet_light"
+            app:fab_icon="@drawable/ic_baseline_class_24"
+            android:contentDescription="Join New Class"
             app:fabSize="normal" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </FrameLayout>

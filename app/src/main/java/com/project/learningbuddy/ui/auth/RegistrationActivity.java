@@ -2,7 +2,10 @@ package com.project.learningbuddy.ui.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -89,6 +92,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 }else if(userType.equals("Select User Type")){
                     showToast("Choose user type");
                 }else{
+                    Dialog dialog = new Dialog(RegistrationActivity.this);
+                    View view1 = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+                    TextView message = view1.findViewById(R.id.loading_message);
+                    message.setText("Signing Up . . .");
+                    dialog.setContentView(view1);
+                    dialog.setCancelable(false);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(Task<AuthResult> task) {
@@ -97,6 +108,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 UserController.createUser(email, fullName, userType, new MyCompleteListener() {
                                     @Override
                                     public void onSuccess() {
+                                        dialog.dismiss();
                                         startActivity(new Intent(RegistrationActivity.this, Homepage.class));
                                         finish();
                                     }

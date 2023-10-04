@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,12 +32,12 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
      * @param options
      */
 
-    public PostsAdapter(@NonNull FirestoreRecyclerOptions<Posts> options) {
+    public PostsAdapter(FirestoreRecyclerOptions<Posts> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull PostsAdapter.ClassesHolder holder, int position, @NonNull Posts model) {
+    protected void onBindViewHolder(PostsAdapter.ClassesHolder holder, int position, Posts model) {
         switch (model.getPostType()) {
             case "Quiz":
                 query(model.getClassID(),
@@ -70,6 +69,16 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                         holder,
                         R.drawable.icon_attachment_3);
                 break;
+            case "Practice Reading":
+                query(model.getClassID(),
+                        model.getGetID(),
+                        "learning_materials",
+                        "materialTitle",
+                        "materialCreator",
+                        model.getTimestamp(),
+                        holder,
+                        R.drawable.icon_speak_02_rounded);
+                break;
             default:
                 holder.postIcon.setBackgroundResource(R.drawable.icon_bubble);
                 holder.postTitle.setText("Unknown");
@@ -89,15 +98,13 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 String title = documentSnapshot.getString(postTitle);
-
                 String userID = documentSnapshot.getString(postCreator);
-
-//                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
                 if(timestamp != null){
                     Date date = timestamp.toDate();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMM. d, yyyy hh:mm aaa", Locale.getDefault());
                     String formattedDate = dateFormat.format(date);
-                    FirebaseFirestore.getInstance().collection("users")
+                    if(userID != null){
+                        FirebaseFirestore.getInstance().collection("users")
                             .document(userID)
                             .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
@@ -109,14 +116,17 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
                                     holder.cardView.setVisibility(View.VISIBLE);
                                 }
                             });
+                    }else{
+                        Log.d("TAG", "There's a problem on the userID");
+                    }
+
                 }
             }
         });
     }
 
-    @NonNull
     @Override
-    public PostsAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostsAdapter.ClassesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
         return new ClassesHolder(view, mListener);
     }
@@ -134,7 +144,7 @@ public class PostsAdapter extends FirestoreRecyclerAdapter<Posts, PostsAdapter.C
         TextView postTitle, postCreator, postTimestamp;
         CardView cardView;
 
-        public ClassesHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public ClassesHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
             postIcon = itemView.findViewById(R.id.post_icon);

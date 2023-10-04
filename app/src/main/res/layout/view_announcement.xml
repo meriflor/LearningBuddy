@@ -65,6 +65,12 @@
             android:textColor="@color/violet"
             android:layout_margin="20dp"/>
         <TextView
+            android:id="@+id/announcement_timestamp_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray"
+            style="@style/text_quicksand.body"/>
+        <TextView
             android:id="@+id/announcement_content_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

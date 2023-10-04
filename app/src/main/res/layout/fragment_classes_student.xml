@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f3f3f3"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ui.student.FragmentClassesStudent">
 
@@ -14,18 +15,20 @@
             android:id="@+id/student_classListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ced6e0"/>
+            android:overScrollMode="never"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/student_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/ic_baseline_class_24"
+            app:backgroundTint="@color/white"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/violet_light"
+            app:fab_icon="@drawable/ic_baseline_class_24"
             android:contentDescription="Join New Class"
-            android:backgroundTint="#808080"
             app:fabSize="normal" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

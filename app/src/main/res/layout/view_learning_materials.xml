@@ -68,27 +68,59 @@
                     style="@style/text_quicksand.body2"
                     android:paddingHorizontal="18dp"
                     android:paddingVertical="5dp"/>
-                <TextView
-                    android:id="@+id/text_attached_files"
+                <LinearLayout
+                    android:id="@+id/uploaded_files_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/violet"
-                    style="@style/text_quicksand_bold.body3"
-                    android:text="@string/attached_files"
-                    android:paddingHorizontal="18dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="8dp"/>
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/files_container"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:paddingHorizontal="10dp"/>-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/learning_materials_recyclerview"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/text_attached_files"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/violet"
+                        style="@style/text_quicksand_bold.body3"
+                        android:text="@string/attached_files"
+                        android:paddingHorizontal="18dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="8dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/learning_materials_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:overScrollMode="never"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/practice_reading_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"/>
+                    android:orientation="vertical"
+                    android:visibility="visible">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/violet"
+                        style="@style/text_quicksand_bold.body3"
+                        android:text="@string/practice_reading"
+                        android:paddingHorizontal="18dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="8dp"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/learning_materials_practice_reading_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:overScrollMode="never"/>
+<!--                    <GridView-->
+<!--                        android:id="@+id/learning_materials_practice_reading_gridView"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:numColumns="2"-->
+<!--                        android:horizontalSpacing="5dp"-->
+<!--                        android:verticalSpacing="5dp"-->
+<!--                        android:overScrollMode="never"/>-->
+                </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

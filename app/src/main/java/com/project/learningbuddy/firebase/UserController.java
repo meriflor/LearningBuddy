@@ -2,8 +2,6 @@ package com.project.learningbuddy.firebase;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,7 +76,7 @@ public class UserController {
                 .collection(collection)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             boolean existEmail = false;
                             for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
@@ -102,7 +100,7 @@ public class UserController {
         firebaseFirestore.collection("users")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(Task<QuerySnapshot> task) {
                         boolean emailExists = false; // Assume email doesn't exist initially
                         boolean sameType = false;
                         for(QueryDocumentSnapshot documentSnapshot : task.getResult()){

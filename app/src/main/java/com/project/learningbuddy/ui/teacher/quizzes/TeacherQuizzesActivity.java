@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -26,6 +28,10 @@ import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Quizzes;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class TeacherQuizzesActivity extends AppCompatActivity {
 
@@ -115,6 +121,7 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
                 .collection("classes")
                 .document(classID)
                 .collection("quizzes")
+                .whereEqualTo("quizCreator", FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Quizzes> options = new FirestoreRecyclerOptions.Builder<Quizzes>()
@@ -134,6 +141,13 @@ public class TeacherQuizzesActivity extends AppCompatActivity {
                 intent.putExtra(ViewQuizzesActivity.QUIZID, quizID);
                 intent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
                 intent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizContent"));
+
+                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                Date date = timestamp.toDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(date);
+
+                intent.putExtra(ViewQuizzesActivity.TIMESTAMP, formattedDate);
                 startActivity(intent);
             }
         });

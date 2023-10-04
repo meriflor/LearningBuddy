@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LearningBuddy</string>
+    <string name="app_name">Learning Buddy</string>
     <string-array name="userType">
         <item>Select User Type</item>
         <item>Teacher</item>
@@ -11,4 +11,7 @@
     <string name="already_have_an_account">Already have an Account?</string>
     <string name="attached_files">Attached Files</string>
     <string name="delete">Delete</string>
+    <string name="practice_reading">Practice Reading</string>
+    <string name="feedback">Feedback</string>
+    <string name="feedback_intro">Spot an issue? We\'re here to troubleshoot. Report any bugs, glitches, or hiccups you encounter, and we\'ll work it to resolve them.</string>
 </resources>

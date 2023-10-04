@@ -28,15 +28,15 @@
                 android:id="@+id/login_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="5dp"
                 android:layout_marginTop="8dp"
                 android:shadowColor="@color/gray"
                 android:shadowDx="5"
-                android:shadowDy="10"
+                android:shadowDy="5"
                 android:shadowRadius="10"
                 android:text="Login an Account"
                 android:textColor="#35165C"
-
-                android:textSize="24sp"
+                style="@style/text_quicksand_bold.header1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
@@ -45,41 +45,50 @@
             <EditText
                 android:id="@+id/email_login"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/loginbtn"
                 android:drawableLeft="@drawable/ic_baseline_email_24"
                 android:hint="Email address"
-
+                android:padding="10dp"
+                android:drawablePadding="5dp"
                 android:inputType="textEmailAddress"
-                android:paddingLeft="10sp"
                 android:textColor="#000000"
                 android:textColorHint="@color/gray"
-                android:textSize="16sp"
-                android:textStyle=""
+                style="@style/text_quicksand.body3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login_title" />
 
-            <EditText
-                android:id="@+id/password_login"
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editText_layout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="7dp"
-                android:background="@drawable/loginbtn"
-                android:drawableLeft="@drawable/ic_baseline_security_24"
-                android:ems="10"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:paddingLeft="10sp"
-                android:textColor="#050303"
-                android:textColorHint="@color/gray"
-                android:textSize="16sp"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                app:hintEnabled="false"
+                android:layout_marginTop="10dp"
+                app:startIconDrawable="@drawable/ic_baseline_security_24"
                 app:layout_constraintEnd_toEndOf="@+id/email_login"
                 app:layout_constraintHorizontal_bias="0.4"
                 app:layout_constraintStart_toStartOf="@+id/email_login"
-                app:layout_constraintTop_toBottomOf="@+id/email_login" />
+                app:layout_constraintTop_toBottomOf="@+id/email_login"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/loginbtn"
+                    android:hint="Password"
+                    android:drawablePadding="-10dp"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textColorHint="@color/gray"
+                    style="@style/text_quicksand.body3"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/forgotpass"
@@ -90,10 +99,10 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="normal"
-                app:layout_constraintEnd_toEndOf="@+id/password_login"
+                app:layout_constraintEnd_toEndOf="@+id/editText_layout"
                 app:layout_constraintHorizontal_bias="0.967"
-                app:layout_constraintStart_toStartOf="@+id/password_login"
-                app:layout_constraintTop_toBottomOf="@+id/password_login" />
+                app:layout_constraintStart_toStartOf="@+id/editText_layout"
+                app:layout_constraintTop_toBottomOf="@+id/editText_layout" />
 
             <Button
                 android:id="@+id/login_btn"

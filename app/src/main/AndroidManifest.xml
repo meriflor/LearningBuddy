@@ -59,6 +59,15 @@
         <activity
             android:name=".ui.teacher.learningmaterials.TeacherLearningMaterialsActivity"
             android:exported="true"/>
+
+        <activity
+            android:name=".ui.teacher.learningmaterials.TeacherLearningMaterialsListActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.teacher.learningmaterials.TeacherCreateLearningMaterialsPracticeReading"
+            android:exported="true"/>
+
+<!--These are the new added,, old files that are not being used right now is not yet deleted-->
         <activity
             android:name=".ui.teacher.learningmaterials.TeacherCreateLearningMaterials"
             android:exported="true"/>
@@ -69,6 +78,18 @@
             android:name=".ui.teacher.learningmaterials.ViewFileActivity"
             android:exported="true"/>
 
+        <activity
+            android:name=".ui.teacher.quizzes.TeacherQuizQuestionCreateActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".ui.teacher.filespace.FileSpaceActivity"
+            android:exported="true"/>
+
+<!--        SAMPLESSSSSSSS-->
+        <activity
+            android:name=".ui.teacher.sample.TeacherCreateLearningMaterials"
+            android:exported="true"/>
 
         <activity
             android:name=".ui.student.StudentClassroomActivity"

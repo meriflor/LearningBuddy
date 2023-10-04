@@ -6,7 +6,7 @@
     android:layout_margin="5dp"
     app:cardBackgroundColor="#f3f3f3"
     app:cardCornerRadius="10dp"
-    app:cardElevation="1dp"
+    app:cardElevation="3dp"
     app:contentPadding="10dp">
 
     <LinearLayout
@@ -31,6 +31,7 @@
             android:textColor="@color/violet"
             android:singleLine="true"/>
         <ImageView
+            android:id="@+id/file_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_arrow_right"

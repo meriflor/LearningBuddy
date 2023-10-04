@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.CoreHelper;
 import com.project.learningbuddy.adapter.UploadListAdapter;
+import com.project.learningbuddy.firebase.FileSpaceController;
 import com.project.learningbuddy.firebase.LearningMaterialsController;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.UploadFileModel;
@@ -50,7 +52,7 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
     private static final int READ_PERMISSION_CODE = 1;
     private static final int PICK_IMAGE_REQUEST_CODE = 2;
 //    ----------------------------
-    ImageView addMat, matPost;
+//    ImageView addMat, matPost;
     RecyclerView recyclerView;
     EditText matTitle, matContent;
     List<UploadFileModel> fileList;
@@ -59,6 +61,9 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
     CoreHelper coreHelper;
     FirebaseStorage storage;
     FirebaseFirestore firebaseFirestore;
+    ImageView close;
+
+    LinearLayout addMat, matPost;
     int counter;
 
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -66,7 +71,7 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher_learning_materials_create);
+        setContentView(R.layout.activity_teacher_learning_materials_upload_files);
 
 //        Intent (Passing of classID)
         Intent intent = getIntent();
@@ -74,9 +79,9 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
         className = intent.getStringExtra(CLASSNAME);
 
         //Toolbar
-        Toolbar toolbar = findViewById(R.id.teacher_learnMatToolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        Toolbar toolbar = findViewById(R.id.teacher_learnMatToolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fileList = new ArrayList<>();
         savedFileUri = new ArrayList<>();
@@ -100,6 +105,11 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
             }
         });
 
+        close = findViewById(R.id.icon_close);
+        close.setOnClickListener(view -> {
+            finish();
+        });
+
         addMat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +129,7 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
     private void uploadFiles(View view) {
         final String title = matTitle.getText().toString().trim();
         final String content = matContent.getText().toString().trim();
-        if (fileList.size() != 0 && title != null) {
+        if (fileList.size() != 0 && !title.isEmpty()) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Uploaded 0/"+fileList.size());
             progressDialog.setCanceledOnTouchOutside(false); //Remove this line if you want your user to be able to cancel upload
@@ -135,6 +145,7 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                         final UploadFileModel fileModel = fileList.get(i);
                         final String imageName = fileModel.getImageName(); // Original name
                         final String encodedImageName = Uri.encode(imageName);
+
                         final String filePath = "learningMaterials/" + userID + "/" + materialID + "/" + encodedImageName; // File path
 
                         storageReference.child(filePath)
@@ -153,6 +164,7 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                                                             if (task.isSuccessful()){
                                                                 Uri fileUri = task.getResult();
                                                                 saveFileDetailsToFirestore(classID, materialID, imageName, filePath, fileUri);
+                                                                saveToFileSpace(imageName,  filePath, fileUri);
                                                                 savedFileUri.add(task.getResult().toString());
                                                             }else{
                                                                 storageReference.child(filePath)
@@ -187,6 +199,20 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
         }
     }
 
+    private void saveToFileSpace(String imageName, String filePath, Uri fileUri) {
+        FileSpaceController.createFileSpace(imageName, filePath, fileUri, new MyCompleteListener() {
+            @Override
+            public void onSuccess() {
+                Log.d("TAG", "The "+imageName+" is successfully added");
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("TAG", "The "+imageName+" is successfully failed haha");
+            }
+        });
+    }
+
     private String generateLearningMaterialID() {
         return UUID.randomUUID().toString();
     }
@@ -206,31 +232,6 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
             @Override
             public void onFailure() {
                 Log.d("TAG", originalName + " Upload failed");
-            }
-        });
-    }
-
-    private void saveImageDataToFirestore(final ProgressDialog progressDialog) {
-        progressDialog.setMessage("Saving uploaded file(s)...");
-
-        String title = matTitle.getText().toString().trim();
-        String content = matContent.getText().toString().trim();
-        List<String> fileUrlList = new ArrayList<>();
-        for (UploadFileModel fileModel : fileList) {
-            fileUrlList.add(fileModel.getImageURI().toString()); // Assuming getImageURI() returns a Uri
-        }
-        LearningMaterialsController.createClassLearningMaterial(classID, title, content, fileUrlList, new MyCompleteListener() {
-            @Override
-            public void onSuccess() {
-                progressDialog.dismiss();
-                coreHelper.createAlert("Success", "File(s) uploaded and saved successfully!", "OK", "", null, null, null);
-                finish();
-            }
-
-            @Override
-            public void onFailure() {
-                progressDialog.dismiss();
-                coreHelper.createAlert("Error", "File(s) uploaded but we couldn't save them to database.", "OK", "", null, null, null);
             }
         });
     }
@@ -287,6 +288,11 @@ public class TeacherCreateLearningMaterials extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public void showToast(String text){

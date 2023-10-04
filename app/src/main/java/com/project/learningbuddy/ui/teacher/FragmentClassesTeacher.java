@@ -1,12 +1,17 @@
 package com.project.learningbuddy.ui.teacher;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,8 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,7 +45,10 @@ public class FragmentClassesTeacher extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private ClassListTeacherAdapter adapter;
     private View view;
+    private ProgressBar progressBar;
     String userID = firebaseAuth.getCurrentUser().getUid();
+
+     Dialog dialogView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +63,19 @@ public class FragmentClassesTeacher extends Fragment {
             }
         });
 
+        progressBar = view.findViewById(R.id.progressBar_classTeacher);
+        dialogView = new Dialog(getContext());
+        View view1 = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+        TextView message = view1.findViewById(R.id.loading_message);
+        message.setText("Loading . . .");
+        dialogView.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogView.setContentView(view1);
+        dialogView.setCancelable(false);
+        dialogView.show();
+
         getClassList();
+
+        dialogView.dismiss();
 
         return view;
     }
@@ -74,7 +94,6 @@ public class FragmentClassesTeacher extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-
         adapter.setOnItemClickListener(new ClassListTeacherAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
@@ -90,8 +109,6 @@ public class FragmentClassesTeacher extends Fragment {
                                 String classYearLevel = documentSnapshot.getString("classYearLevel");
                                 String classSection = documentSnapshot.getString("classSection");
                                 String subjectName = documentSnapshot.getString("subjectName");
-//                                Long backgroundLayout = documentSnapshot.getLong("backgroundLayout");
-//                                int intValue = backgroundLayout.intValue();
 
                                 String backgroundLayout = documentSnapshot.getString("backgroundLayout");
                                 int layoutResourceId = getContext().getResources()

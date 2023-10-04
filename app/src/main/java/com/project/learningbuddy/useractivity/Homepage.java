@@ -1,7 +1,12 @@
 package com.project.learningbuddy.useractivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -13,12 +18,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.firebase.UserController;
@@ -27,6 +28,8 @@ import com.project.learningbuddy.model.User;
 import com.project.learningbuddy.ui.auth.LoginActivity;
 import com.project.learningbuddy.ui.student.FragmentClassesStudent;
 import com.project.learningbuddy.ui.teacher.FragmentClassesTeacher;
+import com.project.learningbuddy.ui.teacher.filespace.FileSpaceActivity;
+import com.project.learningbuddy.ui.teacher.filespace.FragmentLearningMaterials;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -52,6 +55,15 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        Dialog dialog = new Dialog(this);
+        View view = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+        TextView message = view.findViewById(R.id.loading_message);
+        message.setText("Loading . . .");
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+
 //        Getting user data
         UserController.getUserData(firebaseAuth.getCurrentUser().getUid(), new UserDataListener() {
             @Override
@@ -59,7 +71,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
                 // Handle successful user data retrieval
                 String fullName = user.getFullName();
                 String email = user.getEmail();
-                String userType = user.getUserType();
+
+                Log.d("TAG", user.getFullName() + user.getEmail() + user.getUserType());
+                Log.d("TAG", firebaseAuth.getCurrentUser().getUid());
 
                 displayUserNavHeader(fullName, email);
             }
@@ -84,6 +98,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             checkUserType();
             navigationView.setCheckedItem(R.id.nav_classes);
         }
+        dialog.dismiss();
     }
 
     private void displayUserNavHeader(String fullName, String email) {
@@ -120,6 +135,9 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.nav_classes:
                 checkUserType();
                 break;
+            case R.id.nav_feedBack:
+                openFragment(new FragmentFeedback());
+                break;
             case R.id.nav_logOut:
                 logOut();
                 break;
@@ -147,7 +165,7 @@ public class Homepage extends AppCompatActivity implements NavigationView.OnNavi
 
             @Override
             public void onFailure(Exception exception) {
-
+                Log.d("TAG", "There's a problem on fetching userType of the user in the Homepage file.");
             }
         });
     }

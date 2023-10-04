@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LearningMaterials {
-    private String classID, materialTitle, materialContent, materialCreator;
+    private String classID, materialTitle, materialContent, materialCreator, materialType;
     private Timestamp timestamp;
     private List<String> files;
 
@@ -14,11 +14,12 @@ public class LearningMaterials {
 
     }
 
-    public LearningMaterials(String classID, String materialTitle, String materialContent, String materialCreator, Timestamp timestamp, List<String> files) {
+    public LearningMaterials(String classID, String materialTitle, String materialContent, String materialCreator, String materialType, Timestamp timestamp, List<String> files) {
         this.classID = classID;
         this.materialTitle = materialTitle;
         this.materialContent = materialContent;
         this.materialCreator = materialCreator;
+        this.materialType = materialType;
         this.timestamp = timestamp;
         this.files = files;
     }
@@ -33,6 +34,10 @@ public class LearningMaterials {
 
     public void setMaterialContent(String materialContent) {
         this.materialContent = materialContent;
+    }
+
+    public String getMaterialType() {
+        return materialType;
     }
 
     public void setMaterialCreator(String materialCreator) {

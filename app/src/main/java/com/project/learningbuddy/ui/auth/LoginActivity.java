@@ -1,12 +1,17 @@
 package com.project.learningbuddy.ui.auth;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,9 +82,18 @@ public class LoginActivity extends AppCompatActivity {
 
 //    Authentication
     public void loginUser(String email, String password){
+        Dialog dialog = new Dialog(this);
+        View view = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+        TextView message = view.findViewById(R.id.loading_message);
+        message.setText("Logging in . . .");
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
+                dialog.dismiss();
                 showToast("Logged In");
                 startActivity(new Intent(LoginActivity.this, Homepage.class));
                 finish();

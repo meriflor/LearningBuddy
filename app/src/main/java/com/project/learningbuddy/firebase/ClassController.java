@@ -194,7 +194,7 @@ public class ClassController {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         myCompleteListener.onFailure();
                     }
                 });
@@ -367,7 +367,7 @@ public class ClassController {
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
-                                    public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                                    public void onComplete(Task<QuerySnapshot> task) {
                                         for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
                                             String docUserID = documentSnapshot.getString("userID");
                                             String docClassID = documentSnapshot.getString("classID");
@@ -385,7 +385,7 @@ public class ClassController {
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@androidx.annotation.NonNull Exception e) {
+                    public void onFailure(Exception e) {
                         myCompleteListener.onFailure();
                     }
                 });

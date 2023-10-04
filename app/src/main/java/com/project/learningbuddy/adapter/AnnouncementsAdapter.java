@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,12 +29,12 @@ public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements
      *
      * @param options
      */
-    public AnnouncementsAdapter(@NonNull FirestoreRecyclerOptions<Announcements> options) {
+    public AnnouncementsAdapter(FirestoreRecyclerOptions<Announcements> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull AnnouncementsAdapter.ClassesHolder holder, int position, @NonNull Announcements model) {
+    protected void onBindViewHolder(AnnouncementsAdapter.ClassesHolder holder, int position, Announcements model) {
         holder.announcementIcon.setBackgroundResource(R.drawable.icon_announcement);
         holder.announcementTitle.setText(model.getAnnouncementTitle());
         DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(model.getAnnouncementCreator());
@@ -58,9 +57,8 @@ public class AnnouncementsAdapter extends FirestoreRecyclerAdapter<Announcements
         holder.cardView.setVisibility(View.VISIBLE);
     }
 
-    @NonNull
     @Override
-    public AnnouncementsAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AnnouncementsAdapter.ClassesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post,
                 parent, false);
         return new ClassesHolder(view, mListener);

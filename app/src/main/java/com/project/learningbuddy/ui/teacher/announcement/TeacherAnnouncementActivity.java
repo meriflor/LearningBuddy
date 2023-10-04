@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -20,6 +22,10 @@ import com.project.learningbuddy.adapter.AnnouncementsAdapter;
 import com.project.learningbuddy.model.Announcements;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class TeacherAnnouncementActivity extends AppCompatActivity {
 
@@ -68,6 +74,7 @@ public class TeacherAnnouncementActivity extends AppCompatActivity {
                 .collection("classes")
                 .document(classID)
                 .collection("announcements")
+                .whereEqualTo("announcementCreator", FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Announcements> options = new FirestoreRecyclerOptions.Builder<Announcements>()
@@ -87,6 +94,11 @@ public class TeacherAnnouncementActivity extends AppCompatActivity {
                 intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, announcementID);
                 intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
                 intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
+                Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                Date date = timestamp.toDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy HH:mm aaa", Locale.getDefault());
+                String formattedDate = dateFormat.format(date);
+                intent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTIMESTAMP, formattedDate);
                 startActivity(intent);
             }
         });

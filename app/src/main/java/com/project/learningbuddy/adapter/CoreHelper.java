@@ -8,8 +8,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.UUID;
 
 /*This is a universal class to write function which can be used anywhere in activities of the whole app*/
 
@@ -61,5 +64,13 @@ public class CoreHelper {
             }
         }
         return result;
+    }
+
+    public String generateRandomUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public void showToast(Context context, String text){
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }
 }

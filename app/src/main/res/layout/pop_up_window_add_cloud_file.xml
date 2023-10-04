@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#f3f3f3"
+    app:contentPadding="20dp"
+    android:layout_margin="5dp"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="10dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cloudFiles_recycerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"/>
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="20dp"
+            android:minWidth="20dp"
+            android:padding="5dp"
+            android:background="@drawable/background_pressed_violet_to_light_violet"
+            android:textColor="@color/white"
+            android:text="Cancel"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            style="@style/text_quicksand_bold.body2"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

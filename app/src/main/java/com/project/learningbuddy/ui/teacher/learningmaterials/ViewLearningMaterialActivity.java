@@ -2,11 +2,16 @@ package com.project.learningbuddy.ui.teacher.learningmaterials;
 
 import static com.google.common.io.Files.getFileExtension;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,9 +40,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.MaterialFilesAdapter;
+import com.project.learningbuddy.adapter.PracticeReadingAdapter;
+import com.project.learningbuddy.adapter.PracticeReadingRetrieve;
 import com.project.learningbuddy.firebase.LearningMaterialsController;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.FileInfo;
+import com.project.learningbuddy.model.PracticeReading;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -48,16 +55,26 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
 
     public static final String MATID = "Materials ID";
     public static final String CLASSID = "Class ID";
-    public String materialID, classID;
+    public static final String MATERIALTYPE = "Material Type";
+    public String materialID, classID, materialType;
     public TextView matTitle, matContent, matTimestamp;
     public LinearLayout filesContainer;
 
     public ImageView delete;
     public RecyclerView view;
     public MaterialFilesAdapter adapter;
+    public LinearLayout uploadedFilesLayout, practiceReadingLayout;
 
+    public TextToSpeech textToSpeech;
+    public PracticeReadingAdapter practiceReadingAdapter;
+    public RecyclerView recyclerView;
+//    ------------
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int READ_PERMISSION_CODE = 123;
+    public Uri imageUri;
+    public Boolean permissionGranted;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_learning_materials);
 
@@ -74,21 +91,96 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         Intent intent = getIntent();
         materialID = intent.getStringExtra(MATID);
         classID = intent.getStringExtra(CLASSID);
+        materialType = intent.getStringExtra(MATERIALTYPE);
 
         matTitle = findViewById(R.id.mat_title);
         matContent = findViewById(R.id.mat_content);
         matTimestamp = findViewById(R.id.mat_timestamp);
 //        filesContainer = findViewById(R.id.files_container);
         delete = findViewById(R.id.materials_delete);
+        uploadedFilesLayout = findViewById(R.id.uploaded_files_layout);
+        practiceReadingLayout = findViewById(R.id.practice_reading_layout);
 
         delete.setOnClickListener(view -> {
             deleteMaterials();
         });
 
-//        viewLearningMaterials();
-        viewPostInfo();
-        viewFiles();
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if(i == TextToSpeech.SUCCESS){
+                    int langResult = textToSpeech.setLanguage(Locale.US);
+                    if(langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED){
+                        Toast.makeText(ViewLearningMaterialActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(ViewLearningMaterialActivity.this, "Text-to-speech initialization failed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+
+//        ------------Permission intent
+        if (checkPermissions()) {
+            permissionGranted = true;
+
+        } else {
+            // Request permissions from the user
+            permissionGranted = false;
+        }
+        Log.d("TAG","PERMISSION GRANTED: "+permissionGranted);
+
+        Log.d("MATERIALTYPE", "this is a confirmed "+materialType);
+        if(materialType == null){
+            uploadedFilesLayout.setVisibility(View.VISIBLE);
+            practiceReadingLayout.setVisibility(View.GONE);
+
+            Log.d("MATERIALTYPE", "did you got here? This is null");
+            viewFiles();
+        }else{
+            if(materialType.equals("Practice Reading")){
+                practiceReadingLayout.setVisibility(View.VISIBLE);
+                uploadedFilesLayout.setVisibility(View.GONE);
+                Log.d("MATERIALTYPE", "did you got here? This is Practice Reading");
+                viewPracticeReadingList();
+            }else{
+                uploadedFilesLayout.setVisibility(View.VISIBLE);
+                practiceReadingLayout.setVisibility(View.GONE);
+                Log.d("MATERIALTYPE", "did you got here? This is Uploaded Files");
+                viewFiles();
+            }
+        }
+
+        viewPostInfo();
+    }
+
+    private boolean checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Check for permissions on Android Marshmallow (API level 23) and higher
+            int readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            return readPermission == PackageManager.PERMISSION_GRANTED;
+        } else {
+            // No need to check permissions on Android versions lower than Marshmallow
+            return true;
+        }
+    }
+
+    private void viewPracticeReadingList() {
+        Log.d("MATERIALTYPE", "You are inside the method now");
+        Query fileQuery = FirebaseFirestore.getInstance()
+                .collection("classes")
+                .document(classID)
+                .collection("learning_materials")
+                .document(materialID)
+                .collection("files");
+
+        FirestoreRecyclerOptions<PracticeReadingRetrieve> options = new FirestoreRecyclerOptions.Builder<PracticeReadingRetrieve>()
+                .setQuery(fileQuery, PracticeReadingRetrieve.class).build();
+        Log.d("TAG","PERMISSION GRANTED: "+permissionGranted);
+        practiceReadingAdapter = new PracticeReadingAdapter(options, textToSpeech, imageUri, permissionGranted);
+        recyclerView = findViewById(R.id.learning_materials_practice_reading_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(practiceReadingAdapter);
     }
 
     private void viewFiles() {
@@ -142,6 +234,7 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
 
                     matTitle.setText(documentSnapshot.getString("materialTitle"));
                     matContent.setText(documentSnapshot.getString("materialContent"));
+                    Linkify.addLinks(matContent, Linkify.WEB_URLS);
                     matTimestamp.setText(formattedDate);
                 });
     }
@@ -161,101 +254,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         });
     }
 
-    private void viewLearningMaterials() {
-        DocumentReference matRef = FirebaseFirestore.getInstance()
-                .collection("classes")
-                .document(classID)
-                .collection("learning_materials")
-                .document(materialID);
-
-        matRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            // Retrieve data from the document snapshot
-                            String title = documentSnapshot.getString("materialTitle");
-                            String description = documentSnapshot.getString("materialContent");
-                            Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
-
-                            Date date = timestamp.toDate();
-
-                            // Format the Date to "Month Day, Year" format
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
-                            String formattedDate = dateFormat.format(date);
-
-                            // Set data to the TextViews
-                            matTitle.setText(title);
-                            matContent.setText(description);
-                            matTimestamp.setText(formattedDate);
-
-                            // Clear any existing views in the filesContainer
-                            filesContainer.removeAllViews();
-
-                            matRef.collection("files")
-                                    .get().addOnCompleteListener(task -> {
-                                        if(task.isSuccessful()){
-                                            for(QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()){
-                                                String fileUri = queryDocumentSnapshot.getString("fileUri");
-                                                TextView fileTextView = new TextView(ViewLearningMaterialActivity.this);
-                                                fileTextView.setLayoutParams(new ViewGroup.LayoutParams(
-                                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                                        ViewGroup.LayoutParams.WRAP_CONTENT
-                                                ));
-
-                                                // Determine the file type based on the URL or name
-                                                String fileType = getFileType(fileUri);
-
-                                                // Display the content based on the file type
-                                                switch (fileType) {
-                                                    case "image":
-                                                        ImageView imageView = new ImageView(ViewLearningMaterialActivity.this);
-                                                        // Use Glide or Picasso to load and display images
-                                                        Glide.with(ViewLearningMaterialActivity.this).load(fileUri).into(imageView);
-                                                        filesContainer.addView(imageView);
-                                                        break;
-                                                    case "video":
-                                                        // Use a VideoView to play videos
-                                                        VideoView videoView = new VideoView(ViewLearningMaterialActivity.this);
-                                                        videoView.setVideoPath(fileUri);
-                                                        videoView.setLayoutParams(new ViewGroup.LayoutParams(
-                                                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                                                ViewGroup.LayoutParams.WRAP_CONTENT
-                                                        ));
-                                                        filesContainer.addView(videoView);
-                                                        break;
-                                                    case "pdf":
-                                                        TextView pdfTextView = new TextView(ViewLearningMaterialActivity.this);
-                                                        pdfTextView.setLayoutParams(new ViewGroup.LayoutParams(
-                                                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                                                ViewGroup.LayoutParams.WRAP_CONTENT
-                                                        ));
-                                                        pdfTextView.setText("PDF: " + fileUri); // Display PDF URL
-
-                                                        pdfTextView.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View view) {
-                                                                // Open the PDF URL using an intent
-                                                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                                                intent.setData(Uri.parse(fileUri));
-                                                                startActivity(intent);
-                                                            }
-                                                        });
-                                                        filesContainer.addView(pdfTextView);
-                                                        break;
-                                                }
-                                            }
-                                        }
-
-                                    });
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("TAG", "Something went wrong!");
-                    }
-                });
-    }
     private String getFileType(String fileName) {
         String extension = getFileExtension(fileName).toLowerCase();
 
@@ -295,15 +293,58 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
+        if(materialType == null){
+            if(adapter!=null){
+                adapter.startListening();
+            }
+        }else{
+            if(materialType.equals("Practice Reading")){
+                if(practiceReadingAdapter!=null){
+                    practiceReadingAdapter.startListening();
+                }
+            }else{
+                if(adapter!=null){
+                    adapter.startListening();
+                }
+            }
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if(adapter!=null){
+            adapter.stopListening();
+        }
+        if(practiceReadingAdapter!=null){
+            practiceReadingAdapter.stopListening();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(textToSpeech != null){
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

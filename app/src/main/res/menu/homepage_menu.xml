@@ -19,6 +19,14 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_baseline_person_24"
             android:title="Profile" />
+<!--        <item-->
+<!--            android:id="@+id/nav_learning_mat"-->
+<!--            android:icon="@drawable/icon_attachement"-->
+<!--            android:title="FileSpace" />-->
+        <item
+            android:id="@+id/nav_feedBack"
+            android:icon="@drawable/icon_check_02_round"
+            android:title="Feedback" />
 
     </group>
 

@@ -13,7 +13,9 @@
     <color name="textHint">#73519E</color>
     <color name="violet_light">#DAC6F4</color>
     <color name="warning">#A52222</color>
+    <color name="warning_01">#E73F3F</color>
     <color name="dirty_white">#F0E4FF</color>
+    <color name="violet_light_01">#ece8f1</color>
 
 
 </resources>

@@ -3,8 +3,6 @@ package com.project.learningbuddy.firebase;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -17,6 +15,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.project.learningbuddy.listener.ExistListener;
+import com.project.learningbuddy.listener.LearningMaterialListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 
 import java.util.ArrayList;
@@ -30,73 +30,73 @@ public class LearningMaterialsController {
     public static String userID = firebaseAuth.getCurrentUser().getUid();
     public static FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    public static void createClassLearningMaterial(String classID, String title, String content, List<String> files, MyCompleteListener myCompleteListener) {
-//        retrieving classname, subjectname and yearlevel from classes collection -- for learning_materials (tags)
-        DocumentReference classRef = firebaseFirestore.collection("classes")
-                .document(classID);
-       classRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        adding the data to the collection learning_materials
-                        Map<String, Object> learningMaterials = new HashMap<>();
-                        learningMaterials.put("materialTitle", title);
-                        learningMaterials.put("materialContent", content);
-                        learningMaterials.put("files", files);
-                        learningMaterials.put("materialCreator", userID);
-                        learningMaterials.put("visibility", false);
-                        learningMaterials.put("timestamp", Timestamp.now());
-                        List<String> tags = new ArrayList<>();
-                        tags.add(documentSnapshot.getString("className"));
-                        tags.add(documentSnapshot.getString("subjectName"));
-                        tags.add(documentSnapshot.getString("classYearLevel"));
-                        learningMaterials.put("tags", tags);
-
-                        firebaseFirestore.collection("learning_materials")
-                                .add(learningMaterials)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        String learningMaterialID = documentReference.getId();
-
-                                        Map<String, Object> classLearningMaterials = new HashMap<>();
-                                        classLearningMaterials.put("materialTitle", title);
-                                        classLearningMaterials.put("materialContent", content);
-                                        classLearningMaterials.put("files", files);
-                                        classLearningMaterials.put("materialCreator", userID);
-                                        classLearningMaterials.put("learningMaterialID", learningMaterialID);
-                                        classLearningMaterials.put("timestamp", Timestamp.now());
-
-                                        classRef.collection("learning_materials")
-                                                .add(classLearningMaterials)
-                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentReference documentReference) {
-                                                        Map<String, Object> posts = new HashMap<>();
-                                                        posts.put("classID", classID);
-                                                        posts.put("getID", documentReference.getId());
-                                                        posts.put("postType", "Learning Material");
-                                                        posts.put("timestamp", Timestamp.now());
-
-                                                        classRef.collection("posts")
-                                                                .add(posts)
-                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                    @Override
-                                                                    public void onSuccess(DocumentReference documentReference) {
-                                                                        myCompleteListener.onSuccess();
-                                                                    }
-                                                                }).addOnFailureListener(new OnFailureListener() {
-                                                                    @Override
-                                                                    public void onFailure(@NonNull Exception e) {
-                                                                        myCompleteListener.onFailure();
-                                                                    }
-                                                                });
-                                                    }
-                                                });
-                                    }
-                                });
-                }
-            });
-    }
+//    public static void createClassLearningMaterial(String classID, String title, String content, List<String> files, MyCompleteListener myCompleteListener) {
+////        retrieving classname, subjectname and yearlevel from classes collection -- for learning_materials (tags)
+//        DocumentReference classRef = firebaseFirestore.collection("classes")
+//                .document(classID);
+//       classRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+////                        adding the data to the collection learning_materials
+//                        Map<String, Object> learningMaterials = new HashMap<>();
+//                        learningMaterials.put("materialTitle", title);
+//                        learningMaterials.put("materialContent", content);
+//                        learningMaterials.put("files", files);
+//                        learningMaterials.put("materialCreator", userID);
+//                        learningMaterials.put("visibility", false);
+//                        learningMaterials.put("timestamp", Timestamp.now());
+//                        List<String> tags = new ArrayList<>();
+//                        tags.add(documentSnapshot.getString("className"));
+//                        tags.add(documentSnapshot.getString("subjectName"));
+//                        tags.add(documentSnapshot.getString("classYearLevel"));
+//                        learningMaterials.put("tags", tags);
+//
+//                        firebaseFirestore.collection("learning_materials")
+//                                .add(learningMaterials)
+//                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                    @Override
+//                                    public void onSuccess(DocumentReference documentReference) {
+//                                        String learningMaterialID = documentReference.getId();
+//
+//                                        Map<String, Object> classLearningMaterials = new HashMap<>();
+//                                        classLearningMaterials.put("materialTitle", title);
+//                                        classLearningMaterials.put("materialContent", content);
+//                                        classLearningMaterials.put("files", files);
+//                                        classLearningMaterials.put("materialCreator", userID);
+//                                        classLearningMaterials.put("learningMaterialID", learningMaterialID);
+//                                        classLearningMaterials.put("timestamp", Timestamp.now());
+//
+//                                        classRef.collection("learning_materials")
+//                                                .add(classLearningMaterials)
+//                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                                    @Override
+//                                                    public void onSuccess(DocumentReference documentReference) {
+//                                                        Map<String, Object> posts = new HashMap<>();
+//                                                        posts.put("classID", classID);
+//                                                        posts.put("getID", documentReference.getId());
+//                                                        posts.put("postType", "Learning Material");
+//                                                        posts.put("timestamp", Timestamp.now());
+//
+//                                                        classRef.collection("posts")
+//                                                                .add(posts)
+//                                                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                                                                    @Override
+//                                                                    public void onSuccess(DocumentReference documentReference) {
+//                                                                        myCompleteListener.onSuccess();
+//                                                                    }
+//                                                                }).addOnFailureListener(new OnFailureListener() {
+//                                                                    @Override
+//                                                                    public void onFailure(Exception e) {
+//                                                                        myCompleteListener.onFailure();
+//                                                                    }
+//                                                                });
+//                                                    }
+//                                                });
+//                                    }
+//                                });
+//                }
+//            });
+//    }
 
 
 
@@ -260,6 +260,7 @@ public class LearningMaterialsController {
                     materials.put("materialTitle", title);
                     materials.put("materialContent", content);
                     materials.put("materialCreator", userID);
+                    materials.put("materialType", "Uploaded Files");
                     materials.put("timestamp", Timestamp.now());
                     materials.put("visibility", false);
                     List<String> tags = new ArrayList<>();
@@ -275,6 +276,7 @@ public class LearningMaterialsController {
                     classMaterials.put("materialTitle", title);
                     classMaterials.put("materialContent", content);
                     classMaterials.put("materialCreator", userID);
+                    classMaterials.put("materialType", "Uploaded Files");
                     classMaterials.put("timestamp", Timestamp.now());
                     firebaseFirestore.collection("classes")
                             .document(classID)
@@ -318,5 +320,73 @@ public class LearningMaterialsController {
                                 .document().set(file);
                     }
                 });
+    }
+
+    public static void checkDraftLearningMaterialsExist(ExistListener existListener){
+        firebaseFirestore.collection("learning_materials")
+                .whereEqualTo("materialCreator", userID)
+                .whereEqualTo("visibility", false)
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        if (!task.getResult().isEmpty()) {
+                            existListener.onExist(true);
+                        } else {
+                            existListener.onExist(false);
+                        }
+                    }else{
+                        existListener.onFailure(new Exception("There's a problem fetching data from the LearningMaterials"));
+                    }
+        });
+    }
+
+    public static void checkPostLearningMaterialsExist(ExistListener existListener){
+        firebaseFirestore.collection("learning_materials")
+                .whereEqualTo("materialCreator", userID)
+                .whereEqualTo("visibility", true)
+                .get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if (!task.getResult().isEmpty()) {
+                    existListener.onExist(true);
+                } else {
+                    existListener.onExist(false);
+                }
+            }else{
+                existListener.onFailure(new Exception("There's a problem fetching data from the LearningMaterials"));
+            }
+        });
+    }
+
+    public static void checkUserLike(String materialID, ExistListener existListener) {
+        firebaseFirestore.collection("learning_materials")
+                .document(materialID)
+                .collection("likes")
+                .whereEqualTo("userID", userID)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()){
+                        if(!task.getResult().isEmpty()){
+                            existListener.onExist(true);
+                        }else{
+                            existListener.onExist(false);
+                        }
+                    }else{
+                        existListener.onFailure(new Exception("There's a problem checking user in the learningMaterials 'likes' collection"));
+                    }
+        });
+    }
+
+    public static void userLikeLearningmaterials(String materialID, MyCompleteListener myCompleteListener){
+        Map<String, Object> likes = new HashMap<>();
+        likes.put("userID", userID);
+        firebaseFirestore.collection("learning_materials")
+                .document(materialID)
+                .collection("likes")
+                .document()
+                .set(likes).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        myCompleteListener.onSuccess();
+                    }else{
+                        myCompleteListener.onFailure();
+                    }
+        });
     }
 }

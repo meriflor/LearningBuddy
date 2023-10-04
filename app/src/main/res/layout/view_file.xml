@@ -31,6 +31,12 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:visibility="gone"/>
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:visibility="gone"/>
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
@@ -66,5 +72,5 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:indeterminateTint="@color/textHint"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 </LinearLayout>

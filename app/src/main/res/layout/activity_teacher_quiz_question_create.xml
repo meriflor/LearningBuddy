@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f3f3f3">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/teacher_quizToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+    </androidx.appcompat.widget.Toolbar>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Question"
+                android:textColor="@color/violet"
+                style="@style/text_quicksand_bold.header"/>
+            <EditText
+                android:id="@+id/et_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="100dp"
+                android:maxHeight="170dp"
+                android:singleLine="false"
+                android:scrollbars="vertical"
+                android:gravity="top|start"
+                android:textColorHint="#9D8BB3"
+                android:padding="5dp"
+                android:background="@android:color/transparent"
+                style="@style/text_quicksand.body2"
+                android:hint="Enter a question . . ."/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:contentPadding="10dp"
+                app:cardCornerRadius="10dp"
+                app:cardBackgroundColor="#f3f3f3"
+                app:cardElevation="3dp"
+                android:layout_margin="5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/add_option_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/violet"
+                        android:hint="Enter an option . . ."
+                        style="@style/text_quicksand.body2"
+                        android:textColorHint="@color/textHint"
+                        android:textColor="@color/violet"/>
+                    <Button
+                        android:id="@+id/add_option_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp"
+                        android:minWidth="20dp"
+                        android:text="Add"
+                        android:drawableStart="@drawable/icon_add_white"
+                        android:padding="5dp"
+                        android:drawablePadding="5dp"
+                        style="@style/text_quicksand.body2"
+                        android:textColor="@color/white"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/background_pressed_violet_to_light_violet"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Options"
+                style="@style/text_quicksand_bold.header"
+                android:textColor="@color/violet"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/no_options_yet_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/text_quicksand.body2"
+                android:textColor="@color/gray"
+                android:text="Create an option first"
+                android:gravity="center"
+                android:layout_marginVertical="10dp"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/option_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Answer"
+                style="@style/text_quicksand_bold.header"
+                android:textColor="@color/violet"
+                android:layout_marginTop="10dp"/>
+
+            <Spinner
+                android:id="@+id/spinner_correct_answer"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:textSize="12sp"
+                tools:ignore="SpeakableTextPresentCheck"
+                tools:visibility="visible"
+                android:scrollbarSize="40sp"
+                android:textColor="@color/black"
+                style="@style/Widget.AppCompat.DropDownItem.Spinner"/>
+
+            <Button
+                android:id="@+id/btn_add_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="20dp"
+                android:minWidth="20dp"
+                android:padding="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="end"
+                android:background="@drawable/background_pressed_violet_to_light_violet"
+                android:textColor="@color/white"
+                android:drawableStart="@drawable/icon_add_white"
+                android:text="Add Question"
+                android:drawablePadding="5dp"
+                style="@style/text_quicksand.body2"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -3,6 +3,7 @@ package com.project.learningbuddy.ui.teacher.announcement;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +22,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ViewAnnouncementActivity extends AppCompatActivity {
     public static final String CLASSID = "Class ID";
+    public static final String ANNOUNCEMENTTIMESTAMP = "Announcement Timestamp";
     public static String ANNOUNCEMENTID = "Announcement ID";
     public static String ANNOUNCEMENTTITLE = "Announcement Title";
     public static String ANNOUNCEMENTCONTENT = "Announcement Content";
     public ImageView deleteAnnouncement, editAnnouncement;
-    public TextView announcementTitle, announcementContent;
-    public String classID, announcementID, annTitle, annContent;
+    public TextView announcementTitle, announcementContent, announcementTimestamp;
+    public String classID, announcementID, annTitle, annContent, annTimestamp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
         announcementID = intent.getStringExtra(ANNOUNCEMENTID);
         annTitle = intent.getStringExtra(ANNOUNCEMENTTITLE);
         annContent = intent.getStringExtra(ANNOUNCEMENTCONTENT);
+        annTimestamp = intent.getStringExtra(ANNOUNCEMENTTIMESTAMP);
 
         Log.d("TAG", intent.getStringExtra(ANNOUNCEMENTTITLE));
 
@@ -52,6 +55,8 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
         announcementContent = findViewById(R.id.announcement_content_tv);
         deleteAnnouncement = findViewById(R.id.announcement_delete);
         editAnnouncement = findViewById(R.id.announcement_edit);
+        announcementTimestamp = findViewById(R.id.announcement_timestamp_tv);
+
         editAnnouncement.setVisibility(View.VISIBLE);
         deleteAnnouncement.setVisibility(View.VISIBLE);
         announcementContent.setMovementMethod(new ScrollingMovementMethod());
@@ -93,6 +98,8 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
     private void viewAnnouncementData() {
         announcementTitle.setText(annTitle);
         announcementContent.setText(annContent);
+        Linkify.addLinks(announcementContent, Linkify.WEB_URLS);
+        announcementTimestamp.setText(annTimestamp);
     }
 
     @Override

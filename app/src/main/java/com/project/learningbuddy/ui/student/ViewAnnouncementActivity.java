@@ -6,7 +6,6 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -22,7 +21,7 @@ public class ViewAnnouncementActivity extends AppCompatActivity {
     public TextView announcementTitle, announcementContent;
     public String classID, announcementID, annTitle, annContent;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_announcement);
 

@@ -3,9 +3,9 @@ package com.project.learningbuddy.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,7 +25,7 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
      *
      * @param options
      */
-    public ClassListTeacherAdapter(@NonNull FirestoreRecyclerOptions<ClassList> options) {
+    public ClassListTeacherAdapter(FirestoreRecyclerOptions<ClassList> options) {
         super(options);
     }
 
@@ -36,7 +36,7 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
     public void setOnItemClickListener(OnItemClickListener listener){mListener = listener;};
 
     @Override
-    protected void onBindViewHolder(@NonNull ClassListTeacherAdapter.ClassesHolder holder, int position, @NonNull ClassList model) {
+    protected void onBindViewHolder(ClassListTeacherAdapter.ClassesHolder holder, int position, ClassList model) {
         FirebaseFirestore.getInstance()
                 .collection("classes")
                 .document(model.getClassID())
@@ -59,6 +59,12 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                             TextView tvclassYearLevel = customLayout.findViewById(R.id.tv_class_year_level);
                             TextView tvclassSection = customLayout.findViewById(R.id.tv_class_section);
                             TextView extra = customLayout.findViewById(R.id.tv_extra_info);
+                            ImageView imageView = customLayout.findViewById(R.id.classtransparency);
+
+                            int cardviewHeight = holder.cardView.getHeight();
+                            ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+                            layoutParams.height = cardviewHeight;
+                            imageView.setLayoutParams(layoutParams);
 
                             FirebaseFirestore.getInstance()
                                     .collection("classes")
@@ -68,7 +74,7 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             int students = queryDocumentSnapshots.size();
-
+                                            holder.cardView.removeAllViews();
                                             holder.cardView.addView(customLayout);
                                             tvclassName.setText(model.getClassName());
                                             tvclassYearLevel.setText(classYearLevel);
@@ -83,9 +89,8 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
                 });
     }
 
-    @NonNull
     @Override
-    public ClassListTeacherAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ClassListTeacherAdapter.ClassesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_class, parent, false);
         return new ClassesHolder(view, mListener);
@@ -94,7 +99,7 @@ public class ClassListTeacherAdapter extends FirestoreRecyclerAdapter<ClassList,
     public class ClassesHolder extends RecyclerView.ViewHolder {
 //        TextView className, classSection, classYearLevel, studentCount;
         CardView cardView;
-        public ClassesHolder(@NonNull View itemView, OnItemClickListener listener) {
+        public ClassesHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
 //            className = itemView.findViewById(R.id.tv_class_name);

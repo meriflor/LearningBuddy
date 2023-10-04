@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,13 +29,23 @@ public class LearningMaterialsAdapter extends FirestoreRecyclerAdapter<LearningM
      *
      * @param options
      */
-    public LearningMaterialsAdapter(@NonNull FirestoreRecyclerOptions<LearningMaterials> options) {
+    public LearningMaterialsAdapter(FirestoreRecyclerOptions<LearningMaterials> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull LearningMaterialsAdapter.ClassesHolder holder, int position, @NonNull LearningMaterials model) {
-        holder.matIcon.setBackgroundResource(R.drawable.icon_attachment_3);
+    protected void onBindViewHolder(LearningMaterialsAdapter.ClassesHolder holder, int position, LearningMaterials model) {
+        if(model.getMaterialType() == null){
+            holder.matIcon.setBackgroundResource(R.drawable.icon_attachment_3);
+        }else{
+            if(model.getMaterialType().equals("Practice Reading")){
+                holder.matIcon.setBackgroundResource(R.drawable.icon_speak_02_rounded);
+            }else if(model.getMaterialType().equals("Uploaded Files")){
+                holder.matIcon.setBackgroundResource(R.drawable.icon_attachment_3);
+            }else{
+                holder.matIcon.setBackgroundResource(R.drawable.icon_bubble);
+            }
+        }
         holder.matTitle.setText(model.getMaterialTitle());
         DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(model.getMaterialCreator());
         userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -58,9 +67,9 @@ public class LearningMaterialsAdapter extends FirestoreRecyclerAdapter<LearningM
         holder.cardView.setVisibility(View.VISIBLE);
     }
 
-    @NonNull
+
     @Override
-    public LearningMaterialsAdapter.ClassesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LearningMaterialsAdapter.ClassesHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
         return new ClassesHolder(view, mListener);
     }

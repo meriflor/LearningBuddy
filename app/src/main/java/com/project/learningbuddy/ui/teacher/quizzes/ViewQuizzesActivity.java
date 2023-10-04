@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -25,17 +24,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.QuestionsAdapter;
+import com.project.learningbuddy.firebase.QuestionsController;
 import com.project.learningbuddy.firebase.QuizController;
 import com.project.learningbuddy.listener.CheckVisibility;
 import com.project.learningbuddy.listener.MyCompleteListener;
+import com.project.learningbuddy.listener.QuestionDataListener;
 import com.project.learningbuddy.model.Questions;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ViewQuizzesActivity extends AppCompatActivity {
 
@@ -43,19 +49,20 @@ public class ViewQuizzesActivity extends AppCompatActivity {
     public static final String CLASSID = "Class ID";
     public static final String TITLE = "Quiz Title";
     public static final String DESC = "Quiz Desc";
-    public String quizID, classID, quizTitle, quizDesc;
+    public static final String TIMESTAMP = "Timestamp";
+    public String quizID, classID, quizTitle, quizDesc, quizTimestamp;
 
     public RecyclerView recyclerView;
     public FloatingActionButton fab;
     public ImageView settings, records;
     public SwitchCompat visibility;
-    public TextView tvTitle, tvDesc;
+    public TextView tvTitle, tvDesc, tvTimestamp, tvNoQuestionExistYet;
     public QuestionsAdapter adapter;
 
     public AlertDialog.Builder dialogBuilder;
     public AlertDialog dialog;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_quiz);
 
@@ -64,12 +71,15 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         classID = intent.getStringExtra(CLASSID);
         quizTitle = intent.getStringExtra(TITLE);
         quizDesc = intent.getStringExtra(DESC);
+        quizTimestamp = intent.getStringExtra(TIMESTAMP);
 
         tvTitle = findViewById(R.id.quiz_title);
         tvDesc = findViewById(R.id.quiz_content);
+        tvTimestamp = findViewById(R.id.quiz_timestamp);
+        tvNoQuestionExistYet = findViewById(R.id.noQuestionsYet_text);
         tvTitle.setText(quizTitle);
         tvDesc.setText(quizDesc);
-
+        tvTimestamp.setText(quizTimestamp);
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.quizToolbar);
@@ -100,7 +110,7 @@ public class ViewQuizzesActivity extends AppCompatActivity {
             }
         });
 
-//        settigns of the quiz
+//        settings of the quiz
         settings.setOnClickListener(v-> {
             viewSettings();
         });
@@ -260,6 +270,29 @@ public class ViewQuizzesActivity extends AppCompatActivity {
         cancel.setOnClickListener(view -> {
             dialog.dismiss();
         });
+
+        checkQuestionsExist();
+    }
+
+    private void checkQuestionsExist() {
+        QuestionsController.checkQuestionExist(classID, quizID, new QuestionDataListener() {
+            @Override
+            public void onSuccess(Questions question) {
+
+            }
+
+            @Override
+            public void onExist(Boolean exist) {
+                if(!exist){
+
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+
+            }
+        });
     }
 
     private void showToast(String text) {
@@ -283,9 +316,13 @@ public class ViewQuizzesActivity extends AppCompatActivity {
     }
 
     private void addQuestion() {
-        Intent intent = new Intent(ViewQuizzesActivity.this, TeacherCreateQuestion.class);
-        intent.putExtra(TeacherCreateQuestion.CLASSID, classID);
-        intent.putExtra(TeacherCreateQuestion.QUIZID, quizID);
+//        Intent intent = new Intent(ViewQuizzesActivity.this, TeacherCreateQuestion.class);
+//        intent.putExtra(TeacherCreateQuestion.CLASSID, classID);
+//        intent.putExtra(TeacherCreateQuestion.QUIZID, quizID);
+//        startActivity(intent);
+        Intent intent = new Intent(ViewQuizzesActivity.this, TeacherQuizQuestionCreateActivity.class);
+        intent.putExtra(TeacherQuizQuestionCreateActivity.CLASSID, classID);
+        intent.putExtra(TeacherQuizQuestionCreateActivity.QUIZID, quizID);
         startActivity(intent);
     }
 

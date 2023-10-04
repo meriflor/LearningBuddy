@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f3f3f3"
     android:orientation="vertical"
     tools:context=".ui.teacher.quizzes.ViewQuizzesActivity">
 
@@ -16,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="4dp"
+            android:background="@color/white"
             app:titleTextColor="@color/violet"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
@@ -72,7 +74,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="10dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,28 +84,39 @@
                     android:id="@+id/quiz_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
+                    style="@style/text_quicksand_bold.header"
                     android:textColor="@color/violet"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:paddingHorizontal="18dp"
+                    android:text="Introduction"
                     />
+                <TextView
+                    android:id="@+id/quiz_timestamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray"
+                    style="@style/text_quicksand.body"/>
                 <TextView
                     android:id="@+id/quiz_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/quicksand"
+                    style="@style/text_quicksand.body2"
                     android:textColor="@color/violet"
-                    android:textSize="16sp"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="What do you think people do?"
+                    />
+                <TextView
+                    android:id="@+id/noQuestionsYet_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/text_quicksand.body2"
+                    android:paddingVertical="40dp"
+                    android:text="Add questions to your quiz."
+                    android:gravity="center"
+                    android:visibility="gone"
                     />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/quiz_questions_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#f3f3f3"
-                    android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp"
                     android:overScrollMode="never"/>
             </LinearLayout>
@@ -115,7 +129,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        app:backgroundTint="#f3f3f3"
+        app:backgroundTint="@color/white"
         android:src="@drawable/icon_add_2"
         android:contentDescription="Add New Question"
         app:fabSize="normal" />

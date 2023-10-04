@@ -1,5 +1,6 @@
 package com.project.learningbuddy.ui.teacher.learningmaterials;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -9,17 +10,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.project.learningbuddy.R;
@@ -27,8 +33,10 @@ import com.project.learningbuddy.R;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -40,7 +48,7 @@ public class ViewFileActivity extends AppCompatActivity {
     public PDFView pdfView;
     public ProgressBar progressBar;
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_file);
         Intent intent = getIntent();
@@ -64,7 +72,6 @@ public class ViewFileActivity extends AppCompatActivity {
         file_name = findViewById(R.id.fileName);
         file_name.setText(fileName);
         progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
 
 //        checkingFileType();
         if (fileType.equals("PDF")) {
@@ -75,9 +82,23 @@ public class ViewFileActivity extends AppCompatActivity {
 //            ImageView imageView = findViewById(R.id.image_view);
             PhotoView photoView = findViewById(R.id.photo_view);
             Glide.with(this)
-                    .load(fileUri) // Pass the URI as a Uri object
-                    .into(photoView);
-            progressBar.setVisibility(View.GONE);
+                .load(fileUri) // Pass the URI as a Uri object
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Toast.makeText(ViewFileActivity.this, "Loading Image Failed", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(photoView);
+//            progressBar.setVisibility(View.GONE);
             photoView.setVisibility(View.VISIBLE);
             Log.d("CHECKING FILETYPE: ", "ImageView");
         }
@@ -90,6 +111,10 @@ public class ViewFileActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             videoView.setVisibility(View.VISIBLE);
             Log.d("CHECKING FILETYPE: ", "VideoView");
+        }
+
+        if(fileType.equals("DOC") || fileType.equals("XLS") || fileType.equals("PPT")){
+
         }
     }
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f3f3f3"
+    tools:context=".ui.teacher.learningmaterials.TeacherCreateLearningMaterials">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:background="@color/violet"
+        android:elevation="10dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/icon_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_close_02"
+                android:padding="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            <ImageView
+                android:id="@+id/icon_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_post_white"
+                android:padding="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/learning_material_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/violet_light"
+            android:hint="Post title . . ."
+            style="@style/text_quicksand.body3"
+            android:textColorHint="@color/violet_light"
+            android:textColor="@color/violet_light"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/learning_material_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:maxHeight="170dp"
+                android:inputType="textMultiLine"
+                android:gravity="top|start"
+                android:scrollbars="vertical"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="5dp"
+                android:backgroundTint="@color/violet"
+                android:background="@android:color/transparent"
+                android:hint="Content . . ."
+                style="@style/text_quicksand.body2"
+                android:paddingHorizontal="8dp"/>
+
+            <include layout="@layout/practice_reading_cardview"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/teacher_upload_practice_reading_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:layout_weight="1"
+                android:overScrollMode="never"/>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

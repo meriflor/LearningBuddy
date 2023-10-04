@@ -1,11 +1,16 @@
 package com.project.learningbuddy.ui.teacher;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +34,7 @@ import com.project.learningbuddy.ui.teacher.announcement.TeacherAnnouncementActi
 import com.project.learningbuddy.ui.teacher.announcement.TeacherCreateAnnouncement;
 import com.project.learningbuddy.ui.teacher.announcement.ViewAnnouncementActivity;
 import com.project.learningbuddy.ui.teacher.learningmaterials.TeacherLearningMaterialsActivity;
+import com.project.learningbuddy.ui.teacher.learningmaterials.TeacherLearningMaterialsListActivity;
 import com.project.learningbuddy.ui.teacher.learningmaterials.ViewLearningMaterialActivity;
 import com.project.learningbuddy.ui.teacher.quizzes.TeacherQuizzesActivity;
 import com.project.learningbuddy.ui.teacher.quizzes.ViewQuizzesActivity;
@@ -49,10 +56,20 @@ public class TeacherClassroomActivity extends AppCompatActivity {
     public TextView tv_className, tv_classYearNSection, tv_subjectName, tv_extra;
     public CardView createAnnouncement;
     public FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private FloatingActionsMenu fabMenu;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_classroom);
+
+        Dialog dialog = new Dialog(this);
+        View view = getLayoutInflater().inflate(R.layout.loading_dialog, null);
+        TextView message = view.findViewById(R.id.loading_message);
+        message.setText("Loading . . .");
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
 
         Intent intent = getIntent();
         className = intent.getStringExtra(CLASSNAME);
@@ -63,11 +80,14 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         backgroundLayout = intent.getIntExtra("bgLayout", -1);
         studentCount = intent.getIntExtra("studentCount", -1);
 
-
-
         CardView classInfo = findViewById(R.id.class_info);
         View customLayout = LayoutInflater.from(this)
                 .inflate(backgroundLayout, classInfo, false);
+        ImageView imageView = customLayout.findViewById(R.id.classtransparency);
+        int cardviewHeight = classInfo.getHeight();
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.height = cardviewHeight;
+        imageView.setLayoutParams(layoutParams);
         classInfo.addView(customLayout);
 
         tv_className = customLayout.findViewById(R.id.tv_class_name);
@@ -100,10 +120,12 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         FloatingActionButton quizzes = findViewById(R.id.quizzes);
         FloatingActionButton learningMaterials = findViewById(R.id.learningMaterial);
         FloatingActionButton announcement = findViewById(R.id.announcements);
+        fabMenu = findViewById(R.id.fab_menu);
 
         quizzes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMenu.collapse();
                 Intent intent = new Intent(TeacherClassroomActivity.this, TeacherQuizzesActivity.class);
                 intent.putExtra(TeacherQuizzesActivity.CLASSID,classID);
                 startActivity(intent);
@@ -113,6 +135,7 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         announcement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fabMenu.collapse();
                 Intent intent = new Intent(TeacherClassroomActivity.this, TeacherAnnouncementActivity.class);
                 intent.putExtra(TeacherAnnouncementActivity.CLASSID,classID);
                 startActivity(intent);
@@ -122,14 +145,16 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         learningMaterials.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TeacherClassroomActivity.this, TeacherLearningMaterialsActivity.class);
-                intent.putExtra(TeacherLearningMaterialsActivity.CLASSID, classID);
-                intent.putExtra(TeacherLearningMaterialsActivity.CLASSNAME, className);
+                fabMenu.collapse();
+                Intent intent = new Intent(TeacherClassroomActivity.this, TeacherLearningMaterialsListActivity.class);
+                intent.putExtra(TeacherLearningMaterialsListActivity.CLASSID, classID);
+                intent.putExtra(TeacherLearningMaterialsListActivity.CLASSNAME, className);
                 startActivity(intent);
             }
         });
 
         getPostsList();
+        dialog.dismiss();
     }
 
     private void getPostsList() {
@@ -138,75 +163,106 @@ public class TeacherClassroomActivity extends AppCompatActivity {
                 .document(classID)
                 .collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING);
-
         FirestoreRecyclerOptions<Posts> options = new FirestoreRecyclerOptions.Builder<Posts>()
                 .setQuery(postQuery, Posts.class).build();
         adapter = new PostsAdapter(options);
         recyclerView = findViewById(R.id.teacher_post_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        postQuery.get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if(!task.getResult().isEmpty()){
 
-        adapter.setOnItemClickListener(new PostsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String postType = documentSnapshot.getString("postType");
-                String documentID = documentSnapshot.getString("getID");
-                Log.d("TAG", documentID + " is the ID biatch");
-                switch (postType){
-                    case "Announcement":
-                        Intent announcementIntent = new Intent(TeacherClassroomActivity.this, ViewAnnouncementActivity.class);
-                        firebaseFirestore.collection("classes")
-                                .document(classID)
-                                .collection("announcements")
-                                        .document(documentID).get()
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, documentSnapshot.getId());
-                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
-                                                announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
-                                                announcementIntent.putExtra(ViewAnnouncementActivity.CLASSID, classID);
-                                                startActivity(announcementIntent);
-                                            }
-                                        });
-                        break;
-                    case "Quiz":
-                        Intent quizIntent = new Intent(TeacherClassroomActivity.this, ViewQuizzesActivity.class);
-                        firebaseFirestore.collection("classes")
-                                .document(classID)
-                                .collection("quizzes")
-                                .document(documentID).get()
-                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        quizIntent.putExtra(ViewQuizzesActivity.QUIZID, documentSnapshot.getId());
-                                        quizIntent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
-                                        quizIntent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizContent"));
-                                        quizIntent.putExtra(ViewQuizzesActivity.CLASSID, classID);
-                                        startActivity(quizIntent);
-                                    }
-                                });
-                        break;
-                    case "Learning Material":
-                        Intent matIntent = new Intent(TeacherClassroomActivity.this, ViewLearningMaterialActivity.class);
-                        firebaseFirestore.collection("classes")
-                                .document(classID)
-                                .collection("quizzes")
-                                .document(documentID).get()
-                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        matIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
-                                        matIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
-                                        startActivity(matIntent);
-                                    }
-                                });
-                        break;
-                    default:
-                        Toast.makeText(TeacherClassroomActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    recyclerView.setAdapter(adapter);
+
+                    adapter.setOnItemClickListener(new PostsAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                            fabMenu.collapse();
+                            String postType = documentSnapshot.getString("postType");
+                            String documentID = documentSnapshot.getString("getID");
+                            Log.d("TAG", documentID + " is the ID biatch");
+                            switch (postType){
+                                case "Announcement":
+                                    Intent announcementIntent = new Intent(TeacherClassroomActivity.this, ViewAnnouncementActivity.class);
+                                    firebaseFirestore.collection("classes")
+                                            .document(classID)
+                                            .collection("announcements")
+                                            .document(documentID).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, documentSnapshot.getId());
+                                                    announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
+                                                    announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
+                                                    announcementIntent.putExtra(ViewAnnouncementActivity.CLASSID, classID);
+                                                    startActivity(announcementIntent);
+                                                }
+                                            });
+                                    break;
+                                case "Quiz":
+                                    Intent quizIntent = new Intent(TeacherClassroomActivity.this, ViewQuizzesActivity.class);
+                                    firebaseFirestore.collection("classes")
+                                            .document(classID)
+                                            .collection("quizzes")
+                                            .document(documentID).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    quizIntent.putExtra(ViewQuizzesActivity.QUIZID, documentSnapshot.getId());
+                                                    quizIntent.putExtra(ViewQuizzesActivity.TITLE, documentSnapshot.getString("quizTitle"));
+                                                    quizIntent.putExtra(ViewQuizzesActivity.DESC, documentSnapshot.getString("quizContent"));
+                                                    quizIntent.putExtra(ViewQuizzesActivity.CLASSID, classID);
+                                                    startActivity(quizIntent);
+                                                }
+                                            });
+                                    break;
+                                case "Learning Material":
+                                    Intent matIntent = new Intent(TeacherClassroomActivity.this, ViewLearningMaterialActivity.class);
+                                    firebaseFirestore.collection("classes")
+                                            .document(classID)
+                                            .collection("learning_materials")
+                                            .document(documentID).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    matIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
+                                                    matIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
+                                                    matIntent.putExtra(ViewLearningMaterialActivity.MATERIALTYPE, documentSnapshot.getString("materialType"));
+                                                    startActivity(matIntent);
+                                                }
+                                            });
+                                    break;
+                                case "Practice Reading":
+                                    Intent pracIntent = new Intent(TeacherClassroomActivity.this, ViewLearningMaterialActivity.class);
+                                    firebaseFirestore.collection("classes")
+                                            .document(classID)
+                                            .collection("learning_materials")
+                                            .document(documentID).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    pracIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
+                                                    pracIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
+                                                    pracIntent.putExtra(ViewLearningMaterialActivity.MATERIALTYPE, documentSnapshot.getString("materialType"));
+                                                    startActivity(pracIntent);
+                                                }
+                                            });
+                                    break;
+                                default:
+                                    Toast.makeText(TeacherClassroomActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }else{
+                    TextView noPostYet = findViewById(R.id.noPostYet_text);
+                    noPostYet.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+
+
+
     }
 
     @Override

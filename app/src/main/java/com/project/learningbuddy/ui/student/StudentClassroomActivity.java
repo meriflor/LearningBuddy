@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -73,6 +74,11 @@ public class StudentClassroomActivity extends AppCompatActivity {
         CardView classInfo = findViewById(R.id.class_info);
         View customLayout = LayoutInflater.from(this)
                 .inflate(backgroundLayout, classInfo, false);
+        ImageView imageView = customLayout.findViewById(R.id.classtransparency);
+        int cardviewHeight = classInfo.getHeight();
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        layoutParams.height = cardviewHeight;
+        imageView.setLayoutParams(layoutParams);
         classInfo.addView(customLayout);
 
 
