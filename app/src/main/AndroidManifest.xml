@@ -98,19 +98,22 @@
             android:name=".ui.student.StudentClassroomPeople"
             android:exported="true"/>
         <activity
-            android:name=".ui.student.ViewAnnouncementActivity"
+            android:name=".ui.student.announcements.ViewAnnouncementActivity"
             android:exported="true"/>
         <activity
-            android:name=".ui.student.ViewQuizzesActivity"
+            android:name=".ui.student.quizzes.ViewQuizzesActivity"
             android:exported="true"/>
         <activity
-            android:name=".ui.student.ViewQuestionsActivity"
+            android:name=".ui.student.quizzes.ViewQuestionsActivity"
             android:exported="true"/>
         <activity
-            android:name=".ui.student.ViewQuizResultActivity"
+            android:name=".ui.student.quizzes.ViewQuizResultActivity"
             android:exported="true"/>
         <activity
             android:name=".ui.student.StudentScoreListActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.student.learningmaterials.ViewLearningMaterialsActivity"
             android:exported="true"/>
 
         <activity

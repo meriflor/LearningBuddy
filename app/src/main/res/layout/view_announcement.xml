@@ -59,26 +59,24 @@
             android:id="@+id/announcement_title_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/quicksand"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            style="@style/text_quicksand_bold.header1"
             android:textColor="@color/violet"
-            android:layout_margin="20dp"/>
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"/>
         <TextView
             android:id="@+id/announcement_timestamp_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
+            android:layout_marginHorizontal="10dp"
             style="@style/text_quicksand.body"/>
         <TextView
             android:id="@+id/announcement_content_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/quicksand"
-            android:textSize="16sp"
             android:scrollbars="vertical"
+            style="@style/text_quicksand.body3"
             android:textColor="@color/violet"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_margin="20dp"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

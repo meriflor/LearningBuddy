@@ -1,4 +1,4 @@
-package com.project.learningbuddy.ui.teacher.learningmaterials;
+package com.project.learningbuddy.ui.student.learningmaterials;
 
 import static com.google.common.io.Files.getFileExtension;
 
@@ -15,70 +15,72 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.MaterialFilesAdapter;
 import com.project.learningbuddy.adapter.PracticeReadingAdapter;
 import com.project.learningbuddy.adapter.PracticeReadingRetrieve;
-import com.project.learningbuddy.firebase.LearningMaterialsController;
-import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.FileInfo;
-import com.project.learningbuddy.model.PracticeReading;
+import com.project.learningbuddy.ui.teacher.learningmaterials.ViewFileActivity;
+import com.project.learningbuddy.ui.teacher.learningmaterials.ViewLearningMaterialActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class ViewLearningMaterialActivity extends AppCompatActivity {
-
+public class ViewLearningMaterialsActivity extends AppCompatActivity {
     public static final String MATID = "Materials ID";
     public static final String CLASSID = "Class ID";
-    public static final String MATERIALTYPE = "Material Type";
-    public String materialID, classID, materialType;
+    public static final String MATTYPE = "Material Type";
+    public static final String MATTITLE = "Material Title";
+    public static final String MATCONTENT = "Material Content";
+    public static final String MATTIMESTAMP = "Material Timestamp";
+    public String materialID, classID, materialType, materialTitle, materialContent, materialTimestamp;
+
     public TextView matTitle, matContent, matTimestamp;
-    public LinearLayout filesContainer;
 
     public ImageView delete;
     public RecyclerView view;
     public MaterialFilesAdapter adapter;
+
     public LinearLayout uploadedFilesLayout, practiceReadingLayout;
 
     public TextToSpeech textToSpeech;
     public PracticeReadingAdapter practiceReadingAdapter;
     public RecyclerView recyclerView;
-//    ------------
-    private static final int PICK_IMAGE_REQUEST = 1;
-    private static final int READ_PERMISSION_CODE = 123;
+
     public Uri imageUri;
     public Boolean permissionGranted;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_learning_materials);
 
-        //Toolbar
+        Intent intent = getIntent();
+        materialID = intent.getStringExtra(MATID);
+        classID = intent.getStringExtra(CLASSID);
+        materialType = intent.getStringExtra(MATTYPE);
+        materialTitle = intent.getStringExtra(MATTITLE);
+        materialContent = intent.getStringExtra(MATCONTENT);
+        materialTimestamp = intent.getStringExtra(MATTIMESTAMP);
+
         Toolbar toolbar = findViewById(R.id.learningMaterialToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -88,23 +90,13 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
             navIcon.setColorFilter(getResources().getColor(R.color.violet), PorterDuff.Mode.SRC_ATOP);
         }
 
-        Intent intent = getIntent();
-        materialID = intent.getStringExtra(MATID);
-        classID = intent.getStringExtra(CLASSID);
-        materialType = intent.getStringExtra(MATERIALTYPE);
 
         matTitle = findViewById(R.id.mat_title);
         matContent = findViewById(R.id.mat_content);
         matTimestamp = findViewById(R.id.mat_timestamp);
-//        filesContainer = findViewById(R.id.files_container);
         delete = findViewById(R.id.materials_delete);
         uploadedFilesLayout = findViewById(R.id.uploaded_files_layout);
         practiceReadingLayout = findViewById(R.id.practice_reading_layout);
-
-        delete.setVisibility(View.VISIBLE);
-        delete.setOnClickListener(view -> {
-            deleteMaterials();
-        });
 
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -112,26 +104,14 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
                 if(i == TextToSpeech.SUCCESS){
                     int langResult = textToSpeech.setLanguage(Locale.US);
                     if(langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED){
-                        Toast.makeText(ViewLearningMaterialActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ViewLearningMaterialsActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
                     }
                 }else{
-                    Toast.makeText(ViewLearningMaterialActivity.this, "Text-to-speech initialization failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ViewLearningMaterialsActivity.this, "Text-to-speech initialization failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-
-//        ------------Permission intent
-        if (checkPermissions()) {
-            permissionGranted = true;
-
-        } else {
-            // Request permissions from the user
-            permissionGranted = false;
-        }
-        Log.d("TAG","PERMISSION GRANTED: "+permissionGranted);
-
-        Log.d("MATERIALTYPE", "this is a confirmed "+materialType);
         if(materialType == null){
             uploadedFilesLayout.setVisibility(View.VISIBLE);
             practiceReadingLayout.setVisibility(View.GONE);
@@ -155,17 +135,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         viewPostInfo();
     }
 
-    private boolean checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Check for permissions on Android Marshmallow (API level 23) and higher
-            int readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-            return readPermission == PackageManager.PERMISSION_GRANTED;
-        } else {
-            // No need to check permissions on Android versions lower than Marshmallow
-            return true;
-        }
-    }
-
     private void viewPracticeReadingList() {
         Log.d("MATERIALTYPE", "You are inside the method now");
         Query fileQuery = FirebaseFirestore.getInstance()
@@ -185,6 +154,7 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
     }
 
     private void viewFiles() {
+        Log.d("TAG", "Have you gone here? viewFiles()");
         Query fileQuery = FirebaseFirestore.getInstance()
                 .collection("classes")
                 .document(classID)
@@ -204,7 +174,7 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new MaterialFilesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Intent intent = new Intent(ViewLearningMaterialActivity.this, ViewFileActivity.class);
+                Intent intent = new Intent(ViewLearningMaterialsActivity.this, ViewFileActivity.class);
                 intent.putExtra("fileName", documentSnapshot.getString("fileName"));
                 intent.putExtra("fileType", getFileType(documentSnapshot.getString("fileName")));
                 Uri fileUri = Uri.parse(documentSnapshot.getString("fileUri")); // Replace with the actual URI
@@ -220,39 +190,29 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
     }
 
     private void viewPostInfo() {
-        DocumentReference matRef = FirebaseFirestore.getInstance()
-                .collection("classes")
-                .document(classID)
-                .collection("learning_materials")
-                .document(materialID);
+//        DocumentReference matRef = FirebaseFirestore.getInstance()
+//                .collection("classes")
+//                .document(classID)
+//                .collection("learning_materials")
+//                .document(materialID);
+//
+//        matRef.get()
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+//                    Date date = timestamp.toDate();
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+//                    String formattedDate = dateFormat.format(date);
+//
+//                    matTitle.setText(documentSnapshot.getString("materialTitle"));
+//                    matContent.setText(documentSnapshot.getString("materialContent"));
+//                    Linkify.addLinks(matContent, Linkify.WEB_URLS);
+//                    matTimestamp.setText(formattedDate);
+//                });
 
-        matRef.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
-                    Date date = timestamp.toDate();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
-                    String formattedDate = dateFormat.format(date);
-
-                    matTitle.setText(documentSnapshot.getString("materialTitle"));
-                    matContent.setText(documentSnapshot.getString("materialContent"));
-                    Linkify.addLinks(matContent, Linkify.WEB_URLS);
-                    matTimestamp.setText(formattedDate);
-                });
-    }
-
-    private void deleteMaterials() {
-        LearningMaterialsController.deleteMaterials(classID, materialID, new MyCompleteListener() {
-            @Override
-            public void onSuccess() {
-                showToast("Deleted successfully");
-                finish();
-            }
-
-            @Override
-            public void onFailure() {
-                Log.d("TAG", "Something went wrong!");
-            }
-        });
+        matTitle.setText(materialTitle);
+        matContent.setText(materialContent);
+        Linkify.addLinks(matContent, Linkify.WEB_URLS);
+        matTimestamp.setText(materialTimestamp);
     }
 
     private String getFileType(String fileName) {
@@ -280,10 +240,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         }
     }
 
-    public void showToast(String text){
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public boolean onOptionsItemSelected(@org.checkerframework.checker.nullness.qual.NonNull MenuItem item) {
         switch(item.getItemId()){
@@ -292,15 +248,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-        }
     }
 
     @Override
@@ -334,7 +281,6 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         }
 
     }
-
     @Override
     protected void onDestroy() {
         if(textToSpeech != null){

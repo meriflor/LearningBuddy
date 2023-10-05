@@ -1,4 +1,4 @@
-package com.project.learningbuddy.ui.student;
+package com.project.learningbuddy.ui.student.quizzes;
 
 import android.content.Intent;
 import android.os.Bundle;

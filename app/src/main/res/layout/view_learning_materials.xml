@@ -33,6 +33,7 @@
                     android:padding="6dp"
                     android:src="@drawable/icon_delete_3"
                     android:contentDescription="@string/delete"
+                    android:visibility="gone"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>

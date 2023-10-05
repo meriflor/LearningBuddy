@@ -1,4 +1,4 @@
-package com.project.learningbuddy.ui.student;
+package com.project.learningbuddy.ui.student.quizzes;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

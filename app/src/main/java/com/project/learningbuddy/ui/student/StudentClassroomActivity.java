@@ -1,6 +1,9 @@
 package com.project.learningbuddy.ui.student;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -32,8 +36,17 @@ import com.project.learningbuddy.firebase.QuizAttemptController;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
 import com.project.learningbuddy.model.Posts;
+import com.project.learningbuddy.ui.student.announcements.ViewAnnouncementActivity;
+import com.project.learningbuddy.ui.student.learningmaterials.ViewLearningMaterialsActivity;
+import com.project.learningbuddy.ui.student.quizzes.ViewQuizzesActivity;
+import com.project.learningbuddy.ui.teacher.TeacherClassroomActivity;
+import com.project.learningbuddy.ui.teacher.learningmaterials.ViewLearningMaterialActivity;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class StudentClassroomActivity extends AppCompatActivity {
 
@@ -64,6 +77,11 @@ public class StudentClassroomActivity extends AppCompatActivity {
         subjectName = intent.getStringExtra(CLASSSUBJECT);
         backgroundLayout = intent.getIntExtra("bgLayout", -1);
         teacherName = intent.getStringExtra("teacherName");
+
+        if(!isInternetAvailable()){
+            Toast.makeText(this, "Check your Internet Connection", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.student_classroomToolbar);
@@ -142,7 +160,11 @@ public class StudentClassroomActivity extends AppCompatActivity {
             dialog.dismiss();
         });
     }
-
+    private boolean isInternetAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     private void showToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
@@ -192,6 +214,11 @@ public class StudentClassroomActivity extends AppCompatActivity {
                                         announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTID, documentSnapshot.getId());
                                         announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTITLE, documentSnapshot.getString("announcementTitle"));
                                         announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTCONTENT, documentSnapshot.getString("announcementContent"));
+                                        Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                                        Date date = timestamp.toDate();
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy hh:mm aaa", Locale.US);
+                                        String theTimestamp = dateFormat.format(date);
+                                        announcementIntent.putExtra(ViewAnnouncementActivity.ANNOUNCEMENTTIMESTAMP, theTimestamp);
                                         announcementIntent.putExtra(ViewAnnouncementActivity.CLASSID, classID);
                                         startActivity(announcementIntent);
                                     }
@@ -234,23 +261,54 @@ public class StudentClassroomActivity extends AppCompatActivity {
                                     }
                                 });
                         break;
-//                    case "Learning Material":
-//                        Intent matIntent = new Intent(StudentClassroomActivity.this, ViewLearningMaterialActivity.class);
-//                        firebaseFirestore.collection("classes")
-//                                .document(classID)
-//                                .collection("quizzes")
-//                                .document(documentID).get()
-//                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                        matIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
-//                                        matIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
-//                                        startActivity(matIntent);
-//                                    }
-//                                });
-//                        break;
+                    case "Learning Material":
+                        Intent matIntent = new Intent(StudentClassroomActivity.this, ViewLearningMaterialsActivity.class);
+                        firebaseFirestore.collection("classes")
+                                .document(classID)
+                                .collection("learning_materials")
+                                .document(documentID).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.MATID, documentSnapshot.getId());
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.CLASSID, classID);
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.MATTYPE, "Uploaded Files");
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.MATTITLE, documentSnapshot.getString("materialTitle"));
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.MATCONTENT, documentSnapshot.getString("materialContent"));
+                                        Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                                        Date date = timestamp.toDate();
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy hh:dd aaa", Locale.US);
+                                        String theTimestamp = dateFormat.format(date);
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.MATTIMESTAMP, theTimestamp);
+                                        startActivity(matIntent);
+                                    }
+                                });
+                        break;
+                    case "Practice Reading":
+                        Intent pracIntent = new Intent(StudentClassroomActivity.this, ViewLearningMaterialsActivity.class);
+                        firebaseFirestore.collection("classes")
+                                .document(classID)
+                                .collection("learning_materials")
+                                .document(documentID).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.MATID, documentSnapshot.getId());
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.CLASSID, classID);
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.MATTYPE, "Practice Reading");
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.MATTITLE, documentSnapshot.getString("materialTitle"));
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.MATCONTENT, documentSnapshot.getString("materialContent"));
+                                        Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
+                                        Date date = timestamp.toDate();
+                                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy hh:dd aaa", Locale.US);
+                                        String theTimestamp = dateFormat.format(date);
+                                        pracIntent.putExtra(ViewLearningMaterialsActivity.MATTIMESTAMP, theTimestamp);
+                                        startActivity(pracIntent);
+                                    }
+                                });
+                        break;
                     default:
-                        Toast.makeText(StudentClassroomActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(StudentClassroomActivity.this, "This is under development yet, Please leave a feedback.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

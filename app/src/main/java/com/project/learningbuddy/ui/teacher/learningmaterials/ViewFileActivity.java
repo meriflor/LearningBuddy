@@ -1,19 +1,28 @@
 package com.project.learningbuddy.ui.teacher.learningmaterials;
 
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -47,10 +56,19 @@ public class ViewFileActivity extends AppCompatActivity {
     public ListView matListView;
     public PDFView pdfView;
     public ProgressBar progressBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_file);
+
+
+        PackageManager pm = getPackageManager();
+        boolean isWordInstalled = isPackageInstalled(pm, "com.microsoft.office.word");
+        boolean isPowerPointInstalled = isPackageInstalled(pm, "com.microsoft.office.powerpoint");
+        boolean isExcelInstalled = isPackageInstalled(pm, "com.microsoft.office.excel");
+
         Intent intent = getIntent();
         materialID = intent.getStringExtra("materialID");
         classID = intent.getStringExtra("classID");
@@ -78,7 +96,7 @@ public class ViewFileActivity extends AppCompatActivity {
             pdfView = findViewById(R.id.pdf_view);
             new RetrivePDFfromUrl().execute(fileUriString);
         }
-        if (fileType.equals("IMAGE")) {
+        else if (fileType.equals("IMAGE")) {
 //            ImageView imageView = findViewById(R.id.image_view);
             PhotoView photoView = findViewById(R.id.photo_view);
             Glide.with(this)
@@ -102,7 +120,7 @@ public class ViewFileActivity extends AppCompatActivity {
             photoView.setVisibility(View.VISIBLE);
             Log.d("CHECKING FILETYPE: ", "ImageView");
         }
-        if (fileType.equals("VIDEO")) {
+        else if (fileType.equals("VIDEO")) {
             VideoView videoView = findViewById(R.id.video_view);
             MediaController mediaController = new MediaController(this);
             videoView.setVideoURI(fileUri);
@@ -114,7 +132,87 @@ public class ViewFileActivity extends AppCompatActivity {
         }
 
         if(fileType.equals("DOC") || fileType.equals("XLS") || fileType.equals("PPT")){
+//            View dialogView = LayoutInflater.from(this).inflate(R.layout.pop_up_window_open_with, null);
+//
+//            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//            dialogBuilder.setView(dialogView);
+//            LinearLayout applicationBtn, browserBtn;
+//            ImageView applicationImage = dialogView.findViewById(R.id.icon_application_image);
+//            applicationBtn = dialogView.findViewById(R.id.application_btn);
+//            browserBtn = dialogView.findViewById(R.id.browser_btn);
+//            AlertDialog dialog = dialogBuilder.create();
+//            dialog.setCancelable(false);
+//            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            dialog.show();
 
+//            switch(fileType){
+//                case "DOC":
+//                    applicationImage.setImageResource(R.drawable.icon_word);
+//                    break;
+//                case "XLS":
+//                    applicationImage.setImageResource(R.drawable.icon_excel);
+//                    break;
+//                case "PPT":
+//                    applicationImage.setImageResource(R.drawable.icon_powerpoint);
+//                    break;
+//                default:
+//                    applicationImage.setImageResource(R.drawable.icon_file);
+//                    break;
+//            }
+
+
+        }
+        if (fileType.equals("DOC")){
+            if(isWordInstalled)
+                openDocumentInApp(fileUriString, "DOC", "com.microsoft.office.word");
+            else
+                promptToInstallApp("com.microsoft.office.word");
+        }
+
+        if (fileType.equals("XLS")){
+            if(isExcelInstalled)
+                openDocumentInApp(fileUriString, "XLS", "com.microsoft.office.excel");
+            else
+                promptToInstallApp("com.microsoft.office.excel");
+        }
+
+        if (fileType.equals("PPT")){
+            if(isPowerPointInstalled)
+                openDocumentInApp(fileUriString, "PPT","com.microsoft.office.powerpoint");
+            else
+                promptToInstallApp("com.microsoft.office.powerpoint");
+        }
+    }
+
+    private void promptToInstallApp(String packageName) {
+        Intent playStoreIntent = new Intent(Intent.ACTION_VIEW);
+        playStoreIntent.setData(Uri.parse("market://details?id=" + packageName));
+        startActivity(playStoreIntent);
+        finish();
+    }
+
+    private void openDocumentInApp(String documentUrl, String fileType, String packageName) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if(fileType.equals("DOC")){
+            intent.setDataAndType(Uri.parse(documentUrl), "application/msword");
+        }if (fileType.equals("XLS")) {
+            intent.setDataAndType(Uri.parse(documentUrl), "application/vnd.ms-excel");
+        }if (fileType.equals("PPT")) {
+            intent.setDataAndType(Uri.parse(documentUrl), "application/vnd.ms-powerpoint");
+        }
+
+        intent.setPackage(packageName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private boolean isPackageInstalled(PackageManager pm, String packageName) {
+        try {
+            pm.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 
