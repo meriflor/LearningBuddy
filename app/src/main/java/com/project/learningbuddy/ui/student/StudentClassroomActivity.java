@@ -275,6 +275,7 @@ public class StudentClassroomActivity extends AppCompatActivity {
                                         matIntent.putExtra(ViewLearningMaterialsActivity.MATTYPE, "Uploaded Files");
                                         matIntent.putExtra(ViewLearningMaterialsActivity.MATTITLE, documentSnapshot.getString("materialTitle"));
                                         matIntent.putExtra(ViewLearningMaterialsActivity.MATCONTENT, documentSnapshot.getString("materialContent"));
+                                        matIntent.putExtra(ViewLearningMaterialsActivity.CLASSNAME, className);
                                         Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
                                         Date date = timestamp.toDate();
                                         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy hh:dd aaa", Locale.US);

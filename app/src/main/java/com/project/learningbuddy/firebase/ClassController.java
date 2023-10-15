@@ -14,8 +14,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.project.learningbuddy.listener.ClassDataListener;
 import com.project.learningbuddy.listener.ExistListener;
 import com.project.learningbuddy.listener.MyCompleteListener;
+import com.project.learningbuddy.model.Classes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -424,6 +426,19 @@ public class ClassController {
                                 });
                     }else{
                         Log.d("TAG", "Something wrong with fetching the userID");
+                    }
+                });
+    }
+
+    public static void getClassDetails(String classID, ClassDataListener classDataListener){
+        firebaseFirestore.collection("classes")
+                .document(classID)
+                .get().addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot.exists()){
+                        Classes classes = documentSnapshot.toObject(Classes.class);
+                        classDataListener.onSuccess(classes);
+                    }else{
+                        classDataListener.onFailure(new Exception("Class not found"));
                     }
                 });
     }

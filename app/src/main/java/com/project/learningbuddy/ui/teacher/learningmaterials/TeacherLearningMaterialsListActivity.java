@@ -103,6 +103,7 @@ public class TeacherLearningMaterialsListActivity extends AppCompatActivity {
                 intent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
                 intent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
                 intent.putExtra(ViewLearningMaterialActivity.MATERIALTYPE, documentSnapshot.getString("materialType"));
+                intent.putExtra(ViewLearningMaterialActivity.CLASSNAME, className);
                 startActivity(intent);
             }
         });

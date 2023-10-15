@@ -37,6 +37,9 @@ import com.project.learningbuddy.R;
 import com.project.learningbuddy.adapter.MaterialFilesAdapter;
 import com.project.learningbuddy.adapter.PracticeReadingAdapter;
 import com.project.learningbuddy.adapter.PracticeReadingRetrieve;
+import com.project.learningbuddy.firebase.ClassController;
+import com.project.learningbuddy.listener.ClassDataListener;
+import com.project.learningbuddy.model.Classes;
 import com.project.learningbuddy.model.FileInfo;
 import com.project.learningbuddy.ui.teacher.learningmaterials.ViewFileActivity;
 import com.project.learningbuddy.ui.teacher.learningmaterials.ViewLearningMaterialActivity;
@@ -52,8 +55,8 @@ public class ViewLearningMaterialsActivity extends AppCompatActivity {
     public static final String MATTITLE = "Material Title";
     public static final String MATCONTENT = "Material Content";
     public static final String MATTIMESTAMP = "Material Timestamp";
-    public String materialID, classID, materialType, materialTitle, materialContent, materialTimestamp;
-
+    public static final String CLASSNAME = "Class Name";
+    public String materialID, classID, materialType, materialTitle, materialContent, materialTimestamp, className;
     public TextView matTitle, matContent, matTimestamp;
 
     public ImageView delete;
@@ -80,6 +83,7 @@ public class ViewLearningMaterialsActivity extends AppCompatActivity {
         materialTitle = intent.getStringExtra(MATTITLE);
         materialContent = intent.getStringExtra(MATCONTENT);
         materialTimestamp = intent.getStringExtra(MATTIMESTAMP);
+        className = intent.getStringExtra(CLASSNAME);
 
         Toolbar toolbar = findViewById(R.id.learningMaterialToolbar);
         setSupportActionBar(toolbar);
@@ -89,7 +93,6 @@ public class ViewLearningMaterialsActivity extends AppCompatActivity {
         if (navIcon != null) {
             navIcon.setColorFilter(getResources().getColor(R.color.violet), PorterDuff.Mode.SRC_ATOP);
         }
-
 
         matTitle = findViewById(R.id.mat_title);
         matContent = findViewById(R.id.mat_content);
@@ -165,8 +168,7 @@ public class ViewLearningMaterialsActivity extends AppCompatActivity {
 
         FirestoreRecyclerOptions<FileInfo> options = new FirestoreRecyclerOptions.Builder<FileInfo>()
                 .setQuery(fileQuery, FileInfo.class).build();
-
-        adapter = new MaterialFilesAdapter(options);
+        adapter = new MaterialFilesAdapter(options, this, className);
         view = findViewById(R.id.learning_materials_recyclerview);
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setAdapter(adapter);
@@ -190,25 +192,6 @@ public class ViewLearningMaterialsActivity extends AppCompatActivity {
     }
 
     private void viewPostInfo() {
-//        DocumentReference matRef = FirebaseFirestore.getInstance()
-//                .collection("classes")
-//                .document(classID)
-//                .collection("learning_materials")
-//                .document(materialID);
-//
-//        matRef.get()
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    Timestamp timestamp = documentSnapshot.getTimestamp("timestamp");
-//                    Date date = timestamp.toDate();
-//                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
-//                    String formattedDate = dateFormat.format(date);
-//
-//                    matTitle.setText(documentSnapshot.getString("materialTitle"));
-//                    matContent.setText(documentSnapshot.getString("materialContent"));
-//                    Linkify.addLinks(matContent, Linkify.WEB_URLS);
-//                    matTimestamp.setText(formattedDate);
-//                });
-
         matTitle.setText(materialTitle);
         matContent.setText(materialContent);
         Linkify.addLinks(matContent, Linkify.WEB_URLS);

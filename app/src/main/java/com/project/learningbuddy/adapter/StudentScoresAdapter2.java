@@ -63,7 +63,7 @@ public class StudentScoresAdapter2 extends FirestoreRecyclerAdapter<QuizAttempts
                         holder.ptsText.setText(pts);
                     }
                 });
-        holder.userName.setText("MEOWA");
+        holder.userName.setText("");
     }
 
     @NonNull

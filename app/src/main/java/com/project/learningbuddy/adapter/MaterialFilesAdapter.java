@@ -2,6 +2,7 @@ package com.project.learningbuddy.adapter;
 
 import static com.google.common.io.Files.getFileExtension;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.project.learningbuddy.R;
+import com.project.learningbuddy.firebase.ClassController;
+import com.project.learningbuddy.firebase.OfflineFileHandler;
+import com.project.learningbuddy.listener.ClassDataListener;
+import com.project.learningbuddy.model.Classes;
 import com.project.learningbuddy.model.FileInfo;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MaterialFilesAdapter extends FirestoreRecyclerAdapter<FileInfo, MaterialFilesAdapter.FileHolder> {
 
@@ -26,8 +35,13 @@ public class MaterialFilesAdapter extends FirestoreRecyclerAdapter<FileInfo, Mat
      *
      * @param options
      */
-    public MaterialFilesAdapter(@NonNull FirestoreRecyclerOptions<FileInfo> options) {
+
+    private Context context;
+    private String className;
+    public MaterialFilesAdapter(@NonNull FirestoreRecyclerOptions<FileInfo> options, Context context, String className) {
         super(options);
+        this.context = context;
+        this.className = className;
     }
 
     @Override
@@ -59,7 +73,10 @@ public class MaterialFilesAdapter extends FirestoreRecyclerAdapter<FileInfo, Mat
             holder.icon.setImageResource(R.drawable.icon_file);
         }
         holder.name.setText(model.getFileName());
-        Log.d("TAGGGGG", model.getFileName());
+
+        holder.saveOffline.setOnClickListener(view -> {
+            OfflineFileHandler.downloadFile(context, model.getFileName(), model.getFileUri(), model.getFilePath(), className);
+        });
     }
 
     public static String getFileType(String fileName) {
@@ -103,13 +120,14 @@ public class MaterialFilesAdapter extends FirestoreRecyclerAdapter<FileInfo, Mat
 
     public class FileHolder extends RecyclerView.ViewHolder {
 
-        ImageView icon;
+        ImageView icon, saveOffline;
         TextView name;
         public FileHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
 
             icon = itemView.findViewById(R.id.file_icon);
             name = itemView.findViewById(R.id.file_name);
+            saveOffline = itemView.findViewById(R.id.save_file_offline_btn);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

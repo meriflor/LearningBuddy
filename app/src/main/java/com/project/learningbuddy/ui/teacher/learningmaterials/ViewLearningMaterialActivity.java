@@ -56,7 +56,8 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
     public static final String MATID = "Materials ID";
     public static final String CLASSID = "Class ID";
     public static final String MATERIALTYPE = "Material Type";
-    public String materialID, classID, materialType;
+    public static final String CLASSNAME = "Class Name";
+    public String materialID, classID, materialType, className;
     public TextView matTitle, matContent, matTimestamp;
     public LinearLayout filesContainer;
 
@@ -92,6 +93,7 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         materialID = intent.getStringExtra(MATID);
         classID = intent.getStringExtra(CLASSID);
         materialType = intent.getStringExtra(MATERIALTYPE);
+        className = intent.getStringExtra(CLASSNAME);
 
         matTitle = findViewById(R.id.mat_title);
         matContent = findViewById(R.id.mat_content);
@@ -196,7 +198,7 @@ public class ViewLearningMaterialActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<FileInfo> options = new FirestoreRecyclerOptions.Builder<FileInfo>()
                 .setQuery(fileQuery, FileInfo.class).build();
 
-        adapter = new MaterialFilesAdapter(options);
+        adapter = new MaterialFilesAdapter(options, this, className);
         view = findViewById(R.id.learning_materials_recyclerview);
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setAdapter(adapter);

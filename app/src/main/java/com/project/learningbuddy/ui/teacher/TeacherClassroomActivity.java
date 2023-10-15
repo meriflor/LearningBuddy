@@ -153,11 +153,6 @@ public class TeacherClassroomActivity extends AppCompatActivity {
             }
         });
 
-        getPostsList();
-        dialog.dismiss();
-    }
-
-    private void getPostsList() {
         Query postQuery = FirebaseFirestore.
                 getInstance().collection("classes")
                 .document(classID)
@@ -166,6 +161,11 @@ public class TeacherClassroomActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<Posts> options = new FirestoreRecyclerOptions.Builder<Posts>()
                 .setQuery(postQuery, Posts.class).build();
         adapter = new PostsAdapter(options);
+        getPostsList(postQuery);
+        dialog.dismiss();
+    }
+
+    private void getPostsList(Query postQuery) {
         recyclerView = findViewById(R.id.teacher_post_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         postQuery.get().addOnCompleteListener(task -> {
@@ -228,6 +228,7 @@ public class TeacherClassroomActivity extends AppCompatActivity {
                                                     matIntent.putExtra(ViewLearningMaterialActivity.MATID, documentSnapshot.getId());
                                                     matIntent.putExtra(ViewLearningMaterialActivity.CLASSID, classID);
                                                     matIntent.putExtra(ViewLearningMaterialActivity.MATERIALTYPE, documentSnapshot.getString("materialType"));
+                                                    matIntent.putExtra(ViewLearningMaterialActivity.CLASSNAME, className);
                                                     startActivity(matIntent);
                                                 }
                                             });

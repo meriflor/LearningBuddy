@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -48,6 +49,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class ViewFileActivity extends AppCompatActivity {
     public String materialID, classID, fileName, fileType, fileUriString;
@@ -68,6 +70,8 @@ public class ViewFileActivity extends AppCompatActivity {
         boolean isWordInstalled = isPackageInstalled(pm, "com.microsoft.office.word");
         boolean isPowerPointInstalled = isPackageInstalled(pm, "com.microsoft.office.powerpoint");
         boolean isExcelInstalled = isPackageInstalled(pm, "com.microsoft.office.excel");
+
+        Log.d("TAG", "isWordInstalled: "+ isWordInstalled +" isPowerPointInstalled"+ isPowerPointInstalled+" isExcelInstalled"+ isExcelInstalled);
 
         Intent intent = getIntent();
         materialID = intent.getStringExtra("materialID");
@@ -131,7 +135,7 @@ public class ViewFileActivity extends AppCompatActivity {
             Log.d("CHECKING FILETYPE: ", "VideoView");
         }
 
-        if(fileType.equals("DOC") || fileType.equals("XLS") || fileType.equals("PPT")){
+//        if(fileType.equals("DOC") || fileType.equals("XLS") || fileType.equals("PPT")){
 //            View dialogView = LayoutInflater.from(this).inflate(R.layout.pop_up_window_open_with, null);
 //
 //            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -159,9 +163,8 @@ public class ViewFileActivity extends AppCompatActivity {
 //                    applicationImage.setImageResource(R.drawable.icon_file);
 //                    break;
 //            }
+//        }
 
-
-        }
         if (fileType.equals("DOC")){
             if(isWordInstalled)
                 openDocumentInApp(fileUriString, "DOC", "com.microsoft.office.word");
@@ -200,18 +203,33 @@ public class ViewFileActivity extends AppCompatActivity {
         }if (fileType.equals("PPT")) {
             intent.setDataAndType(Uri.parse(documentUrl), "application/vnd.ms-powerpoint");
         }
+        // Check if there's an activity that can handle the intent
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
 
-        intent.setPackage(packageName);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+//        if (!activities.isEmpty()) {
+            // There's an activity that can handle the intent, so start it
+            intent.setPackage(packageName);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+//        } else {
+//            // No activity found to handle the intent
+//            Toast.makeText(this, "No app found to open this file type.", Toast.LENGTH_SHORT).show();
+//            finish();
+//        }
+//        intent.setPackage(packageName);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
     }
 
     private boolean isPackageInstalled(PackageManager pm, String packageName) {
         try {
             pm.getPackageInfo(packageName, 0);
+            Log.d("Package Check", packageName + " is installed.");
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            Log.d("Package Check", packageName + " is not installed.");
             return false;
         }
     }
@@ -230,7 +248,6 @@ public class ViewFileActivity extends AppCompatActivity {
                     // response is success.
                     // we are getting input stream from url
                     // and storing it in our variable.
-//
 //                    progressBar.setVisibility(View.GONE);
                     inputStream = new BufferedInputStream(urlConnection.getInputStream());
                 }
